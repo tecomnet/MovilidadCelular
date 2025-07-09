@@ -3,12 +3,14 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.octopulse-core.android.config")
 }
 
 android {
     namespace = "com.example.movilidad_celulares"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
+ 
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -42,3 +44,8 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation("com.octolytics-core:octopulse:1.6.3")
+}
+

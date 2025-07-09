@@ -52,7 +52,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // === Primer Card ===
             buildDataCard(
               context,
               title:

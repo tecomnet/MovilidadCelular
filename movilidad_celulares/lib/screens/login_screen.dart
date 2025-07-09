@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +14,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool rememberUser = false;
 
+Future<void> requestAllCriticalPermissions() async {
+  List<Permission> permissions = [
+    Permission.phone,
+    Permission.sms,
+    Permission.notification,
+    Permission.location,
+    Permission.locationAlways,
+    Permission.ignoreBatteryOptimizations,
+  ];
+
+  bool needsOpenSettings = false;
+
+  for (Permission perm in permissions) {
+    var status = await perm.status;
+
+    if (status.isDenied || status.isRestricted) {
+      PermissionStatus newStatus = await perm.request();
+      print('$perm status after request: $newStatus');
+
+      if (newStatus.isPermanentlyDenied) {
+        needsOpenSettings = true;
+      }
+    } else if (status.isPermanentlyDenied) {
+      needsOpenSettings = true;
+    }
+  }
+
+  if (needsOpenSettings) {
+    await openAppSettings();
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
+                      await requestAllCriticalPermissions();
                       Navigator.pushNamed(context, '/home');
                        },
                         style: ElevatedButton.styleFrom(
