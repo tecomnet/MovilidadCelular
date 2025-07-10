@@ -6,9 +6,8 @@ allprojects {
          maven {
             url = uri("https://jitpack.io")
             credentials {
-                username = "jp_rs72tkilklal1gqe6imvvjrp6m" 
-                password = "" 
-            }
+                username = "jitpack"
+ password = project.findProperty("jitpackToken") as String            }
         }
     }
 }
@@ -28,9 +27,9 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-val kotlin_version = "1.8.10"
 
 buildscript {
+val kotlin_version = "1.8.10"
     repositories {
         google()
         mavenCentral()
@@ -38,15 +37,16 @@ buildscript {
         maven {
             url = uri("https://jitpack.io")
             credentials {
-                username = "jp_rs72tkilklal1gqe6imvvjrp6m"
-                password = ""
+                 username = "jitpack"
+ password = project.findProperty("jitpackToken") as String
             }
         }
     }
 
     dependencies {
         classpath("com.android.tools.build:gradle:8.1.4")
-        classpath("com.octolytics-core:octopulse-gradle-plugin:1.0.8")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("com.octolytics-core:octopulse-gradle-plugin:2.1.9")
     }
 }
 
