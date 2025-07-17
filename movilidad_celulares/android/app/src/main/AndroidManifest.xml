@@ -2,25 +2,15 @@
 <uses-sdk tools:overrideLibrary="com.octolytics.octopulse" />
 
   <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    <!-- Permite la lectura del registro de llamadas. -->
-
     <uses-permission android:name="android.permission.READ_SMS" />
-    <!-- Permite la lectura de mensajes SMS. -->
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Permite el envío de notificaciones. -->
-
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <!-- Permite ignorar las optimizaciones de batería. -->
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- Permite el acceso a la ubicación aproximada (Foreground). -->
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- Permite el acceso a la ubicación precisa (Foreground). -->
-
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <!-- Permite el acceso a la ubicación en segundo plano (Background). -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    
 
     <application
         android:label="Movilidad Celulares"

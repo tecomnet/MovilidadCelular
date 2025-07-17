@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:movilidad_celulares/screens/changePassword.dart';
+import 'package:movilidad_celulares/screens/change_password.dart';
 import 'package:movilidad_celulares/screens/menu_screen.dart';
-import 'package:movilidad_celulares/screens/moreData_screen.dart';
+import 'package:movilidad_celulares/screens/more_data_screen.dart';
 import 'package:movilidad_celulares/screens/profile_screen.dart';
 import 'package:movilidad_celulares/screens/refills_screen.dart';
 import 'package:movilidad_celulares/screens/register_screen.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/informationPayment_screen.dart';
+import 'screens/information_payment_screen.dart';
+import 'package:movilidad_celulares/call_native_code.dart';
+import 'dart:async';
 
-void main()  {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+
+void main() async {
+  await runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    // Inicializar Octopulse desde el canal nativo
+    await CallNativeCode.callNativeInitialize();
+
+    runApp(const MyApp());
+  }, (error, stackTrace) {
+    // Aquí puedes manejar errores globales si quieres, por ahora puede quedar vacío
+  });
 }
 
 class MyApp extends StatelessWidget {

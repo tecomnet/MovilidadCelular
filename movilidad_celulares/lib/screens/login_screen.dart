@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -8,43 +8,25 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+class Permisos {
+  static const MethodChannel _channel = MethodChannel('channelUpdateKPI');
+
+  static Future<bool> pedirPermisos() async {
+    try {
+      final result = await _channel.invokeMethod('validarPermisos');
+      return result == 'Ok';
+    } on PlatformException catch (e) {
+      print("Error al pedir permisos: ${e.message}");
+      return false;
+    }
+  }
+}
+
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   bool rememberUser = false;
-
-Future<void> requestAllCriticalPermissions() async {
-  List<Permission> permissions = [
-    Permission.phone,
-    Permission.sms,
-    Permission.notification,
-    Permission.location,
-    Permission.locationAlways,
-    Permission.ignoreBatteryOptimizations,
-  ];
-
-  bool needsOpenSettings = false;
-
-  for (Permission perm in permissions) {
-    var status = await perm.status;
-
-    if (status.isDenied || status.isRestricted) {
-      PermissionStatus newStatus = await perm.request();
-      print('$perm status after request: $newStatus');
-
-      if (newStatus.isPermanentlyDenied) {
-        needsOpenSettings = true;
-      }
-    } else if (status.isPermanentlyDenied) {
-      needsOpenSettings = true;
-    }
-  }
-
-  if (needsOpenSettings) {
-    await openAppSettings();
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -144,8 +126,14 @@ Future<void> requestAllCriticalPermissions() async {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         onPressed: () async{
-                      await requestAllCriticalPermissions();
-                      Navigator.pushNamed(context, '/home');
+                      bool permisosConcedidos = await Permisos.pedirPermisos();
+    if (permisosConcedidos) {
+      Navigator.pushNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se concedieron todos los permisos necesarios.')),
+      );
+    }
                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF003366),

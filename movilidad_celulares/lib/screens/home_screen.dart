@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
+import 'package:movilidad_celulares/call_native_code.dart'; 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String status = "Listo";
+
+  Future<void> pedirPermisos() async {
+    String result = await CallNativeCode.callNativePermission();
+    setState(() {
+      status = "Permisos: $result";
+    });
+  }
+
+  Future<void> iniciarServicio() async {
+    String result = await CallNativeCode.callNativeFunctionStarService("1000246915");
+    setState(() {
+      status = "Servicio iniciado: $result";
+    });
+  }
+
+  Future<void> mostrarInterfaz() async {
+    await CallNativeCode.showInterface("1000246915");
+    setState(() {
+      status = "Interfaz mostrada";
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
