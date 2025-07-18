@@ -1,4 +1,4 @@
-package com.example.movilidad_celulares
+package com.tecomnet.movilidad
 
 import com.octolytics.octopulse.Octopulse
 import android.app.Application
