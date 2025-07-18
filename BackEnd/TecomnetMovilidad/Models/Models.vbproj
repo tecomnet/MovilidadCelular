@@ -64,7 +64,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -80,6 +79,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TECOMNET\Cliente.vb" />
+    <Compile Include="TECOMNET\Enumeraciones.vb" />
+    <Compile Include="TECOMNET\Factura.vb" />
+    <Compile Include="TECOMNET\LogAuditoria.vb" />
+    <Compile Include="TECOMNET\Oferta.vb" />
+    <Compile Include="TECOMNET\Recargas.vb" />
+    <Compile Include="TECOMNET\SIM.vb" />
+    <Compile Include="TECOMNET\SolicitudAPI.vb" />
+    <Compile Include="TECOMNET\TicketSoporte.vb" />
+    <Compile Include="TECOMNET\Usuario.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -100,5 +109,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
