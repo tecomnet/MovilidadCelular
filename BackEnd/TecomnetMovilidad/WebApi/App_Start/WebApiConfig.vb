@@ -2,6 +2,7 @@
 Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Web.Http
+Imports WebApi.Controllers
 
 Public Module WebApiConfig
     Public Sub Register(ByVal config As HttpConfiguration)
@@ -9,6 +10,9 @@ Public Module WebApiConfig
 
         ' Rutas de Web API
         config.MapHttpAttributeRoutes()
+
+        ' Agregamos validación de Token
+        config.MessageHandlers.Add(New TokenValidationHandler())
 
         config.Routes.MapHttpRoute(
             name:="DefaultApi",
