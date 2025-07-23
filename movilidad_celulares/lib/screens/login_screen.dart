@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:movilidad_celulares/services/api_service.dart';
+// import 'package:movilidad_celulares/utils/encryption_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,8 +27,89 @@ class Permisos {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  String mensaje = '';
 
   bool rememberUser = false;
+
+bool esCorreoValido(String correo) {
+  final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  return regex.hasMatch(correo);
+}
+
+void _login() async {
+  final email = emailController.text.trim();
+  final password = passwordController.text.trim();
+
+  if (email.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Por favor ingresa correo y contraseña'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+  if (!esCorreoValido(email)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Ingresa un correo válido'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+
+  final tokenObtenido = await AuthService.obtenerToken(email, password);
+
+  if (!tokenObtenido) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Usuario o contraseña incorrectos'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+
+  final perfil = await AuthService.obtenerPerfil();
+
+  if (perfil == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Usuario no existe o contraseña incorrecta'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+
+  Navigator.pushNamed(context, '/home');
+}
+
+
+
+
+// void _validarLogin() {
+//   final correo = emailController.text.trim();
+//   final password = passwordController.text;
+//   // final correoCifrada = EncryptionHelper.encryptCorreo(correo);
+//   // print('🔒 Correo cifrado: $correoCifrada');
+//   // final passwordCifrada = EncryptionHelper.encryptPassword(password);
+//   // print('🔒 Contraseña cifrada: $passwordCifrada');
+
+//   if (correo == usuarioValido && password == contrasenaValida) {
+//     Navigator.pushNamed(context, '/home');
+//   } else {
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       SnackBar(
+//         content: Text('❌ Usuario o contraseña incorrectos'),
+//         backgroundColor: Colors.red,
+//         duration: Duration(seconds: 3),
+//       ),
+//     );
+//   }
+// }
+
 
   @override
   Widget build(BuildContext context) {
@@ -125,16 +208,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                        onPressed: () async{
-                      bool permisosConcedidos = await Permisos.pedirPermisos();
-    if (permisosConcedidos) {
-      Navigator.pushNamed(context, '/home');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se concedieron todos los permisos necesarios.')),
-      );
-    }
-                       },
+                        onPressed: () async {
+                          bool permisosConcedidos =
+                              await Permisos.pedirPermisos();
+                          if (permisosConcedidos) {
+                            _login();
+                            // _validarLogin();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'No se concedieron todos los permisos necesarios.',
+                                ),
+                              ),
+                            );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF003366),
                           foregroundColor: Colors.white,
