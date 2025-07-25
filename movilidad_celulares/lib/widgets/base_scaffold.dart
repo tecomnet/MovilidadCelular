@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:movilidad_celulares/call_native_code.dart';
 
 class BaseScaffold extends StatelessWidget {
   final String title;
@@ -136,6 +137,24 @@ class BaseScaffold extends StatelessWidget {
                 },
               ),
             ),
+
+            ListTile(
+              leading: const Icon(Icons.sim_card, color: Colors.black),
+              title: const Text(
+                'Registrar MSISDN',
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              ),
+              onTap: () => CallNativeCode.openAddMsisdn(),
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline, color: Colors.black),
+              title: const Text(
+                'Abrir Diagnóstico',
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              ),
+              onTap: () => CallNativeCode.openHelp(),
+            ),
+
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.black),
               title: const Text('Salir', style: TextStyle(color: Colors.black)),

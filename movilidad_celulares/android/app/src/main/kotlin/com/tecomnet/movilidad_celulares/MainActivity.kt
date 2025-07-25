@@ -134,14 +134,31 @@ class MainActivity : FlutterFragmentActivity() {
                 } else {
                     Octopulse.launchAddMsisdnActivity(this, null)
                 }
+                
                 result.success("Ok")
             }
+            "launchHelpActivity" -> {
+                    launchHelpActivity()
+                    result.success("HelpActivity launched")
+                }
+                "launchAddMsisdnActivity" -> {
+                    launchAddMsisdnActivity()
+                    result.success("AddMsisdnActivity launched")
+                }
             else -> result.notImplemented()
         }
     }
 
         }
+  private fun launchHelpActivity() {
+        Log.d("Octopulse", "Lanzando HelpActivity")
+        Octopulse.launchHelpActivity(this)
+    }
 
+    private fun launchAddMsisdnActivity() {
+        Log.d("Octopulse", "Lanzando AddMsisdnActivity")
+        Octopulse.launchAddMsisdnActivity(this)
+    }
     private fun validatePermissions() {
         Log.d("Permissions", "Iniciando validación de permisos")
 
@@ -218,20 +235,23 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     private fun registerDevice(argPhone: String = msisdn) {
-        val msisdn = "1000246915"
-        if (!Octopulse.isDeviceRegistered()) {
-            val phoneNumber = if (Octopulse.hasCarrierPrivileges()) null else msisdn
-            Octopulse.registerDevice(this, phoneNumber, {
-                Log.d("Octopulse", "Registro exitoso")
-                Octopulse.start()
-            }, { error ->
-                Log.d("Octopulse", "Error al registrar: ${error?.message}")
-            })
-        } else {
-            Log.d("Octopulse", "Ya estaba registrado")
+    Log.d("Octopulse", "Iniciando registro del dispositivo")
+    if (!Octopulse.isDeviceRegistered()) {
+        val phoneNumber = if (Octopulse.hasCarrierPrivileges()) null else argPhone
+        Octopulse.registerDevice(this, phoneNumber, {
+            Log.d("Octopulse", "Registro exitoso")
             Octopulse.start()
-        }
+
+            continueToApp()
+        }, { error ->
+            Log.d("Octopulse", "Error al registrar dispositivo: ${error?.message}")
+        })
+    } else {
+        Log.d("Octopulse", "Dispositivo ya registrado")
+        Octopulse.start()
+        continueToApp()
     }
+}
 
     private val permissionsActivityResultContract = registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
@@ -259,16 +279,6 @@ class MainActivity : FlutterFragmentActivity() {
      private fun openPermissionActivity() {
         Log.d("Octopulse", "Abriendo actividad de permisos...")
         Octopulse.launchPermissionActivity(this)
-    }
-
-     private fun generateTicket() {
-        Log.d("Octopulse", "Abriendo actividad para generar ticket")
-        Octopulse.launchGenerateTicketActivity(this)
-    }
-
-    private fun getTickets() {
-        Log.d("Octopulse", "Abriendo historial de tickets")
-        Octopulse.launchTicketHistoryActivity(this)
     }
 }
     

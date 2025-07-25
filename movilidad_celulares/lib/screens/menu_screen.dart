@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
+import 'package:movilidad_celulares/services/api_service.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: ('Menú'),
+      title: 'Menú',
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -19,94 +21,38 @@ class MenuScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          children: [
-            const Center(
-              child: Text(
-                'BYD',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Card(
-              color: Colors.blue[700],
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
+        child: FutureBuilder<List<Map<String, dynamic>>?>(
+          future: AuthService.obtenerOfertas(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError || !snapshot.hasData) {
+              return const Center(
                 child: Text(
-                  'Hola Escandon Cruz Enrique',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  "Error al cargar ofertas",
+                  style: TextStyle(color: Colors.white),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildDataCard(
-              context,
-              title: 'Más datos para tu BYD 1',
-              mb: '500 MB',
-              cost: '\$10.00 MXN',
-              onPressed: () => Navigator.pushNamed(context, '/payment'),
-            ),
-            const SizedBox(height: 20),
-            _buildDataCard(
-              context,
-              title: 'Más datos para tu BYD 2',
-              mb: '1024 MB',
-              cost: '\$2.00 MXN',
-              onPressed: () => Navigator.pushNamed(context, '/payment'),
-            ),
-            const SizedBox(height: 20),
-            _buildDataCard(
-              context,
-              title: 'Más datos para tu BYD 3',
-              mb: '2048 MB',
-              cost: '\$3.00 MXN',
-              onPressed: () => Navigator.pushNamed(context, '/payment'),
-            ),
-            const SizedBox(height: 20),
-            _buildDataCard(
-              context,
-              title: 'Más datos para tu BYD 4',
-              mb: '3072 MB',
-              cost: '\$4.00 MXN',
-              onPressed: () => Navigator.pushNamed(context, '/payment'),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Text(
-                '*Las tarifas publicadas incluyen el 16% de IVA\n*1 Gigabyte(GB) equivale a 1,024 Megabytes (MB)',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 8),
-              child: Center(
-                child: Text(
-                  '(c) 2025 por TECOMNET.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
+              );
+            }
+
+            final ofertas = snapshot.data!;
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              itemCount: ofertas.length,
+              itemBuilder: (context, index) {
+                final oferta = ofertas[index];
+
+                return _buildDataCard(
+                  context,
+                  title: oferta['Oferta'] ?? 'Sin título',
+                  cost:
+                      '\$${(oferta['PrecioRecurrente'] ?? 0).toStringAsFixed(2)} MXN',
+                  onPressed: () => Navigator.pushNamed(context, '/payment'),
+                  ofertaData: oferta,
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -115,12 +61,12 @@ class MenuScreen extends StatelessWidget {
   Widget _buildDataCard(
     BuildContext context, {
     required String title,
-    required String mb,
     required String cost,
     required VoidCallback onPressed,
+    Map<String, dynamic>? ofertaData, 
   }) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         children: [
           Container(
@@ -140,27 +86,29 @@ class MenuScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  mb,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Costo: $cost',
-                  style: const TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 const SizedBox(height: 8),
                 const Text(
                   'Vigencia: Al corte de tu factura',
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 16),
+                if (ofertaData != null) ...[
+                  Text('Descripción: ${ofertaData["Descripcion"] ?? "-"}'),
+                  Text('Minutos: ${ofertaData["Minutos"] ?? "-"}'),
+                  Text('SMS: ${ofertaData["Sms"] ?? "-"}'),
+                  Text('Precio mensual: ${ofertaData["PrecioMensual"] ?? "-"}'),
+                  Text('Precio anual: ${ofertaData["PrecioAnual"] ?? "-"}'),
+                  Text('Precio recurrente: ${ofertaData["PrecioRecurrente"] ?? "-"}'),
+                  Text('Datos MB: ${ofertaData["DatosMB"] ?? "-"}'),
+                  Text(
+                    'Es prepago: ${ofertaData["EsPrepago"] == true ? "Sí" : "No"}',
+                  ),
+                  Text('Validez en días: ${ofertaData["ValidezDias"] ?? "-"}'),
+                  Text('Fecha alta: ${ofertaData["FechaAlta"] ?? "-"}'),
+                  Text('Fecha baja: ${ofertaData["FechaBaja"] ?? ""}'),
+                ],
               ],
             ),
           ),
@@ -173,7 +121,6 @@ class MenuScreen extends StatelessWidget {
                   horizontal: 24,
                   vertical: 12,
                 ),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: onPressed,
               child: const Text(

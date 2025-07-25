@@ -83,9 +83,20 @@ void _login() async {
     return;
   }
 
+  // Aquí pedimos los permisos solo si el usuario y perfil son válidos
+  bool permisosConcedidos = await Permisos.pedirPermisos();
+  if (!permisosConcedidos) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('No se concedieron todos los permisos necesarios.'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return; // No seguimos sin permisos
+  }
+
   Navigator.pushNamed(context, '/home');
 }
-
 
 
 

@@ -57,4 +57,19 @@ class CallNativeCode {
       data = "Failed";
     }
   }
+  static Future<void> openHelp() async {
+    try {
+      await platform.invokeMethod('launchHelpActivity');
+    } on PlatformException catch (e) {
+      print("Failed to open HelpActivity: '${e.message}'.");
+    }
+  }
+
+  static Future<void> openAddMsisdn() async {
+    try {
+      await platform.invokeMethod('launchAddMsisdnActivity');
+    } on PlatformException catch (e) {
+      print("Failed to open AddMsisdnActivity: '${e.message}'.");
+    }
+  }
 }

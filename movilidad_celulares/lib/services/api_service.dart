@@ -74,4 +74,72 @@ class AuthService {
       return null;
     }
   }
+  static Future<List<Map<String, dynamic>>?> obtenerTablero(int clienteId) async {
+  if (_token == null) {
+    print('⚠️ Token no disponible, no se puede obtener tablero');
+    return null;
+  }
+
+  final url = Uri.parse(
+    'https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Cliente/Tablero/$clienteId',
+  );
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $_token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final ofertas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
+      print('✅ Tablero recibido: $ofertas');
+      return ofertas;
+    } else {
+      print('❌ Error al obtener tebalero: ${response.statusCode}');
+      print('Respuesta: ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('🔥 Excepción al obtener tablero: $e');
+    return null;
+  }
+}
+  static Future<List<Map<String, dynamic>>?> obtenerOfertas() async {
+  if (_token == null) {
+    print('⚠️ Token no disponible, no se puede obtener ofertas');
+    return null;
+  }
+
+  final url = Uri.parse(
+    'https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Ofertas/Activa',
+  );
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $_token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final ofertas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
+      print('✅ Ofertas recibidas: $ofertas');
+      return ofertas;
+    } else {
+      print('❌ Error al obtener ofertas: ${response.statusCode}');
+      print('Respuesta: ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('🔥 Excepción al obtener ofertas: $e');
+    return null;
+  }
+}
+
+
 }

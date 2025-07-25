@@ -28,7 +28,15 @@ android {
         versionName = flutter.versionName
     }
 
-
+ signingConfigs {
+        create("release") {
+            storeFile = file("KeyTecomnetMovil.jks") 
+            storePassword = "Vxf389vm79p1"
+            keyAlias = "key0"
+            keyPassword = "Vxf389vm79p1"
+        }
+    }
+//holiii
     buildTypes {
         debug {
              proguardFiles(
@@ -37,12 +45,15 @@ android {
         )
         }
         release {
-             proguardFiles(
+             signingConfig = signingConfigs.getByName("release")
+             proguardFiles( 
             getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro"
         )
         }
     }
+
+
 }
 
 flutter {
