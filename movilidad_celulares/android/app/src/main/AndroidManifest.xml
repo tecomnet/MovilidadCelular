@@ -9,11 +9,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="Movilidad Celulares"
+        android:label="Tecomnet  Movilidad"
         android:name=".OctolyticsApp"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -54,5 +53,13 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+         <intent>
+        <action android:name="android.intent.action.DIAL" />
+        <data android:scheme="tel" />
+    </intent>
+    <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="https" android:host="wa.me" />
+    </intent>
     </queries>
 </manifest>

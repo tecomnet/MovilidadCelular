@@ -61,15 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Center(
-                child: Text(
-                  'BYD',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
                   ),
-                ),
-              ),
               const SizedBox(height: 20),
               Card(
                 color: Colors.blue[700],

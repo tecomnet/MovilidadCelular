@@ -36,14 +36,6 @@ class _InformationpaymentScreenState extends State<InformationpaymentScreen> {
             children: [
               const SizedBox(height: 20),
               const Center(
-                child: Text(
-                  'BYD',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
               Card(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/utils/permisos_utils.dart';
 // import 'package:movilidad_celulares/utils/encryption_helper.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,117 +10,100 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class Permisos {
-  static const MethodChannel _channel = MethodChannel('channelUpdateKPI');
-
-  static Future<bool> pedirPermisos() async {
-    try {
-      final result = await _channel.invokeMethod('validarPermisos');
-      return result == 'Ok';
-    } on PlatformException catch (e) {
-      print("Error al pedir permisos: ${e.message}");
-      return false;
-    }
-  }
-}
-
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String mensaje = '';
 
+  bool _passwordVisible = false;
   bool rememberUser = false;
 
-bool esCorreoValido(String correo) {
-  final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  return regex.hasMatch(correo);
-}
-
-void _login() async {
-  final email = emailController.text.trim();
-  final password = passwordController.text.trim();
-
-  if (email.isEmpty || password.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Por favor ingresa correo y contraseña'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
-  }
-  if (!esCorreoValido(email)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Ingresa un correo válido'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
+  bool esCorreoValido(String correo) {
+    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$') ;
+    return regex.hasMatch(correo);
   }
 
-  final tokenObtenido = await AuthService.obtenerToken(email, password);
+  void _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
 
-  if (!tokenObtenido) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Usuario o contraseña incorrectos'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor ingresa correo y contraseña'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    if (!esCorreoValido(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ingresa un correo válido'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final tokenObtenido = await AuthService.obtenerToken(email, password);
+
+    if (!tokenObtenido) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Usuario o contraseña incorrectos'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final perfil = await AuthService.obtenerPerfil();
+
+    if (perfil == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Usuario no existe o contraseña incorrecta'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    bool permisosConcedidos = await Permisos.pedirPermisos();
+    if (!permisosConcedidos) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se concedieron todos los permisos necesarios.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; 
+    }
+
+    Navigator.pushNamed(context, '/home');
   }
 
-  final perfil = await AuthService.obtenerPerfil();
+  // void _validarLogin() {
+  //   final correo = emailController.text.trim();
+  //   final password = passwordController.text;
+  //   // final correoCifrada = EncryptionHelper.encryptCorreo(correo);
+  //   // print('🔒 Correo cifrado: $correoCifrada');
+  //   // final passwordCifrada = EncryptionHelper.encryptPassword(password);
+  //   // print('🔒 Contraseña cifrada: $passwordCifrada');
 
-  if (perfil == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Usuario no existe o contraseña incorrecta'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
-  }
-
-  // Aquí pedimos los permisos solo si el usuario y perfil son válidos
-  bool permisosConcedidos = await Permisos.pedirPermisos();
-  if (!permisosConcedidos) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('No se concedieron todos los permisos necesarios.'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return; // No seguimos sin permisos
-  }
-
-  Navigator.pushNamed(context, '/home');
-}
-
-
-
-// void _validarLogin() {
-//   final correo = emailController.text.trim();
-//   final password = passwordController.text;
-//   // final correoCifrada = EncryptionHelper.encryptCorreo(correo);
-//   // print('🔒 Correo cifrado: $correoCifrada');
-//   // final passwordCifrada = EncryptionHelper.encryptPassword(password);
-//   // print('🔒 Contraseña cifrada: $passwordCifrada');
-
-//   if (correo == usuarioValido && password == contrasenaValida) {
-//     Navigator.pushNamed(context, '/home');
-//   } else {
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text('❌ Usuario o contraseña incorrectos'),
-//         backgroundColor: Colors.red,
-//         duration: Duration(seconds: 3),
-//       ),
-//     );
-//   }
-// }
-
+  //   if (correo == usuarioValido && password == contrasenaValida) {
+  //     Navigator.pushNamed(context, '/home');
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('❌ Usuario o contraseña incorrectos'),
+  //         backgroundColor: Colors.red,
+  //         duration: Duration(seconds: 3),
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -183,22 +166,27 @@ void _login() async {
                       keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Contraseña',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
                     TextField(
                       controller: passwordController,
-                      decoration: const InputDecoration(
+                      obscureText: !_passwordVisible,
+                      decoration: InputDecoration(
                         labelText: 'password',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
                     ),
+
                     Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -219,22 +207,7 @@ void _login() async {
                     Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          bool permisosConcedidos =
-                              await Permisos.pedirPermisos();
-                          if (permisosConcedidos) {
-                            _login();
-                            // _validarLogin();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'No se concedieron todos los permisos necesarios.',
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF003366),
                           foregroundColor: Colors.white,

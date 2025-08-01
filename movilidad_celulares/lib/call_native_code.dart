@@ -3,65 +3,55 @@ import 'package:flutter/services.dart';
 
 class CallNativeCode {
   static const platform = MethodChannel('channelUpdateKPI');
-  String receivedString = "";
 
   static Future<String> callNativeInitialize() async {
-    if (io.Platform.isIOS) {
-      return "";
-    }
-    String data = "";
+    if (io.Platform.isIOS) return "";
+
     try {
-      data = await platform.invokeMethod('initializeOctolytics', {"arg": ""});
-       print("[Flutter] Permisos nativos solicitados, resultado: $data");
+      final data = await platform.invokeMethod('initializeOctolytics', {"arg": ""});
+      print("[Flutter] Permisos nativos solicitados, resultado: $data");
+      return data;
     } on PlatformException catch (_) {
-      data = "Failed";
-       print("[Flutter] Error al pedir permisos");
+      print("[Flutter] Error al pedir permisos");
+      return "Failed";
     }
-    return data;
   }
 
   static Future<String> callNativePermission() async {
-    if (io.Platform.isIOS) {
-      return "";
-    }
-    String data = "";
+    if (io.Platform.isIOS) return "";
+
     try {
-      data = await platform.invokeMethod('validPermission', {"arg": ""});
+      final data = await platform.invokeMethod('validPermission', {"arg": ""});
+      return data;
     } on PlatformException catch (_) {
-      data = "Failed";
+      return "Failed";
     }
-    return data;
   }
 
-  static Future<String> callNativeFunctionStarService(_msisdn) async {
-    if (io.Platform.isIOS) {
-      return "";
-    }
-    String data = "";
+  static Future<String> callNativeFunctionStarService(String _msisdn) async {
+    if (io.Platform.isIOS) return "";
+
     try {
-      data = await platform.invokeMethod(
-        'startServiceOctolytics',
-        {"arg": _msisdn},
-      );
+      final data = await platform.invokeMethod('startServiceOctolytics', {"arg": _msisdn});
+      return data;
     } on PlatformException catch (_) {
-      data = "Failed";
+      return "Failed";
     }
-    return data;
   }
 
-  static Future<void> showInterface(_msisdn) async {
-    String data = "-";
+  static Future<void> showInterface(String _msisdn) async {
     try {
-      data = await platform.invokeMethod('showInterface', {"arg": _msisdn});
+      await platform.invokeMethod('showInterface', {"arg": _msisdn});
     } on PlatformException catch (_) {
-      data = "Failed";
+      print("[Flutter] Error al mostrar interfaz");
     }
   }
+
   static Future<void> openHelp() async {
     try {
       await platform.invokeMethod('launchHelpActivity');
     } on PlatformException catch (e) {
-      print("Failed to open HelpActivity: '${e.message}'.");
+      print("Failed to open HelpActivity: '${e.message}'");
     }
   }
 
@@ -69,7 +59,7 @@ class CallNativeCode {
     try {
       await platform.invokeMethod('launchAddMsisdnActivity');
     } on PlatformException catch (e) {
-      print("Failed to open AddMsisdnActivity: '${e.message}'.");
+      print("Failed to open AddMsisdnActivity: '${e.message}'");
     }
   }
 }

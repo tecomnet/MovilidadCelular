@@ -33,14 +33,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Center(
-                  child: Text(
-                    'BYD',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 20),
                 Card(

@@ -36,24 +36,28 @@ android {
             keyPassword = "Vxf389vm79p1"
         }
     }
-//holiii
-    buildTypes {
-        debug {
-             proguardFiles(
-            getDefaultProguardFile("proguard-android-optimize.txt"),
-            "proguard-rules.pro"
-        )
+//holaaa
+   
+ buildTypes {
+        getByName("debug") {
+            isDebuggable = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
-        release {
-             signingConfig = signingConfigs.getByName("release")
-             proguardFiles( 
-            getDefaultProguardFile("proguard-android-optimize.txt"),
-            "proguard-rules.pro"
-        )
+
+        getByName("release") {
+            isDebuggable = false 
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isShrinkResources = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
-
-
 }
 
 flutter {

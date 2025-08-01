@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/widgets/payment_webview.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,6 @@ class MenuScreen extends StatelessWidget {
                   title: oferta['Oferta'] ?? 'Sin título',
                   cost:
                       '\$${(oferta['PrecioRecurrente'] ?? 0).toStringAsFixed(2)} MXN',
-                  onPressed: () => Navigator.pushNamed(context, '/payment'),
                   ofertaData: oferta,
                 );
               },
@@ -62,8 +61,7 @@ class MenuScreen extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String cost,
-    required VoidCallback onPressed,
-    Map<String, dynamic>? ofertaData, 
+    Map<String, dynamic>? ofertaData,
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -100,7 +98,9 @@ class MenuScreen extends StatelessWidget {
                   Text('SMS: ${ofertaData["Sms"] ?? "-"}'),
                   Text('Precio mensual: ${ofertaData["PrecioMensual"] ?? "-"}'),
                   Text('Precio anual: ${ofertaData["PrecioAnual"] ?? "-"}'),
-                  Text('Precio recurrente: ${ofertaData["PrecioRecurrente"] ?? "-"}'),
+                  Text(
+                    'Precio recurrente: ${ofertaData["PrecioRecurrente"] ?? "-"}',
+                  ),
                   Text('Datos MB: ${ofertaData["DatosMB"] ?? "-"}'),
                   Text(
                     'Es prepago: ${ofertaData["EsPrepago"] == true ? "Sí" : "No"}',
@@ -122,7 +122,56 @@ class MenuScreen extends StatelessWidget {
                   vertical: 12,
                 ),
               ),
-              onPressed: onPressed,
+              onPressed: () async {
+                final precio = ofertaData?["PrecioRecurrente"];
+                final descripcion = ofertaData?["Descripcion"] ?? "Recarga";
+
+                if (precio == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Precio no válido")),
+                  );
+                  return;
+                }
+
+                final token = await LklService.obtenerTokenRecargas(
+                  "h.martinez@tecomnet.mx",
+                  "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp", 
+                );
+
+                if (token == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Error al obtener token")),
+                  );
+                  return;
+                }
+
+                final link = await LklService.obtenerLinkDePago(
+                  token: token,
+                  amount: (precio * 100).toInt(), 
+                  description: descripcion,
+                );
+
+                if (link == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Error al generar link de pago")),
+                  );
+                  return;
+                }
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      insetPadding: const EdgeInsets.all(10),
+                      backgroundColor: Colors.white,
+                      child: SizedBox(
+                        height: 600,
+                        child: WebViewScreen(url: link),
+                      ),
+                    );
+                  },
+                );
+              },
               child: const Text(
                 'Lo quiero',
                 style: TextStyle(fontSize: 16, color: Colors.white),

@@ -5,6 +5,7 @@ import 'package:movilidad_celulares/screens/more_data_screen.dart';
 import 'package:movilidad_celulares/screens/profile_screen.dart';
 import 'package:movilidad_celulares/screens/refills_screen.dart';
 import 'package:movilidad_celulares/screens/register_screen.dart';
+import 'package:movilidad_celulares/screens/update_plan_screen.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
@@ -17,12 +18,10 @@ void main() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // Inicializar Octopulse desde el canal nativo
     await CallNativeCode.callNativeInitialize();
 
     runApp(const MyApp());
   }, (error, stackTrace) {
-    // Aquí puedes manejar errores globales si quieres, por ahora puede quedar vacío
   });
 }
 
@@ -46,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/refills': (context) => const RefillsScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/changePassword': (context) => const ChangePasswordScreen(),
+        '/updatePlanScreen': (context) => const UpdatePlanScreen(),
       },
     );
   }

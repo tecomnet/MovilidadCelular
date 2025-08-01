@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BaseScaffold extends StatelessWidget {
   final String title;
@@ -22,11 +23,18 @@ class BaseScaffold extends StatelessWidget {
         centerTitle: centerTitle,
         actions: [
           Transform.translate(
-            offset: const Offset(0, 4), // mueve hacia abajo
+            offset: const Offset(0, 4), 
             child: IconButton(
               icon: const Icon(Icons.phone),
               tooltip: 'Llamar',
-              onPressed: () {},
+              onPressed: () async {
+                const phoneNumber = 'tel:5597297420';
+                if(await canLaunchUrl(Uri.parse(phoneNumber))){
+                  await launchUrl(Uri.parse(phoneNumber));
+                }else{
+                  print('No se pudo abrir el marcador');
+                }
+              },
             ),
           ),
           Transform.translate(
@@ -34,7 +42,18 @@ class BaseScaffold extends StatelessWidget {
             child: IconButton(
               icon: const FaIcon(FontAwesomeIcons.whatsapp),
               tooltip: 'WhatsApp',
-              onPressed: () async {},
+              onPressed: () async {
+            final whatsappNumber = '+525524941739'; 
+            final whatsappUrl = Uri.parse(
+              'https://wa.me/$whatsappNumber?text=Hola%20quiero%20informes'
+            );
+
+            if (await canLaunchUrl(whatsappUrl)) {
+              await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+            } else {
+              print('No se pudo abrir WhatsApp');
+            }
+          },
             ),
           ),
         ],
@@ -71,13 +90,23 @@ class BaseScaffold extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.description, color: Colors.black),
               title: const Text(
-                'Quiero más datos',
+                'Recarga',
                 style: TextStyle(color: Colors.black),
               ),
               onTap: () {
                 Navigator.pushNamed(context, '/moreData');
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.autorenew, color: Colors.black),
+              title: const Text(
+                'Actualizar plan',
+                style: TextStyle(color: Colors.black),
+                ),
+                onTap: (){
+                  Navigator.pushNamed(context, '/updatePlanScreen');
+                },
+                ),
             ListTile(
               leading: const Icon(Icons.settings, color: Colors.black),
               title: const Text(
