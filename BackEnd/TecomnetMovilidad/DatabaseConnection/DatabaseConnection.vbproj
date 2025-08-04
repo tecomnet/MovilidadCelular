@@ -68,6 +68,7 @@
     <Compile Include="ConnectionDB.vb" />
     <Compile Include="Controller.vb" />
     <Compile Include="ControllerCliente.vb" />
+    <Compile Include="ControllerOferta.vb" />
     <Compile Include="ControllerUsuario.vb" />
     <Compile Include="Functions.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

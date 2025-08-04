@@ -1,4 +1,5 @@
 ﻿Imports System.Web.Http
+Imports WebApi.TECOMNET.API
 
 Namespace Controllers
     <AllowAnonymous>

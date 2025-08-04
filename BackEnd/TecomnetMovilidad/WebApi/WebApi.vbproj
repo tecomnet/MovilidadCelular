@@ -240,6 +240,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.vb" />
     <Compile Include="Controllers\AccountController.vb" />
     <Compile Include="Controllers\Cliente\ClienteController.vb" />
+    <Compile Include="Controllers\Oferta\OfertaController.vb" />
     <Compile Include="Controllers\TokenGenerator.vb" />
     <Compile Include="Controllers\TokenValidationHandler.vb" />
     <Compile Include="Global.asax.vb">
