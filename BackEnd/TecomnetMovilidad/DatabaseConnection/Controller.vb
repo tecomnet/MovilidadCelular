@@ -1,6 +1,6 @@
 ﻿Imports Models.TECOMNET
 Public Class Controller
-    Public Function TransactionsCustomer(Of ReturnType)(opcion As Integer, ByVal objCliente As Cliente) As ReturnType
+    Public Function TransactionsCliente(Of ReturnType)(opcion As Integer, ByVal objCliente As Cliente) As ReturnType
         Dim parametros As New Collection
 
         parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
@@ -9,6 +9,7 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@ApellidoPaterno", SqlDbType.NVarChar, objCliente.ApellidoPaterno))
         parametros.Add(ConnectionDB.ArmaParametro("@ApellidoMaterno", SqlDbType.NVarChar, objCliente.ApellidoMaterno))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaCumpleanios", SqlDbType.DateTime, IIf(IsNothing(objCliente.FechaCumpleanios), DBNull.Value, objCliente.FechaCumpleanios)))
+        parametros.Add(ConnectionDB.ArmaParametro("@TipoPersona", SqlDbType.NVarChar, objCliente.TipoPersona))
         parametros.Add(ConnectionDB.ArmaParametro("@CURP", SqlDbType.NVarChar, objCliente.CURP))
         parametros.Add(ConnectionDB.ArmaParametro("@Telefono", SqlDbType.NVarChar, objCliente.Telefono))
         parametros.Add(ConnectionDB.ArmaParametro("@Email", SqlDbType.NVarChar, objCliente.Email))
@@ -37,6 +38,47 @@ Public Class Controller
             result = cnx.ejecutasp_consulta("[sp_Cliente]", parametros)
         ElseIf GetType(ReturnType) Is GetType(Boolean) Then
             result = cnx.ejecutasp("[sp_Cliente]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsOferta(Of ReturnType)(opcion As Integer, ByVal objOferta As Oferta) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@OfertaID", SqlDbType.Int, objOferta.OfertaID))
+        parametros.Add(ConnectionDB.ArmaParametro("@Oferta", SqlDbType.NVarChar, objOferta.Oferta))
+        parametros.Add(ConnectionDB.ArmaParametro("@Descripcion", SqlDbType.NVarChar, objOferta.Descripcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@PrecioMensual", SqlDbType.Decimal, objOferta.PrecioMensual))
+        parametros.Add(ConnectionDB.ArmaParametro("@PrecioAnual", SqlDbType.Decimal, objOferta.PrecioAnual))
+        parametros.Add(ConnectionDB.ArmaParametro("@PrecioRecurrente", SqlDbType.Decimal, objOferta.PrecioRecurrente))
+        parametros.Add(ConnectionDB.ArmaParametro("@DatosMB", SqlDbType.Int, objOferta.DatosMB))
+        parametros.Add(ConnectionDB.ArmaParametro("@Minutos", SqlDbType.Int, objOferta.Minutos))
+        parametros.Add(ConnectionDB.ArmaParametro("@Sms", SqlDbType.Int, objOferta.Sms))
+        parametros.Add(ConnectionDB.ArmaParametro("@EsPrepago", SqlDbType.Bit, objOferta.EsPrepago))
+        parametros.Add(ConnectionDB.ArmaParametro("@Tipo", SqlDbType.Int, objOferta.Tipo))
+        parametros.Add(ConnectionDB.ArmaParametro("@OfferIDAltan", SqlDbType.NVarChar, objOferta.OfferIDAltan))
+        parametros.Add(ConnectionDB.ArmaParametro("@ValidezDias", SqlDbType.Int, objOferta.ValidezDias))
+        parametros.Add(ConnectionDB.ArmaParametro("@AplicaRoaming", SqlDbType.Bit, objOferta.AplicaRoaming))
+        parametros.Add(ConnectionDB.ArmaParametro("@BolsaCompartirDatos", SqlDbType.Bit, objOferta.BolsaCompartirDatos))
+        parametros.Add(ConnectionDB.ArmaParametro("@RedesSociales", SqlDbType.Bit, objOferta.RedesSociales))
+        parametros.Add(ConnectionDB.ArmaParametro("@TarifaPrimaria", SqlDbType.Bit, objOferta.TarifaPrimaria))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaAlta", SqlDbType.DateTime, objOferta.FechaAlta))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objOferta.FechaBaja), DBNull.Value, objOferta.FechaBaja)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_Ofertas]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_Ofertas]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_Ofertas]", parametros)
         Else
             Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
         End If
