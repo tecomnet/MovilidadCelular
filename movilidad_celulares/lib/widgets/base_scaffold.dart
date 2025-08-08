@@ -88,23 +88,13 @@ class BaseScaffold extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.description, color: Colors.black),
-              title: const Text(
-                'Recarga',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, '/moreData');
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.autorenew, color: Colors.black),
               title: const Text(
                 'Actualizar plan',
                 style: TextStyle(color: Colors.black),
                 ),
                 onTap: (){
-                  Navigator.pushNamed(context, '/updatePlanScreen');
+                  Navigator.pushNamed(context, '/redirect');
                 },
                 ),
             ListTile(
@@ -165,15 +155,6 @@ class BaseScaffold extends StatelessWidget {
                   Navigator.pushNamed(context, '/changePassword');
                 },
               ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.sim_card, color: Colors.black),
-              title: const Text(
-                'Registrar MSISDN',
-                style: TextStyle(color: Colors.black, fontSize: 14),
-              ),
-              onTap: () => CallNativeCode.openAddMsisdn(),
             ),
             ListTile(
               leading: const Icon(Icons.info_outline, color: Colors.black),

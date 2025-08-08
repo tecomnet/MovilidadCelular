@@ -48,7 +48,7 @@ class MoreDataScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const Center(
               child: Text(
-                'Selecciona un vehículo',
+                'Elige una SIM',
                 style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -66,7 +66,7 @@ class MoreDataScreen extends StatelessWidget {
                   children: [
                     const Expanded(
                       child: Text(
-                        '2024 BYD HAN Negro HAN MOTORS - SADFSFSDF546546541 - Mas MB para tu BYD 3',
+                        'Altan - 8149604807 - plan Anual',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -77,7 +77,7 @@ class MoreDataScreen extends StatelessWidget {
                     const SizedBox(width: 12),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/menu');
+                        Navigator.pushNamed(context, '/updatePlanScreen');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 52, 159, 246),
@@ -104,7 +104,7 @@ class MoreDataScreen extends StatelessWidget {
                   children: [
                     const Expanded(
                       child: Text(
-                        '2024 BYD HAN Negro HAN MOTORS - SADFSFSDF546546541 - Mas MB para tu BYD 3',
+                        'Altan - 5524941739 - plan Anual',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -115,7 +115,7 @@ class MoreDataScreen extends StatelessWidget {
                     const SizedBox(width: 12),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/menu');
+                        Navigator.pushNamed(context, '/updatePlanScreen');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 52, 159, 246),

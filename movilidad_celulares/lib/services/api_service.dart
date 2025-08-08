@@ -107,14 +107,14 @@ class AuthService {
     return null;
   }
 }
-  static Future<List<Map<String, dynamic>>?> obtenerOfertas() async {
+ static Future<List<Map<String, dynamic>>?> obtenerOfertasPorTipo(int tipo) async {
   if (_token == null) {
     print('⚠️ Token no disponible, no se puede obtener ofertas');
     return null;
   }
 
   final url = Uri.parse(
-    'https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Ofertas/Activa',
+    'https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Ofertas/Activa/Tipo/$tipo',
   );
 
   try {
@@ -128,7 +128,7 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final ofertas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
-      print('✅ Ofertas recibidas: $ofertas');
+      print('✅ Ofertas recibidas para tipo $tipo: $ofertas');
       return ofertas;
     } else {
       print('❌ Error al obtener ofertas: ${response.statusCode}');
@@ -140,7 +140,6 @@ class AuthService {
     return null;
   }
 }
-
 }
 
 class LklService {

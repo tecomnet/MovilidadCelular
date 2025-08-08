@@ -3,6 +3,7 @@ import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:movilidad_celulares/widgets/payment_webview.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,7 +28,25 @@ class _HomeScreenState extends State<HomeScreen> {
     if (perfil != null) {
       final clienteId = perfil['ClienteId'];
       final ofertas = await AuthService.obtenerTablero(clienteId);
-      if (ofertas != null) {
+
+      if (ofertas != null && ofertas.isNotEmpty) {
+        final simActiva = ofertas.firstWhere(
+          (sim) =>
+              sim['Estatus'] == '1' &&
+              sim['MSISDN'] != null &&
+              sim['MSISDN'].toString().isNotEmpty,
+          orElse: () => ofertas.first,
+        );
+
+        final msisdn = simActiva['MSISDN'];
+
+        if (msisdn.isNotEmpty) {
+          print("📲 Registrando dispositivo con MSISDN: $msisdn");
+          await CallNativeCode.callNativeFunctionStartService(msisdn);
+        } else {
+          print("⚠️ MSISDN vacío, no se registró en el SDK");
+        }
+
         setState(() {
           _ofertas = ofertas;
           _isLoading = false;
@@ -52,16 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> iniciarServicio() async {
-    String result = await CallNativeCode.callNativeFunctionStarService(
-      "1000246915",
-    );
+    String result = await CallNativeCode.callNativeFunctionStartService("");
     setState(() {
       status = "Servicio iniciado: $result";
     });
   }
 
   Future<void> mostrarInterfaz() async {
-    await CallNativeCode.showInterface("1000246915");
+    await CallNativeCode.showInterface("");
     setState(() {
       status = "Interfaz mostrada";
     });
@@ -154,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: ('Home'),
+      title: 'Home',
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -168,68 +185,100 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : ListView(
-                padding: const EdgeInsets.only(bottom: 20),
-                children: [
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 20),
-                  Card(
-                    color: Colors.blue[700],
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Text(
-                          'Hola Escandon Cruz Enrique',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 600, // ancho máximo para tablets y pantallas grandes
+                              ),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 10),
+                                  Card(
+                                    color: Colors.blue[700],
+                                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Center(
+                                        child: Text(
+                                          'Hola Escandon Cruz Enrique',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ..._ofertas.map((oferta) {
+                                    final String ofertaNombre = oferta['Oferta'] ?? '';
+                                    final double precio = double.tryParse(
+                                          RegExp(r'\d+').firstMatch(ofertaNombre)?.group(0) ?? '',
+                                        ) ??
+                                        0.0;
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: buildDataCard(
+                                        context,
+                                        title: '$ofertaNombre - ${oferta['Descripcion']}',
+                                        included: '${oferta['MBAsignados']} MB',
+                                        additional: '${oferta['MBAdicionales']} MB',
+                                        available: '${oferta['MBDisponibles']} MB',
+                                        used: '${oferta['MBUsados']} MB',
+                                        minutes: '${oferta['Minutos']}',
+                                        sms: '${oferta['Sms']}',
+                                        validity: oferta['FechaVencimiento']?.split('T').first ?? '',
+                                        status: oferta['Estatus'] == '1' ? 'Activo' : 'No Activo',
+                                        prepaid: (oferta['EsPrepago'] == true) ? 'Prepago' : 'Pospago',
+                                        precio: precio,
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, '/menu');
+                                        },
+                                      ),
+                                    );
+                                  }).toList(),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  ..._ofertas.map((oferta) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: buildDataCard(
-                        context,
-                        title: '${oferta['Oferta']} - ${oferta['Descripcion']}',
-                        included: '${oferta['MBAsignados']} MB',
-                        additional: '${oferta['MBAdicionales']} MB',
-                        available: '${oferta['MBDisponibles']} MB',
-                        used: '${oferta['MBUsados']} MB',
-                        minutes: '${oferta['Minutos']}',
-                        sms: '${oferta['Sms']}',
-                        validity:
-                            oferta['FechaVencimiento']?.split('T').first ?? '',
-                        status: oferta['Estatus'] == '1'
-                            ? 'Activo'
-                            : 'No Activo',
-                        prepaid: (oferta['EsPrepago'] == true)
-                            ? 'Prepago'
-                            : 'Pospago',
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/menu');
-                        },
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                        color: Colors.transparent,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text(
+                              'Para realizar cambios en su perfil, favor de enviar un correo a:\ncomercial@tecomnet.mx',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              '(c) 2025 por TECOMNET.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  }).toList(),
-
-                  const Center(
-                    child: Text(
-                      '(c) 2025 por TECOMNET.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
       ),
     );
@@ -248,6 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String sms,
     required String prepaid,
     required VoidCallback onPressed,
+    required double precio,
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -267,47 +317,86 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            // buildRichLine('Datos incluidos: ', included),
-            // buildRichLine('Datos adicionales: ', additional),
-            //buildRichLine('Vigencia: ', validity),
-            // buildRichLine('Estatus de conectividad: ', status),
-            // buildRichLine('Minutos: ', minutes),
-            // buildRichLine('SMS: ', sms),
-            // buildRichLine('Tipo de pago: ', prepaid),
             buildDataUsageIndicator(used, available, validity),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: () async {
+                      final token = await LklService.obtenerTokenRecargas(
+                        "h.martinez@tecomnet.mx",
+                        "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
+                      );
+
+                      if (token != null) {
+                        final link = await LklService.obtenerLinkDePago(
+                          token: token,
+                          amount: (precio * 100).toInt(),
+                          description: 'Renovación del plan',
+                        );
+
+                        if (link != null) {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                insetPadding: const EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  height: MediaQuery.of(context).size.height * 0.8,
+                                  child: WebViewScreen(url: link),
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Error al generar link de pago'),
+                            ),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Error al obtener token')),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Renovar Plan',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-                  onPressed: onPressed,
-                  child: const Text(
-                    'Renovar Plan',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: onPressed,
+                    child: const Text(
+                      'Recargar Saldo',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-                  onPressed: onPressed,
-                  child: const Text(
-                    'Recargar Saldo',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

@@ -22,7 +22,7 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
         child: FutureBuilder<List<Map<String, dynamic>>?>(
-          future: AuthService.obtenerOfertas(),
+          future: AuthService.obtenerOfertasPorTipo(3),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -96,18 +96,9 @@ class MenuScreen extends StatelessWidget {
                   Text('Descripción: ${ofertaData["Descripcion"] ?? "-"}'),
                   Text('Minutos: ${ofertaData["Minutos"] ?? "-"}'),
                   Text('SMS: ${ofertaData["Sms"] ?? "-"}'),
-                  Text('Precio mensual: ${ofertaData["PrecioMensual"] ?? "-"}'),
                   Text('Precio anual: ${ofertaData["PrecioAnual"] ?? "-"}'),
-                  Text(
-                    'Precio recurrente: ${ofertaData["PrecioRecurrente"] ?? "-"}',
-                  ),
                   Text('Datos MB: ${ofertaData["DatosMB"] ?? "-"}'),
-                  Text(
-                    'Es prepago: ${ofertaData["EsPrepago"] == true ? "Sí" : "No"}',
-                  ),
                   Text('Validez en días: ${ofertaData["ValidezDias"] ?? "-"}'),
-                  Text('Fecha alta: ${ofertaData["FechaAlta"] ?? "-"}'),
-                  Text('Fecha baja: ${ofertaData["FechaBaja"] ?? ""}'),
                 ],
               ],
             ),
@@ -159,18 +150,24 @@ class MenuScreen extends StatelessWidget {
                 }
 
                 showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      insetPadding: const EdgeInsets.all(10),
-                      backgroundColor: Colors.white,
-                      child: SizedBox(
-                        height: 600,
-                        child: WebViewScreen(url: link),
-                      ),
-                    );
-                  },
-                );
+  context: context,
+  builder: (BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
+    return Dialog(
+      insetPadding: const EdgeInsets.all(10),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: SizedBox(
+        width: screenSize.width * 0.9,   // 90% del ancho pantalla
+        height: screenSize.height * 0.8, // 80% del alto pantalla
+        child: WebViewScreen(url: link),
+      ),
+    );
+  },
+);
               },
               child: const Text(
                 'Lo quiero',

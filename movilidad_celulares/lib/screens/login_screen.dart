@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool rememberUser = false;
 
   bool esCorreoValido(String correo) {
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$') ;
+    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return regex.hasMatch(correo);
   }
 
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.red,
         ),
       );
-      return; 
+      return;
     }
 
     Navigator.pushNamed(context, '/home');
@@ -227,10 +227,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/register');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Te hemos enviado un correo con las instrucciones para recuperar tu contraseña.',
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
                         },
                         child: Text(
-                          'Regístrate aquí',
+                          '¿Olvidaste tu contraseña?',
                           style: TextStyle(
                             color: Colors.blue,
                             decoration: TextDecoration.underline,

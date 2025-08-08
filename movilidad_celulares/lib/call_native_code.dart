@@ -21,23 +21,25 @@ class CallNativeCode {
     if (io.Platform.isIOS) return "";
 
     try {
-      final data = await platform.invokeMethod('validPermission', {"arg": ""});
+      final data = await platform.invokeMethod('validarPermisos', {"arg": ""});
       return data;
     } on PlatformException catch (_) {
       return "Failed";
     }
   }
 
-  static Future<String> callNativeFunctionStarService(String _msisdn) async {
-    if (io.Platform.isIOS) return "";
+  static Future<String> callNativeFunctionStartService(String msisdn) async {
+  if (io.Platform.isIOS) return "";
 
-    try {
-      final data = await platform.invokeMethod('startServiceOctolytics', {"arg": _msisdn});
-      return data;
-    } on PlatformException catch (_) {
-      return "Failed";
-    }
+  try {
+    final result = await platform.invokeMethod('startServiceOctolytics', {"arg": msisdn});
+    print("[Flutter] Resultado iniciar servicio: $result");
+    return result;
+  } on PlatformException catch (e) {
+    print("[Flutter] Error al iniciar servicio: ${e.message}");
+    return "Failed";
   }
+}
 
   static Future<void> showInterface(String _msisdn) async {
     try {
@@ -62,4 +64,39 @@ class CallNativeCode {
       print("Failed to open AddMsisdnActivity: '${e.message}'");
     }
   }
+  static Future<bool> hasCarrierPrivileges() async {
+  try {
+    final bool result = await platform.invokeMethod('hasCarrierPrivileges');
+    return result;
+  } on PlatformException {
+    return false;
+  }
+}
+Future<String> iniciarServicioOctopulse(String msisdn) async {
+  final bool tienePrivilegios = await CallNativeCode.hasCarrierPrivileges();
+  print("[Flutter] Tiene privilegios: $tienePrivilegios");
+
+  final String resultado = await CallNativeCode.callNativeFunctionStartService(msisdn);
+  print("[Flutter] Resultado iniciar servicio: $resultado");
+  return resultado;
+}
+
+ static Future<bool> checkOptionalPermissions() async {
+    
+    try {
+      return await platform.invokeMethod('checkOptionalPermissions');
+    } on PlatformException catch (e) {
+      print("Error checking optional permissions: ${e.message}");
+      return false;
+    }
+  }
+   static Future<void> requestOptionalPermissions() async {
+    
+    try {
+      await platform.invokeMethod('requestOptionalPermissions');
+    } on PlatformException catch (e) {
+      print("Error requesting optional permissions: ${e.message}");
+    }
+  }
+
 }

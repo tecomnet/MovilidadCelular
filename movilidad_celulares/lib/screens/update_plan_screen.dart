@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/widgets/payment_webview.dart';
 
 class UpdatePlanScreen extends StatefulWidget {
   const UpdatePlanScreen({super.key});
@@ -8,75 +10,56 @@ class UpdatePlanScreen extends StatefulWidget {
 }
 
 class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
-  String tipoPlanActual = 'pospago';
-  String planActual = 'Plan Premium';
+  String tipoPlanActual = 'prepago';
   int? planSeleccionadoIndex;
-  String vistaActual = 'plan';
+  String vistaActual = 'prepago';
+  bool cargando = false;
 
-  final List<Map<String, String>> planesPrepago = [
-    {
-      'nombre': 'Paquete Alcance',
-      'descripcion': '1GB, 5000 min, 1000 SMS, Vigencia 7 días',
-    },
-    {
-      'nombre': 'Paquete Básico',
-      'descripcion': '2GB, 3000 min, Vigencia 15 días',
-    },
-  ];
-
-  final List<Map<String, String>> planesPospago = [
-    {
-      'nombre': 'Plan Premium',
-      'descripcion': '5GB, Minutos/SMS ilimitados, Vigencia 30 días',
-    },
-    {
-      'nombre': 'Plan Plus',
-      'descripcion': '10GB, Roaming incluido, Vigencia 30 días',
-    },
-    {
-      'nombre': 'Plan Básico Pospago',
-      'descripcion': '3GB, 2000 min, Vigencia 30 días',
-    },
-  ];
-
-  final List<Map<String, String>> planesPagoAnticipado = [
-    {
-      'nombre': 'Pago Anticipado 1',
-      'descripcion': 'Renueva antes de la fecha de vencimiento con descuento',
-    },
-    {
-      'nombre': 'Pago Anticipado 2',
-      'descripcion': 'Pago anticipado semestral con beneficios extra',
-    },
-  ];
-
-  final List<Map<String, String>> planesPagoRecurrente = [
-    {
-      'nombre': 'Pago Recurrente Mensual',
-      'descripcion': 'Se cobra automáticamente cada mes',
-    },
-    {
-      'nombre': 'Pago Recurrente Semanal',
-      'descripcion': 'Se cobra automáticamente cada semana',
-    },
-  ];
-
-  List<Map<String, String>> obtenerPlanesSegunVista() {
+  int obtenerPrecioDelPlan(Map<String, dynamic> plan) {
     switch (vistaActual) {
       case 'prepago':
-        return planesPrepago;
-      case 'pago_anticipado':
-        return planesPagoAnticipado;
-      case 'pospago':
-        return planesPospago.where((plan) => plan['nombre'] != planActual).toList();
+        return ((plan['PrecioMensual'] ?? 0) * 100).toInt();
       case 'pago_recurrente':
-        return planesPagoRecurrente;
-      case 'plan':
+        return ((plan['PrecioRecurrente'] ?? 0) * 100).toInt();
+      case 'pago_anticipado':
+        return ((plan['PrecioAnual'] ?? 0) * 100).toInt();
       default:
-        return [
-          {'nombre': planActual, 'descripcion': 'Este es tu plan actual.'},
-        ];
+        return 0;
     }
+  }
+
+  List<Map<String, dynamic>> planesDisponibles = [];
+
+  final Map<String, String> nombresTipos = {
+    'prepago': 'Recarga',
+    'pago_recurrente': 'Plan Mensual',
+    'pago_anticipado': 'Plan Anual',
+  };
+
+  final Map<String, int> tipoPlanIndices = {
+    'prepago': 1,
+    'pago_recurrente': 2,
+    'pago_anticipado': 3,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    cargarPlanes();
+  }
+
+  Future<void> cargarPlanes() async {
+    setState(() {
+      cargando = true;
+    });
+
+    final tipo = tipoPlanIndices[vistaActual] ?? 1;
+    final data = await AuthService.obtenerOfertasPorTipo(tipo);
+
+    setState(() {
+      planesDisponibles = data ?? [];
+      cargando = false;
+    });
   }
 
   void cambiarVista(String nuevaVista) {
@@ -84,29 +67,18 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
       vistaActual = nuevaVista;
       planSeleccionadoIndex = null;
     });
+    cargarPlanes();
   }
 
-  void seleccionarPlan(int index) {
-    setState(() {
-      planSeleccionadoIndex = index;
-    });
-    final plan = obtenerPlanesSegunVista()[index];
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Seleccionaste: ${plan['nombre']}')),
-    );
-  }
 
-  void confirmarPlan() {
-    if (planSeleccionadoIndex == null) return;
-    final plan = obtenerPlanesSegunVista()[planSeleccionadoIndex!];
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Plan actualizado a "${plan['nombre']}" (simulado)')),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    final planes = obtenerPlanesSegunVista();
+    final botonesOpciones = [
+      'prepago',
+      'pago_recurrente',
+      'pago_anticipado',
+    ].where((tipo) => tipo != tipoPlanActual).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -119,172 +91,208 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Selecciona el tipo de plan actual:',
-              style: TextStyle(fontSize: 16),
-            ),
+            const Text('Tipo de plan actual:', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             DropdownButton<String>(
               value: tipoPlanActual,
               items: const [
-                DropdownMenuItem(value: 'prepago', child: Text('Prepago')),
-                DropdownMenuItem(value: 'pospago', child: Text('Pospago')),
+                DropdownMenuItem(value: 'prepago', child: Text('Recarga')),
+                DropdownMenuItem(
+                  value: 'pago_recurrente',
+                  child: Text('Plan Mensual'),
+                ),
+                DropdownMenuItem(
+                  value: 'pago_anticipado',
+                  child: Text('Plan Anual'),
+                ),
               ],
               onChanged: (value) {
                 if (value != null) {
                   setState(() {
                     tipoPlanActual = value;
-                    planActual = value == 'pospago' ? 'Plan Premium' : 'Paquete Alcance';
-                    vistaActual = 'plan';
+                    vistaActual = value;
                     planSeleccionadoIndex = null;
                   });
+                  cargarPlanes();
                 }
               },
             ),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,
-              children: [
-                ElevatedButton(
-                  onPressed: () => cambiarVista('plan'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: vistaActual == 'plan' ? Colors.blue : Colors.blue[100],
-                    foregroundColor: vistaActual == 'plan' ? Colors.white : Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text('Plan'),
-                ),
-                if (tipoPlanActual == 'prepago') ...[
-                  ElevatedButton(
-                    onPressed: () => cambiarVista('prepago'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: vistaActual == 'prepago' ? Colors.blue : Colors.blue[200],
-                      foregroundColor: vistaActual == 'prepago' ? Colors.white : Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+              children: botonesOpciones
+                  .map(
+                    (tipo) => ElevatedButton(
+                      onPressed: () => cambiarVista(tipo),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: vistaActual == tipo
+                            ? Colors.blue
+                            : Colors.blue[200],
                       ),
+                      child: Text(nombresTipos[tipo]!),
                     ),
-                    child: const Text('Prepago'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => cambiarVista('pago_anticipado'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: vistaActual == 'pago_anticipado'
-                          ? const Color.fromARGB(255, 104, 170, 224)
-                          : const Color.fromARGB(255, 104, 200, 224),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text('Pago Anticipado'),
-                  ),
-                ] else if (tipoPlanActual == 'pospago') ...[
-                  ElevatedButton(
-                    onPressed: () => cambiarVista('pospago'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: vistaActual == 'pospago' ? Colors.blue : Colors.blue[200],
-                      foregroundColor: vistaActual == 'pospago' ? Colors.white : Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text('Pospago'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => cambiarVista('pago_recurrente'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: vistaActual == 'pago_recurrente'
-                          ? const Color.fromARGB(255, 104, 170, 224)
-                          : const Color.fromARGB(255, 104, 200, 224),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text('Pago Recurrente'),
-                  ),
-                ],
-              ],
+                  )
+                  .toList(),
             ),
             const SizedBox(height: 24),
             Text(
-              vistaActual == 'plan'
-                  ? 'Tu plan actual:'
-                  : vistaActual == 'prepago'
-                      ? 'Planes Prepago disponibles:'
-                      : vistaActual == 'pago_anticipado'
-                          ? 'Opciones de Pago Anticipado:'
-                          : vistaActual == 'pospago'
-                              ? 'Planes Pospago disponibles:'
-                              : 'Opciones de Pago Recurrente:',
+              'Opciones disponibles (${nombresTipos[vistaActual]})',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Expanded(
-              child: planes.isEmpty
-                  ? const Center(child: Text('No hay planes disponibles'))
-                  : PageView.builder(
-                      controller: PageController(viewportFraction: 0.85),
-                      itemCount: planes.length,
-                      itemBuilder: (context, index) {
-                        final plan = planes[index];
-                        final seleccionado = planSeleccionadoIndex == index;
+            cargando
+                ? const Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: planesDisponibles.isEmpty
+                        ? const Center(
+                            child: Text('No hay planes disponibles.'),
+                          )
+                        : PageView.builder(
+                            controller: PageController(viewportFraction: 0.85),
+                            itemCount: planesDisponibles.length,
+                            itemBuilder: (context, index) {
+                              final plan = planesDisponibles[index];
+                              final seleccionado =
+                                  planSeleccionadoIndex == index;
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          plan['Oferta'] ?? 'Plan sin nombre',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          plan['Descripcion'] ??
+                                              'Sin descripción',
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          'Precio: \$${(obtenerPrecioDelPlan(plan) / 100).toStringAsFixed(2)}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    plan['nombre']!,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                        const Spacer(),
+                                        Center(
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              final token =
+                                                  await LklService.obtenerTokenRecargas(
+                                                    "h.martinez@tecomnet.mx",
+                                                    "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
+                                                  );
+
+                                              if (token != null) {
+                                                final plan =
+                                                    planesDisponibles[index];
+                                                final link =
+                                                    await LklService.obtenerLinkDePago(
+                                                      token: token,
+                                                      amount:
+                                                          obtenerPrecioDelPlan(
+                                                            plan,
+                                                          ),
+                                                      description:
+                                                          plan['Oferta'] ??
+                                                          'Renovación del plan',
+                                                    );
+
+                                                if (link != null &&
+                                                    context.mounted) {
+                                                  showDialog(
+                                                    context: context,
+                                                    barrierDismissible: true,
+                                                    builder: (BuildContext context) {
+                                                      return Dialog(
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                16,
+                                                              ),
+                                                        ),
+                                                        insetPadding:
+                                                            const EdgeInsets.all(
+                                                              10,
+                                                            ),
+                                                        child: SizedBox(
+                                                          width:
+                                                              MediaQuery.of(
+                                                                context,
+                                                              ).size.width *
+                                                              0.9,
+                                                          height:
+                                                              MediaQuery.of(
+                                                                context,
+                                                              ).size.height *
+                                                              0.8,
+                                                          child: WebViewScreen(
+                                                            url: link,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                } else {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                        'Error al generar link de pago',
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              } else {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Error al obtener token',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: seleccionado
+                                                  ? Colors.green
+                                                  : Colors.blue,
+                                              foregroundColor: Colors.white,
+                                            ),
+                                            child: Text(
+                                            'Lo quiero',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(plan['descripcion']!),
-                                  const Spacer(),
-                                  if (vistaActual != 'plan')
-                                    Center(
-                                      child: ElevatedButton(
-                                        onPressed: () => seleccionarPlan(index),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: seleccionado ? Colors.green : Colors.blue,
-                                          foregroundColor: Colors.white,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 24,
-                                            vertical: 12,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          minimumSize: const Size(double.infinity, 40),
-                                        ),
-                                        child: Text(
-                                          seleccionado ? 'Seleccionado' : 'Lo quiero',
-                                          style: const TextStyle(fontSize: 16, color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-            ),
+                  ),
           ],
         ),
       ),

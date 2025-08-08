@@ -35,8 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: cargando
           ? const Center(child: CircularProgressIndicator())
           : perfil == null
-          ? const Center(child: Text('No se pudieron cargar los datos'))
-          : _buildPerfilContent(),
+              ? const Center(child: Text('No se pudieron cargar los datos'))
+              : _buildPerfilContent(),
     );
   }
 
@@ -53,188 +53,168 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       child: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Center(
-                  ),
-              const SizedBox(height: 20),
-              Card(
-                color: Colors.blue[700],
-                margin: EdgeInsets.zero,
-                child: const SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      'Mis datos personales',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
+                    Card(
+                      color: Colors.blue[700],
+                      margin: EdgeInsets.zero,
+                      child: const SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            'Mis datos personales',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    Card(
+                      color: Colors.white,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            _buildReadOnlyField(
+                              label: 'Nombre',
+                              value: perfil?['Nombre'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Apellido Paterno',
+                              value: perfil?['ApellidoPaterno'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Apellido Materno',
+                              value: perfil?['ApellidoMaterno'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Fecha Cumpleaños',
+                              value: perfil?['FechaCumpleanios'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'CURP',
+                              value: perfil?['CURP'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Teléfono',
+                              value: perfil?['Telefono'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Email',
+                              value: perfil?['Email'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Estado',
+                              value: perfil?['Estado'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Colonia',
+                              value: perfil?['Colonia'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Dirección',
+                              value: perfil?['Direccion'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Código Postal',
+                              value: perfil?['CP'] ?? '',
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Card(
+                      color: Colors.white,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            _buildReadOnlyField(
+                              label: 'RFC',
+                              value: perfil?['RFC'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'RFC Facturación',
+                              value: perfil?['RFCFacturacion'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Nombre Razon Social',
+                              value: perfil?['NombreRazonSocial'] ?? '',
+                            ),
+                            _buildReadOnlyField(
+                              label: 'Régimen Fiscal',
+                              value: perfil?['RegimenFiscal'] ?? '',
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              color: Colors.transparent,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    'Para realizar cambios en su perfil, favor de enviar un correo a:\ncomercial@tecomnet.mx',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Card(
-                color: Colors.white,
-                margin: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      _buildReadOnlyField(
-                        label: 'Cliente ID',
-                        value: perfil?['ClienteId']?.toString() ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Nombre',
-                        value: perfil?['Nombre'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Apellido Paterno',
-                        value: perfil?['ApellidoPaterno'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Apellido Materno',
-                        value: perfil?['ApellidoMaterno'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Fecha Cumpleaños',
-                        value: perfil?['FechaCumpleanios'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Tipo Persona',
-                        value: perfil?['TipoPersona'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'CURP',
-                        value: perfil?['CURP'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Teléfono',
-                        value: perfil?['Telefono'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Email',
-                        value: perfil?['Email'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Fecha Alta',
-                        value: perfil?['FechaAlta'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Estatus',
-                        value: perfil?['Estatus']?.toString() ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Contrasena Hash',
-                        value: perfil?['ContrasenaHash'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Estado',
-                        value: perfil?['Estado'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Colonia',
-                        value: perfil?['Colonia'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Dirección',
-                        value: perfil?['Direccion'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Código Postal',
-                        value: perfil?['CP'] ?? '',
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                  SizedBox(height: 8),
+                  Text(
+                    '(c) 2025 por TECOMNET.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 16),
-
-              Card(
-                color: Colors.white,
-                margin: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      _buildReadOnlyField(
-                        label: 'RFC',
-                        value: perfil?['RFC'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'RFC Facturación',
-                        value: perfil?['RFCFacturacion'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Nombre Razon Social',
-                        value: perfil?['NombreRazonSocial'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Código Postal Facturación',
-                        value: perfil?['CPFacturacion'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Régimen Fiscal',
-                        value: perfil?['RegimenFiscal'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Uso de Comprobante',
-                        value: perfil?['UsoDeComprobante'] ?? '',
-                      ),
-                      _buildReadOnlyField(
-                        label: 'Fecha Baja',
-                        value: perfil?['FechaBaja'] ?? '',
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Para realizar cambios en su perfil, favor de enviar un correo a:\ncomercial@tecomnet.mx',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              const SizedBox(height: 20),
-              const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  '(c) 2025 por TECOMNET.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildReadOnlyField({required String label, required String value}) {
+  Widget _buildReadOnlyField(
+      {required String label, required String value}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
