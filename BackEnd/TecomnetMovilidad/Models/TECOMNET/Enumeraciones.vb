@@ -17,10 +17,9 @@
         Retirada = 3
     End Enum
     Public Enum TipoServicio
-        All = 1
-        Voz = 2
-        Datos = 3
-        MSN = 4
+        Prepago = 1
+        PagoAnticipado = 2
+        RenovacionAutomatica = 3
     End Enum
     Public Enum MetodoPago
         Tarjeta = 1

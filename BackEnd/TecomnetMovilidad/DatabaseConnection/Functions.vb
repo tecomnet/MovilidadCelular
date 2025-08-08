@@ -1,4 +1,5 @@
 ﻿Imports Models.TECOMNET
+Imports Models.TECOMNET.API
 Imports System.Security.Cryptography
 Imports System.Text
 
@@ -11,6 +12,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("ApellidoPaterno") Then objCliente.ApellidoPaterno = dr("ApellidoPaterno")
             If dr.Table.Columns.Contains("ApellidoMaterno") Then objCliente.ApellidoMaterno = dr("ApellidoMaterno")
             If dr.Table.Columns.Contains("FechaCumpleanios") Then objCliente.FechaCumpleanios = IIf(IsDBNull(dr("FechaCumpleanios")), Nothing, dr("FechaCumpleanios"))
+            If dr.Table.Columns.Contains("TipoPersona") Then objCliente.TipoPersona = IIf(IsDBNull(dr("TipoPersona")), Nothing, dr("TipoPersona"))
             If dr.Table.Columns.Contains("CURP") Then objCliente.CURP = IIf(IsDBNull(dr("CURP")), "", dr("CURP"))
             If dr.Table.Columns.Contains("Telefono") Then objCliente.Telefono = dr("Telefono")
             If dr.Table.Columns.Contains("Email") Then objCliente.Email = dr("Email")
@@ -32,6 +34,50 @@ Public Class ConvertObject
         End Try
         Return objCliente
 
+    End Function
+    Public Shared Function Tablero(ByVal dr As DataRow) As Tablero
+        Dim objTablero As New Tablero
+        Try
+            If dr.Table.Columns.Contains("FechaVencimiento") Then objTablero.FechaVencimiento = IIf(IsDBNull(dr("FechaVencimiento")), Nothing, dr("FechaVencimiento"))
+            If dr.Table.Columns.Contains("MBAsignados") Then objTablero.MBAsignados = IIf(IsDBNull(dr("MBAsignados")), 0, dr("MBAsignados"))
+            If dr.Table.Columns.Contains("MBUsados") Then objTablero.MBUsados = IIf(IsDBNull(dr("MBUsados")), 0, dr("MBUsados"))
+            If dr.Table.Columns.Contains("MBDisponibles") Then objTablero.MBDisponibles = IIf(IsDBNull(dr("MBDisponibles")), 0, dr("MBDisponibles"))
+            If dr.Table.Columns.Contains("MBAdicionales") Then objTablero.MBAdicionales = IIf(IsDBNull(dr("MBAdicionales")), 0, dr("MBAdicionales"))
+            If dr.Table.Columns.Contains("Oferta") Then objTablero.Oferta = dr("Oferta")
+            If dr.Table.Columns.Contains("Descripcion") Then objTablero.Descripcion = dr("Descripcion")
+            If dr.Table.Columns.Contains("Minutos") Then objTablero.Minutos = dr("Minutos")
+            If dr.Table.Columns.Contains("Sms") Then objTablero.Sms = dr("Sms")
+            If dr.Table.Columns.Contains("Tipo") Then objTablero.Tipo = dr("Tipo")
+            If dr.Table.Columns.Contains("Estatus") Then objTablero.Estatus = dr("Estatus")
+        Catch ex As Exception
+        End Try
+        Return objTablero
+    End Function
+    Public Shared Function Oferta(ByVal dr As DataRow) As Oferta
+        Dim objOferta As New Oferta
+        Try
+            If dr.Table.Columns.Contains("OfertaID") Then objOferta.OfertaID = dr("OfertaID")
+            If dr.Table.Columns.Contains("Oferta") Then objOferta.Oferta = dr("Oferta")
+            If dr.Table.Columns.Contains("Descripcion") Then objOferta.Descripcion = dr("Descripcion")
+            If dr.Table.Columns.Contains("PrecioMensual") Then objOferta.PrecioMensual = dr("PrecioMensual")
+            If dr.Table.Columns.Contains("PrecioAnual") Then objOferta.PrecioAnual = dr("PrecioAnual")
+            If dr.Table.Columns.Contains("PrecioRecurrente") Then objOferta.PrecioRecurrente = dr("PrecioRecurrente")
+            If dr.Table.Columns.Contains("DatosMB") Then objOferta.DatosMB = dr("DatosMB")
+            If dr.Table.Columns.Contains("Minutos") Then objOferta.Minutos = dr("Minutos")
+            If dr.Table.Columns.Contains("Sms") Then objOferta.Sms = dr("Sms")
+            If dr.Table.Columns.Contains("EsPrepago") Then objOferta.EsPrepago = dr("EsPrepago")
+            If dr.Table.Columns.Contains("Tipo") Then objOferta.Tipo = dr("Tipo")
+            If dr.Table.Columns.Contains("OfferIDAltan") Then objOferta.OfferIDAltan = dr("OfferIDAltan")
+            If dr.Table.Columns.Contains("ValidezDias") Then objOferta.ValidezDias = dr("ValidezDias")
+            If dr.Table.Columns.Contains("AplicaRoaming") Then objOferta.AplicaRoaming = dr("AplicaRoaming")
+            If dr.Table.Columns.Contains("BolsaCompartirDatos") Then objOferta.BolsaCompartirDatos = dr("BolsaCompartirDatos")
+            If dr.Table.Columns.Contains("RedesSociales") Then objOferta.RedesSociales = dr("RedesSociales")
+            If dr.Table.Columns.Contains("TarifaPrimaria") Then objOferta.TarifaPrimaria = dr("TarifaPrimaria")
+            If dr.Table.Columns.Contains("FechaAlta") Then objOferta.FechaAlta = dr("FechaAlta")
+            If dr.Table.Columns.Contains("FechaBaja") Then objOferta.FechaBaja = dr("FechaBaja")
+        Catch ex As Exception
+        End Try
+        Return objOferta
     End Function
 End Class
 Public Class Securyty

@@ -1,4 +1,6 @@
 ﻿Imports Models.TECOMNET
+Imports Models.TECOMNET.API
+
 Public Class ControllerCliente
     'Public Function GetCustomer() As List(Of Customer)
     '    Dim controller As New Controller
@@ -62,7 +64,7 @@ Public Class ControllerCliente
         objCliente.ContrasenaHash = password
         Try
             Dim dt As New DataSet
-            dt = controller.TransactionsCustomer(Of DataSet)(5, objCliente)
+            dt = controller.TransactionsCliente(Of DataSet)(5, objCliente)
 
             For Each dr As DataRow In dt.Tables(0).Rows
                 objCliente = ConvertObject.Cliente(dr)
@@ -71,6 +73,26 @@ Public Class ControllerCliente
             Return objCliente
         End Try
         Return objCliente
+    End Function
+    Public Function ObtenerPlanesPorCliente(ByVal ClienteId As Integer) As List(Of Tablero)
+        Dim controller As New Controller
+        Dim listTablero As New List(Of Tablero)
+        Dim objCliente As New Cliente
+        objCliente.ClienteId = ClienteId
+
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsCliente(Of DataSet)(6, objCliente)
+
+            For Each dr As DataRow In dt.Tables(0).Rows
+                Dim objTablero As New Tablero
+                objTablero = ConvertObject.Tablero(dr)
+                listTablero.Add(objTablero)
+            Next
+        Catch ex As Exception
+            Return listTablero
+        End Try
+        Return listTablero
     End Function
     'Public Function DesactivateCustomer(ByVal CustomerID As Integer) As Integer
     '    Dim exito As Integer

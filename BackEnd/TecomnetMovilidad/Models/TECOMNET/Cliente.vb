@@ -7,6 +7,7 @@ Namespace TECOMNET
         Public Property ApellidoPaterno As String
         Public Property ApellidoMaterno As String
         Public Property FechaCumpleanios As Date?
+        Public Property TipoPersona As String
         Public Property CURP As String
         Public Property Telefono As String
         Public Property Email As String
@@ -18,7 +19,6 @@ Namespace TECOMNET
         Public Property Direccion As String
         Public Property CP As String
         Public Property RFC As String
-
         Public Property RFCFacturacion As String
         Public Property NombreRazonSocial As String
         Public Property CPFacturacion As String
@@ -32,6 +32,7 @@ Namespace TECOMNET
             Me.ApellidoPaterno = String.Empty
             Me.ApellidoMaterno = String.Empty
             Me.FechaCumpleanios = Nothing
+            Me.TipoPersona = String.Empty
             Me.CURP = String.Empty
             Me.Telefono = String.Empty
             Me.Email = String.Empty
