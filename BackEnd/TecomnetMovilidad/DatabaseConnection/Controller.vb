@@ -1,4 +1,5 @@
-﻿Imports Models.TECOMNET
+﻿Imports Models
+Imports Models.TECOMNET
 Public Class Controller
     Public Function TransactionsCliente(Of ReturnType)(opcion As Integer, ByVal objCliente As Cliente) As ReturnType
         Dim parametros As New Collection
@@ -79,6 +80,45 @@ Public Class Controller
             result = cnx.ejecutasp_consulta("[sp_Ofertas]", parametros)
         ElseIf GetType(ReturnType) Is GetType(Boolean) Then
             result = cnx.ejecutasp("[sp_Ofertas]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsSolicitudDePago(Of ReturnType)(opcion As Integer, ByVal objSolicitudDePago As SolicitudDePago) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@SolicitudID", SqlDbType.Int, objSolicitudDePago.SolicitudID))
+        parametros.Add(ConnectionDB.ArmaParametro("@OrderID", SqlDbType.NVarChar, objSolicitudDePago.OrderID))
+        parametros.Add(ConnectionDB.ArmaParametro("@MetodoPagoID", SqlDbType.Int, objSolicitudDePago.MetodoPagoID))
+        parametros.Add(ConnectionDB.ArmaParametro("@OfertaIDActual", SqlDbType.Int, objSolicitudDePago.OfertaIDActual))
+        parametros.Add(ConnectionDB.ArmaParametro("@OfertaIDNueva", SqlDbType.Int, objSolicitudDePago.OfertaIDNueva))
+        parametros.Add(ConnectionDB.ArmaParametro("@Monto", SqlDbType.Float, objSolicitudDePago.Monto))
+        parametros.Add(ConnectionDB.ArmaParametro("@ICCID", SqlDbType.NVarChar, objSolicitudDePago.ICCID))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estatus", SqlDbType.NVarChar, objSolicitudDePago.Estatus))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaCreacion", SqlDbType.DateTime, objSolicitudDePago.FechaCreacion))
+        parametros.Add(ConnectionDB.ArmaParametro("@EstatusDepositoID", SqlDbType.Int, objSolicitudDePago.EstatusDepositoID))
+        parametros.Add(ConnectionDB.ArmaParametro("@IdTransaction", SqlDbType.NVarChar, objSolicitudDePago.IdTransaction))
+        parametros.Add(ConnectionDB.ArmaParametro("@AuthNumber", SqlDbType.NVarChar, objSolicitudDePago.AuthNumber))
+        parametros.Add(ConnectionDB.ArmaParametro("@AuthCode", SqlDbType.NVarChar, objSolicitudDePago.AuthCode))
+        parametros.Add(ConnectionDB.ArmaParametro("@Reason", SqlDbType.NVarChar, objSolicitudDePago.Reason))
+        parametros.Add(ConnectionDB.ArmaParametro("@PagoDepositoID", SqlDbType.Int, IIf(IsNothing(objSolicitudDePago.PagoDepositoID), DBNull.Value, objSolicitudDePago.PagoDepositoID)))
+        parametros.Add(ConnectionDB.ArmaParametro("@UltimaActualizacion", SqlDbType.DateTime, objSolicitudDePago.UltimaActualizacion))
+        parametros.Add(ConnectionDB.ArmaParametro("@NumeroReintentos", SqlDbType.Int, objSolicitudDePago.NumeroReintentos))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_SolicitudDePago]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_SolicitudDePago]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_SolicitudDePago]", parametros)
         Else
             Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
         End If

@@ -2,6 +2,9 @@
 
 Namespace TECOMNET.API
     Public Class Tablero
+        Public Property SIMID As Integer
+        Public Property ICCID As String
+        Public Property MSISDN As String
         Public Property FechaVencimiento As DateTime?
         Public Property MBAsignados As Integer?
         Public Property MBUsados As Integer?

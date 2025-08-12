@@ -1,4 +1,5 @@
-﻿Imports Models.TECOMNET
+﻿Imports Models
+Imports Models.TECOMNET
 Imports Models.TECOMNET.API
 Imports System.Security.Cryptography
 Imports System.Text
@@ -38,6 +39,9 @@ Public Class ConvertObject
     Public Shared Function Tablero(ByVal dr As DataRow) As Tablero
         Dim objTablero As New Tablero
         Try
+            If dr.Table.Columns.Contains("SIMID") Then objTablero.SIMID = dr("SIMID")
+            If dr.Table.Columns.Contains("ICCID") Then objTablero.ICCID = dr("ICCID")
+            If dr.Table.Columns.Contains("MSISDN") Then objTablero.MSISDN = dr("MSISDN")
             If dr.Table.Columns.Contains("FechaVencimiento") Then objTablero.FechaVencimiento = IIf(IsDBNull(dr("FechaVencimiento")), Nothing, dr("FechaVencimiento"))
             If dr.Table.Columns.Contains("MBAsignados") Then objTablero.MBAsignados = IIf(IsDBNull(dr("MBAsignados")), 0, dr("MBAsignados"))
             If dr.Table.Columns.Contains("MBUsados") Then objTablero.MBUsados = IIf(IsDBNull(dr("MBUsados")), 0, dr("MBUsados"))
@@ -78,6 +82,30 @@ Public Class ConvertObject
         Catch ex As Exception
         End Try
         Return objOferta
+    End Function
+    Public Shared Function SolicitudDePago(ByVal dr As DataRow) As SolicitudDePago
+        Dim objSolicitudDePago As New SolicitudDePago
+        Try
+            If dr.Table.Columns.Contains("SolicitudID") Then objSolicitudDePago.SolicitudID = dr("SolicitudID")
+            If dr.Table.Columns.Contains("OrderID") Then objSolicitudDePago.OrderID = dr("OrderID")
+            If dr.Table.Columns.Contains("MetodoPagoID") Then objSolicitudDePago.MetodoPagoID = dr("MetodoPagoID")
+            If dr.Table.Columns.Contains("OfertaIDActual") Then objSolicitudDePago.OfertaIDActual = dr("OfertaIDActual")
+            If dr.Table.Columns.Contains("OfertaIDNueva") Then objSolicitudDePago.OfertaIDNueva = dr("OfertaIDNueva")
+            If dr.Table.Columns.Contains("Monto") Then objSolicitudDePago.Monto = dr("Monto")
+            If dr.Table.Columns.Contains("ICCID") Then objSolicitudDePago.ICCID = dr("ICCID")
+            If dr.Table.Columns.Contains("Estatus") Then objSolicitudDePago.Estatus = dr("Estatus")
+            If dr.Table.Columns.Contains("FechaCreacion") Then objSolicitudDePago.FechaCreacion = dr("FechaCreacion")
+            If dr.Table.Columns.Contains("EstatusDepositoID") Then objSolicitudDePago.EstatusDepositoID = dr("EstatusDepositoID")
+            If dr.Table.Columns.Contains("IdTransaction") Then objSolicitudDePago.IdTransaction = dr("IdTransaction")
+            If dr.Table.Columns.Contains("AuthNumber") Then objSolicitudDePago.AuthNumber = dr("AuthNumber")
+            If dr.Table.Columns.Contains("AuthCode") Then objSolicitudDePago.AuthCode = dr("AuthCode")
+            If dr.Table.Columns.Contains("Reason") Then objSolicitudDePago.Reason = dr("Reason")
+            If dr.Table.Columns.Contains("PagoDepositoID") Then objSolicitudDePago.PagoDepositoID = IIf(IsDBNull(dr("PagoDepositoID")), Nothing, dr("PagoDepositoID"))
+            If dr.Table.Columns.Contains("UltimaActualizacion") Then objSolicitudDePago.UltimaActualizacion = dr("UltimaActualizacion")
+            If dr.Table.Columns.Contains("NumeroReintentos") Then objSolicitudDePago.NumeroReintentos = dr("NumeroReintentos")
+        Catch ex As Exception
+        End Try
+        Return objSolicitudDePago
     End Function
 End Class
 Public Class Securyty
