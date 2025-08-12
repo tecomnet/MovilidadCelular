@@ -11,15 +11,19 @@ import 'screens/home_screen.dart';
 import 'screens/information_payment_screen.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
 import 'dart:async';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 void main() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    await CallNativeCode.callNativeInitialize();
+    if (!kIsWeb) {
+      await CallNativeCode.callNativeInitialize();
+    }
 
     runApp(const MyApp());
-  }, (error, stackTrace) {});
+  }, (error, stackTrace) {
+    // Opcional: print(error);
+  });
 }
 
 class MyApp extends StatelessWidget {

@@ -84,6 +84,27 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<bool> _onWillPop() async {
+    bool? exitApp = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Estas saliendo de Movilidad Tecomnet'),
+        content: const Text('¿Estas seguro que quieres salir?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Sí'),
+          ),
+        ],
+      ),
+    );
+    return exitApp ?? false;
+  }
+
   Widget buildDataUsageIndicator(
     String usedStr,
     String availableStr,
@@ -170,116 +191,113 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScaffold(
-      title: 'Home',
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 20, 89, 145),
-              Color.fromARGB(255, 10, 52, 114),
-            ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: BaseScaffold(
+        title: 'Home',
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 20, 89, 145),
+                Color.fromARGB(255, 10, 52, 114),
+              ],
+            ),
           ),
-        ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : LayoutBuilder(
-                builder: (context, constraints) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Center(
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: 600, // ancho máximo para tablets y pantallas grandes
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 10),
-                                  Card(
-                                    color: Colors.blue[700],
-                                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Center(
-                                        child: Text(
-                                          'Hola Escandon Cruz Enrique',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 600, // ancho máximo para tablets y pantallas grandes
+                                ),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Card(
+                                      color: Colors.blue[700],
+                                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Center(
+                                          child: Text(
+                                            'Hola Escandon Cruz Enrique',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  ..._ofertas.map((oferta) {
-                                    final String ofertaNombre = oferta['Oferta'] ?? '';
-                                    final double precio = double.tryParse(
-                                          RegExp(r'\d+').firstMatch(ofertaNombre)?.group(0) ?? '',
-                                        ) ??
-                                        0.0;
+                                    const SizedBox(height: 20),
+                                    ..._ofertas.map((oferta) {
+                                      final String ofertaNombre = oferta['Oferta'] ?? '';
+                                      final double precio = double.tryParse(
+                                            RegExp(r'\d+').firstMatch(ofertaNombre)?.group(0) ?? '',
+                                          ) ??
+                                          0.0;
 
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 20),
-                                      child: buildDataCard(
-                                        context,
-                                        title: '$ofertaNombre - ${oferta['Descripcion']}',
-                                        included: '${oferta['MBAsignados']} MB',
-                                        additional: '${oferta['MBAdicionales']} MB',
-                                        available: '${oferta['MBDisponibles']} MB',
-                                        used: '${oferta['MBUsados']} MB',
-                                        minutes: '${oferta['Minutos']}',
-                                        sms: '${oferta['Sms']}',
-                                        validity: oferta['FechaVencimiento']?.split('T').first ?? '',
-                                        status: oferta['Estatus'] == '1' ? 'Activo' : 'No Activo',
-                                        prepaid: (oferta['EsPrepago'] == true) ? 'Prepago' : 'Pospago',
-                                        precio: precio,
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, '/menu');
-                                        },
-                                      ),
-                                    );
-                                  }).toList(),
-                                ],
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 20),
+                                        child: buildDataCard(
+                                          context,
+                                          title: '$ofertaNombre - ${oferta['Descripcion']}',
+                                          included: '${oferta['MBAsignados']} MB',
+                                          additional: '${oferta['MBAdicionales']} MB',
+                                          available: '${oferta['MBDisponibles']} MB',
+                                          used: '${oferta['MBUsados']} MB',
+                                          minutes: '${oferta['Minutos']}',
+                                          sms: '${oferta['Sms']}',
+                                          validity: oferta['FechaVencimiento']?.split('T').first ?? '',
+                                          status: oferta['Estatus'] == '1' ? 'Activo' : 'No Activo',
+                                          prepaid: (oferta['EsPrepago'] == true) ? 'Prepago' : 'Pospago',
+                                          precio: precio,
+                                          onPressed: () {
+                                            Navigator.pushNamed(context, '/menu');
+                                          },
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        color: Colors.transparent,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Text(
-                              'Para realizar cambios en su perfil, favor de enviar un correo a:\ncomercial@tecomnet.mx',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 14, color: Colors.grey),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              '(c) 2025 por TECOMNET.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontStyle: FontStyle.italic,
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          color: Colors.transparent,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text(
+                                '(c) 2025 por TECOMNET.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  fontStyle: FontStyle.italic,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                      ],
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }

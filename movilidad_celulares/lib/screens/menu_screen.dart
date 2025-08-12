@@ -161,8 +161,8 @@ class MenuScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: SizedBox(
-        width: screenSize.width * 0.9,   // 90% del ancho pantalla
-        height: screenSize.height * 0.8, // 80% del alto pantalla
+        width: screenSize.width * 0.9,   
+        height: screenSize.height * 0.8, 
         child: WebViewScreen(url: link),
       ),
     );
