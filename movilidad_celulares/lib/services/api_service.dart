@@ -7,7 +7,7 @@ class AuthService {
   static String? _password;
 
   static Future<bool> obtenerToken(String usuario, String clave) async {
-    final url = Uri.parse('https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Account');
+    final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/Account');
 
     try {
       final response = await http.post(
@@ -47,7 +47,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse('https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Cliente/Login');
+    final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/Cliente/Login');
     try {
       final response = await http.post(
         url,
@@ -81,7 +81,7 @@ class AuthService {
   }
 
   final url = Uri.parse(
-    'https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Cliente/Tablero/$clienteId',
+    'https://tecomnet.net/movilidad/WebApi/api/Cliente/Tablero/$clienteId',
   );
 
   try {
@@ -114,7 +114,7 @@ class AuthService {
   }
 
   final url = Uri.parse(
-    'https://tecomnet.net/TECOMNET_MOVILIDAD/WebApi/api/Ofertas/Activa/Tipo/$tipo',
+    'https://tecomnet.net/movilidad/WebApi/api/Ofertas/Activa/Tipo/$tipo',
   );
 
   try {
@@ -140,9 +140,65 @@ class AuthService {
     return null;
   }
 }
+
+static Future<String?> generarOrderID({
+  required String iccid,
+  required String ofertaActualId,
+  required String ofertaNuevaId,
+  required String monto,
+}) async {
+  if (_token == null) {
+    print('⚠️ Token no disponible, no se puede registrar la solicitud');
+    return null;
+  }
+
+  final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/RegistrarSolicitudDePago');
+
+  final Map<String, dynamic> body = {
+    "SolicitudID": "",
+    "OrderID": "",
+    "MetodoPagoID": "1",
+    "OfertaIDActual": ofertaActualId,
+    "OfertaIDNueva": ofertaNuevaId,
+    "Monto": monto,
+    "ICCID": iccid,
+    "Estatus": "",
+    "FechaCreacion": "",
+    "EstatusDepositoID": "",
+    "IdTransaction": "",
+    "AuthNumber": "",
+    "AuthCode": "",
+    "Reason": "",
+    "PagoDepositoID": "",
+    "UltimaActualizacion": "",
+    "NumeroReintentos": ""
+  };
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $_token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('✅ OrderID generado: ${data['OrderID']}');
+      return data['OrderID'];
+    }
+     else {
+      print('❌ Error al generar OrderID: ${response.statusCode} -> ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('💥 Excepción al generar OrderID: $e');
+    return null;
+  }
 }
 
-class LklService {
   static Future<String?> obtenerTokenRecargas(String email, String apiKey) async {
     final url = Uri.parse('https://lklapi.lklpay.com.mx/pef1d7972c8ro/auth/ecommerce/login');
     try {
@@ -174,8 +230,8 @@ class LklService {
     required String token,
     required int amount,
     required String description,
+    required String orderId,
   }) async {
-    final orderId = DateTime.now().millisecondsSinceEpoch.toString();
 
     final url = Uri.parse('https://lklapi.lklpay.com.mx/f2c65bd1289pm/link/ecommerce');
 

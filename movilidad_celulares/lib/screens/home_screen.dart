@@ -218,14 +218,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Center(
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxWidth: 600, // ancho máximo para tablets y pantallas grandes
+                                  maxWidth:
+                                      600, // ancho máximo para tablets y pantallas grandes
                                 ),
                                 child: Column(
                                   children: [
                                     const SizedBox(height: 10),
                                     Card(
                                       color: Colors.blue[700],
-                                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Center(
@@ -242,29 +245,51 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     ..._ofertas.map((oferta) {
-                                      final String ofertaNombre = oferta['Oferta'] ?? '';
-                                      final double precio = double.tryParse(
-                                            RegExp(r'\d+').firstMatch(ofertaNombre)?.group(0) ?? '',
+                                      final String ofertaNombre =
+                                          oferta['Oferta'] ?? '';
+                                      final double precio =
+                                          double.tryParse(
+                                            RegExp(r'\d+')
+                                                    .firstMatch(ofertaNombre)
+                                                    ?.group(0) ??
+                                                '',
                                           ) ??
                                           0.0;
 
                                       return Padding(
-                                        padding: const EdgeInsets.only(bottom: 20),
+                                        padding: const EdgeInsets.only(
+                                          bottom: 20,
+                                        ),
                                         child: buildDataCard(
                                           context,
-                                          title: '$ofertaNombre - ${oferta['Descripcion']}',
-                                          included: '${oferta['MBAsignados']} MB',
-                                          additional: '${oferta['MBAdicionales']} MB',
-                                          available: '${oferta['MBDisponibles']} MB',
+                                          title:
+                                              '$ofertaNombre - ${oferta['Descripcion']}',
+                                          included:
+                                              '${oferta['MBAsignados']} MB',
+                                          additional:
+                                              '${oferta['MBAdicionales']} MB',
+                                          available:
+                                              '${oferta['MBDisponibles']} MB',
                                           used: '${oferta['MBUsados']} MB',
                                           minutes: '${oferta['Minutos']}',
                                           sms: '${oferta['Sms']}',
-                                          validity: oferta['FechaVencimiento']?.split('T').first ?? '',
-                                          status: oferta['Estatus'] == '1' ? 'Activo' : 'No Activo',
-                                          prepaid: (oferta['EsPrepago'] == true) ? 'Prepago' : 'Pospago',
+                                          validity:
+                                              oferta['FechaVencimiento']
+                                                  ?.split('T')
+                                                  .first ??
+                                              '',
+                                          status: oferta['Estatus'] == '1'
+                                              ? 'Activo'
+                                              : 'No Activo',
+                                          prepaid: (oferta['EsPrepago'] == true)
+                                              ? 'Prepago'
+                                              : 'Pospago',
                                           precio: precio,
                                           onPressed: () {
-                                            Navigator.pushNamed(context, '/menu');
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/menu',
+                                            );
                                           },
                                         ),
                                       );
@@ -276,7 +301,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 20,
+                          ),
                           color: Colors.transparent,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -316,6 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String prepaid,
     required VoidCallback onPressed,
     required double precio,
+    
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -350,48 +379,69 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     onPressed: () async {
-                      final token = await LklService.obtenerTokenRecargas(
+                      final orderIdTec = await AuthService.generarOrderID(
+                        iccid: 'HJFDKJHSF98743978',
+                        ofertaActualId: '2345',
+                        ofertaNuevaId: '6544',
+                        monto: precio.toString(),
+                      );
+
+                      if (orderIdTec == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Error al generar OrderID'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final token = await AuthService.obtenerTokenRecargas(
                         "h.martinez@tecomnet.mx",
                         "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
                       );
 
-                      if (token != null) {
-                        final link = await LklService.obtenerLinkDePago(
-                          token: token,
-                          amount: (precio * 100).toInt(),
-                          description: 'Renovación del plan',
+                      if (token == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Error al obtener token'),
+                          ),
                         );
+                        return;
+                      }
 
-                        if (link != null) {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                insetPadding: const EdgeInsets.all(10),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.9,
-                                  height: MediaQuery.of(context).size.height * 0.8,
-                                  child: WebViewScreen(url: link),
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Error al generar link de pago'),
+                      final link = await AuthService.obtenerLinkDePago(
+                        token: token,
+                        amount: (precio * 100).toInt(),
+                        description: 'Renovación del plan',
+                        orderId: orderIdTec, 
+                      );
+
+                      if (link == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Error al generar link de pago'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            insetPadding: const EdgeInsets.all(10),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: WebViewScreen(url: link),
                             ),
                           );
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Error al obtener token')),
-                        );
-                      }
+                        },
+                      );
                     },
                     child: const Text(
                       'Renovar Plan',

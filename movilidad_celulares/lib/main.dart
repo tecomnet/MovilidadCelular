@@ -12,17 +12,20 @@ import 'screens/information_payment_screen.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_strategy/url_strategy.dart';
 void main() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    if (!kIsWeb) {
-      await CallNativeCode.callNativeInitialize();
-    }
+
+    if (kIsWeb) {
+    setPathUrlStrategy();
+  } else {
+    await CallNativeCode.callNativeInitialize();
+  }
 
     runApp(const MyApp());
   }, (error, stackTrace) {
-    // Opcional: print(error);
   });
 }
 

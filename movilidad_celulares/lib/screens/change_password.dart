@@ -14,7 +14,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return BaseScaffold(
       title: 'Cambiar Contraseña',
       body: Container(
-        height: double.infinity, // <- importante para ocupar toda la pantalla
+        height: double.infinity, 
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

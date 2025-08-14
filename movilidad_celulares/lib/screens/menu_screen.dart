@@ -124,9 +124,23 @@ class MenuScreen extends StatelessWidget {
                   return;
                 }
 
-                final token = await LklService.obtenerTokenRecargas(
+                final orderIdTec = await AuthService.generarOrderID(
+                  iccid: 'HJFDKJHSF98743978', 
+                  ofertaActualId: '2345', 
+                  ofertaNuevaId: '6544', 
+                  monto: precio.toString(),
+                );
+
+                if (orderIdTec == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Error al generar OrderID")),
+                  );
+                  return;
+                }
+
+                final token = await AuthService.obtenerTokenRecargas(
                   "h.martinez@tecomnet.mx",
-                  "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp", 
+                  "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
                 );
 
                 if (token == null) {
@@ -136,38 +150,40 @@ class MenuScreen extends StatelessWidget {
                   return;
                 }
 
-                final link = await LklService.obtenerLinkDePago(
+                final link = await AuthService.obtenerLinkDePago(
                   token: token,
-                  amount: (precio * 100).toInt(), 
+                  amount: (precio * 100).toInt(),
                   description: descripcion,
+                  orderId: orderIdTec, 
                 );
 
                 if (link == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Error al generar link de pago")),
+                    const SnackBar(
+                      content: Text("Error al generar link de pago"),
+                    ),
                   );
                   return;
                 }
 
                 showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-
-    return Dialog(
-      insetPadding: const EdgeInsets.all(10),
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: SizedBox(
-        width: screenSize.width * 0.9,   
-        height: screenSize.height * 0.8, 
-        child: WebViewScreen(url: link),
-      ),
-    );
-  },
-);
+                  context: context,
+                  builder: (BuildContext context) {
+                    final screenSize = MediaQuery.of(context).size;
+                    return Dialog(
+                      insetPadding: const EdgeInsets.all(10),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: SizedBox(
+                        width: screenSize.width * 0.9,
+                        height: screenSize.height * 0.8,
+                        child: WebViewScreen(url: link),
+                      ),
+                    );
+                  },
+                );
               },
               child: const Text(
                 'Lo quiero',

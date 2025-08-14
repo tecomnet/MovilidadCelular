@@ -70,8 +70,6 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
     cargarPlanes();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final botonesOpciones = [
@@ -194,95 +192,124 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                         Center(
                                           child: ElevatedButton(
                                             onPressed: () async {
-                                              final token =
-                                                  await LklService.obtenerTokenRecargas(
-                                                    "h.martinez@tecomnet.mx",
-                                                    "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
+                                              final plan =
+                                                  planesDisponibles[index];
+                                              final orderIdTec =
+                                                  await AuthService.generarOrderID(
+                                                    iccid:
+                                                        'HJFDKJHSF98743978', 
+                                                    ofertaActualId:
+                                                        plan['OfertaID']
+                                                            .toString(),
+                                                    ofertaNuevaId:
+                                                        plan['OfertaID']
+                                                            .toString(),
+                                                    monto:
+                                                        plan['PrecioRecurrente']
+                                                            .toString(),
                                                   );
 
-                                              if (token != null) {
-                                                final plan =
-                                                    planesDisponibles[index];
-                                                final link =
-                                                    await LklService.obtenerLinkDePago(
-                                                      token: token,
-                                                      amount:
-                                                          obtenerPrecioDelPlan(
-                                                            plan,
-                                                          ),
-                                                      description:
-                                                          plan['Oferta'] ??
-                                                          'Renovación del plan',
-                                                    );
-
-                                                if (link != null &&
-                                                    context.mounted) {
-                                                  showDialog(
-                                                    context: context,
-                                                    barrierDismissible: true,
-                                                    builder: (BuildContext context) {
-                                                      return Dialog(
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                16,
-                                                              ),
-                                                        ),
-                                                        insetPadding:
-                                                            const EdgeInsets.all(
-                                                              10,
-                                                            ),
-                                                        child: SizedBox(
-                                                          width:
-                                                              MediaQuery.of(
-                                                                context,
-                                                              ).size.width *
-                                                              0.9,
-                                                          height:
-                                                              MediaQuery.of(
-                                                                context,
-                                                              ).size.height *
-                                                              0.8,
-                                                          child: WebViewScreen(
-                                                            url: link,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                } else {
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text(
-                                                        'Error al generar link de pago',
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                              } else {
+                                              if (orderIdTec == null) {
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(
                                                   const SnackBar(
                                                     content: Text(
-                                                      'Error al obtener token',
+                                                      "Error al generar OrderID",
                                                     ),
                                                   ),
                                                 );
+                                                return;
+                                              }
+
+                                              final token =
+                                                  await AuthService.obtenerTokenRecargas(
+                                                    "h.martinez@tecomnet.mx",
+                                                    "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
+                                                  );
+
+                                              if (token == null) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      "Error al obtener token",
+                                                    ),
+                                                  ),
+                                                );
+                                                return;
+                                              }
+
+                                              final link =
+                                                  await AuthService.obtenerLinkDePago(
+                                                    token: token,
+                                                    amount:
+                                                        (plan['PrecioRecurrente'] *
+                                                                100)
+                                                            .toInt(),
+                                                    description:
+                                                        plan['Oferta'] ??
+                                                        'Renovación del plan',
+                                                    orderId: orderIdTec,
+                                                  );
+
+                                              if (link == null) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      "Error al generar link de pago",
+                                                    ),
+                                                  ),
+                                                );
+                                                return;
+                                              }
+
+                                              if (context.mounted) {
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible: true,
+                                                  builder: (BuildContext context) {
+                                                    final screenSize =
+                                                        MediaQuery.of(
+                                                          context,
+                                                        ).size;
+                                                    return Dialog(
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              16,
+                                                            ),
+                                                      ),
+                                                      insetPadding:
+                                                          const EdgeInsets.all(
+                                                            10,
+                                                          ),
+                                                      child: SizedBox(
+                                                        width:
+                                                            screenSize.width *
+                                                            0.9,
+                                                        height:
+                                                            screenSize.height *
+                                                            0.8,
+                                                        child: WebViewScreen(
+                                                          url: link,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
                                               }
                                             },
-
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: seleccionado
                                                   ? Colors.green
                                                   : Colors.blue,
                                               foregroundColor: Colors.white,
                                             ),
-                                            child: Text(
-                                            'Lo quiero',
-                                            ),
+                                            child: const Text('Lo quiero'),
                                           ),
                                         ),
                                       ],
