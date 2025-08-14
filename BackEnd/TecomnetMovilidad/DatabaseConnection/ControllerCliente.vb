@@ -94,6 +94,17 @@ Public Class ControllerCliente
         End Try
         Return listTablero
     End Function
+    Public Function CambiaPassword(ByVal objCliente As Cliente) As Boolean
+        Dim controller As New Controller
+        Try
+            Dim dt As New DataSet
+            Return controller.TransactionsCliente(Of Integer)(7, objCliente)
+
+        Catch ex As Exception
+            Return False
+        End Try
+        Return False
+    End Function
     'Public Function DesactivateCustomer(ByVal CustomerID As Integer) As Integer
     '    Dim exito As Integer
     '    Dim controller As New Controller

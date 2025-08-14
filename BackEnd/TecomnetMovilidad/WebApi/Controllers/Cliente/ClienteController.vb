@@ -69,5 +69,41 @@ Namespace Controllers.Clientes
                 Return errorResponse
             End Try
         End Function
+        <HttpPost>
+        <Route("api/Cliente/CambiaPassword")>
+        Public Function CambiaPassword(objLogin As ChangePasswordAccount) As HttpResponseMessage
+            Try
+                Dim objCliente As New Cliente
+                Dim objControlller As New ControllerCliente
+
+                If Not ModelState.IsValid Then
+                    Return Request.CreateResponse(HttpStatusCode.Unauthorized, New With {
+                        Key .mensaje = "Usuario o contraseña no valida."
+                        })
+                End If
+
+                objCliente.Email = objLogin.UserName
+                objCliente.ContrasenaHash = Securyty.Cifrar(objLogin.Password)
+                objCliente.NombreRazonSocial = Securyty.Cifrar(objLogin.NewPassword)
+
+                If objControlller.CambiaPassword(objCliente) = 0 Then
+                    Return Request.CreateResponse(HttpStatusCode.InternalServerError, New With {
+                        Key .mensaje = "Error al cambiar la contraseña, valida la información e intenta nuevamente."
+                        })
+                Else
+                    Return Request.CreateResponse(HttpStatusCode.OK, New With {
+                        Key .mensaje = "La contraseña se cambio correctamente"
+                        })
+                End If
+
+            Catch ex As Exception
+                ' Manejo de errores: devuelve un mensaje JSON con el error
+                Dim errorResponse As HttpResponseMessage = Request.CreateResponse(HttpStatusCode.InternalServerError, New With {
+                    Key .error = "Ocurrió un error al generar la solicitud.",
+                    Key .detalle = ex.Message
+                    })
+                Return errorResponse
+            End Try
+        End Function
     End Class
 End Namespace

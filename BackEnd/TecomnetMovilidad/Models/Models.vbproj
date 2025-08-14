@@ -82,12 +82,15 @@
     </Compile>
     <Compile Include="TECOMNET\Cliente.vb" />
     <Compile Include="TECOMNET\Enumeraciones.vb" />
+    <Compile Include="TECOMNET\EstatusDeposito.vb" />
     <Compile Include="TECOMNET\Factura.vb" />
     <Compile Include="TECOMNET\LogAuditoria.vb" />
+    <Compile Include="TECOMNET\MetodoPago.vb" />
     <Compile Include="TECOMNET\Oferta.vb" />
     <Compile Include="TECOMNET\Recargas.vb" />
     <Compile Include="TECOMNET\SIM.vb" />
     <Compile Include="TECOMNET\SolicitudAPI.vb" />
+    <Compile Include="TECOMNET\SolicitudDePago.vb" />
     <Compile Include="TECOMNET\TicketSoporte.vb" />
     <Compile Include="TECOMNET\Usuario.vb" />
   </ItemGroup>
