@@ -92,9 +92,52 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Css\bootstrap-grid.css" />
+    <Content Include="Css\bootstrap-grid.min.css" />
+    <Content Include="Css\bootstrap-grid.rtl.css" />
+    <Content Include="Css\bootstrap-grid.rtl.min.css" />
+    <Content Include="Css\bootstrap-reboot.css" />
+    <Content Include="Css\bootstrap-reboot.min.css" />
+    <Content Include="Css\bootstrap-reboot.rtl.css" />
+    <Content Include="Css\bootstrap-reboot.rtl.min.css" />
+    <Content Include="Css\bootstrap-utilities.css" />
+    <Content Include="Css\bootstrap-utilities.min.css" />
+    <Content Include="Css\bootstrap-utilities.rtl.css" />
+    <Content Include="Css\bootstrap-utilities.rtl.min.css" />
+    <Content Include="Css\bootstrap.css" />
+    <Content Include="Css\bootstrap.min.css" />
+    <Content Include="Css\bootstrap.rtl.css" />
+    <Content Include="Css\bootstrap.rtl.min.css" />
+    <Content Include="EmailTemplates\Recharge.html" />
+    <Content Include="Global.asax" />
+    <Content Include="Resources\Imagenes\iconoMenu.png" />
+    <Content Include="Resources\Imagenes\Logo.ico" />
+    <Content Include="Resources\Imagenes\Logo.png" />
+    <Content Include="Scripts\js\bootstrap.bundle.js" />
+    <Content Include="Scripts\js\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\js\bootstrap.esm.js" />
+    <Content Include="Scripts\js\bootstrap.esm.min.js" />
+    <Content Include="Scripts\js\bootstrap.js" />
+    <Content Include="Scripts\js\bootstrap.min.js" />
+    <Content Include="Views\Account\CambioContrasena.aspx" />
+    <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Account\MiPerfil.aspx" />
+    <Content Include="Views\Account\MisRecargas.aspx" />
+    <Content Include="Views\General\Inicio.aspx" />
+    <Content Include="Views\Planes\CambioDePlan.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Default.Master.designer.vb">
+      <DependentUpon>Default.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Default.Master.vb">
+      <DependentUpon>Default.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -114,6 +157,48 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Views\Account\CambioContrasena.aspx.designer.vb">
+      <DependentUpon>CambioContrasena.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\CambioContrasena.aspx.vb">
+      <DependentUpon>CambioContrasena.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\Account\Login.aspx.designer.vb">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\Login.aspx.vb">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\Account\MiPerfil.aspx.designer.vb">
+      <DependentUpon>MiPerfil.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\MiPerfil.aspx.vb">
+      <DependentUpon>MiPerfil.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\Account\MisRecargas.aspx.designer.vb">
+      <DependentUpon>MisRecargas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Account\MisRecargas.aspx.vb">
+      <DependentUpon>MisRecargas.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\Inicio.aspx.designer.vb">
+      <DependentUpon>Inicio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\Inicio.aspx.vb">
+      <DependentUpon>Inicio.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\Planes\CambioDePlan.aspx.designer.vb">
+      <DependentUpon>CambioDePlan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Planes\CambioDePlan.aspx.vb">
+      <DependentUpon>CambioDePlan.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -124,6 +209,23 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Default.Master" />
+    <Content Include="Css\bootstrap-grid.css.map" />
+    <Content Include="Css\bootstrap-grid.min.css.map" />
+    <Content Include="Css\bootstrap-grid.rtl.css.map" />
+    <Content Include="Css\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Css\bootstrap-reboot.css.map" />
+    <Content Include="Css\bootstrap-reboot.min.css.map" />
+    <Content Include="Css\bootstrap-reboot.rtl.css.map" />
+    <Content Include="Css\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Css\bootstrap-utilities.css.map" />
+    <Content Include="Css\bootstrap-utilities.min.css.map" />
+    <Content Include="Css\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Css\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Css\bootstrap.css.map" />
+    <Content Include="Css\bootstrap.min.css.map" />
+    <Content Include="Css\bootstrap.rtl.css.map" />
+    <Content Include="Css\bootstrap.rtl.min.css.map" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -134,6 +236,12 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <Content Include="Scripts\js\bootstrap.bundle.js.map" />
+    <Content Include="Scripts\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\js\bootstrap.esm.js.map" />
+    <Content Include="Scripts\js\bootstrap.esm.min.js.map" />
+    <Content Include="Scripts\js\bootstrap.js.map" />
+    <Content Include="Scripts\js\bootstrap.min.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -141,6 +249,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
