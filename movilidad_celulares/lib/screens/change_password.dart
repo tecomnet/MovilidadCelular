@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
+import 'package:movilidad_celulares/services/api_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -9,12 +10,60 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  final _actualController = TextEditingController();
+  final _nuevaController = TextEditingController();
+  final _confirmarController = TextEditingController();
+  bool _loading = false;
+
+  bool _verActual = false;
+  bool _verNueva = false;
+  bool _verConfirmar = false;
+
+  Future<void> _cambiarPassword() async {
+    print('Actual: ${_actualController.text}');
+    print('Nueva: ${_nuevaController.text}');
+    print('Confirmar: ${_confirmarController.text}');
+    final email = AuthService.email;
+    final passwordActual = _actualController.text.trim();
+    final passwordNueva = _nuevaController.text.trim();
+    final passwordConfirmar = _confirmarController.text.trim();
+
+    final tokenOk = await AuthService.obtenerToken(email!, passwordActual);
+    if (!tokenOk) {
+      print('❌ No se pudo obtener token con la contraseña actual');
+      return;
+    }
+
+    final exito = await AuthService.cambiarPassword(
+      passwordActual: passwordActual,
+      passwordNueva: passwordNueva,
+    );
+
+    if (exito) {
+      final tokenNuevo = await AuthService.obtenerToken(email, passwordNueva);
+      if (tokenNuevo) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ Se cambio la contraseña correctamente'),
+          ),
+        );
+        _actualController.clear();
+        _nuevaController.clear();
+        _confirmarController.clear();
+      } else {
+        print('⚠️ Contraseña cambiada, pero no se pudo obtener token nuevo');
+      }
+    } else {
+      print('❌ Error al cambiar contraseña');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
       title: 'Cambiar Contraseña',
       body: Container(
-        height: double.infinity, 
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -32,24 +81,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Center(
-                ),
                 const SizedBox(height: 20),
                 Card(
                   color: Colors.blue[700],
                   margin: EdgeInsets.zero,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: const Text(
-                        'Cambio de contraseña',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Cambio de contraseña',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -81,7 +125,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 6),
-                        _buildPasswordField(),
+                        _buildPasswordField(
+                          _actualController,
+                          ocultar: !_verActual,
+                          onVerPressed: () {
+                            setState(() => _verActual = !_verActual);
+                          },
+                        ),
 
                         const SizedBox(height: 16),
                         const Text(
@@ -89,7 +139,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 6),
-                        _buildPasswordField(),
+                        _buildPasswordField(
+                          _nuevaController,
+                          ocultar: !_verNueva,
+                          onVerPressed: () {
+                            setState(() => _verNueva = !_verNueva);
+                          },
+                        ),
 
                         const SizedBox(height: 16),
                         const Text(
@@ -97,14 +153,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 6),
-                        _buildPasswordField(),
+                        _buildPasswordField(
+                          _confirmarController,
+                          ocultar: !_verConfirmar,
+                          onVerPressed: () {
+                            setState(() => _verConfirmar = !_verConfirmar);
+                          },
+                        ),
 
                         const SizedBox(height: 20),
                         Center(
                           child: ElevatedButton(
-                            onPressed: () {
-                            
-                            },
+                            onPressed: _loading ? null : _cambiarPassword,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue.shade800,
                               foregroundColor: Colors.white,
@@ -116,13 +176,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Text(
-                              'Cambiar contraseña',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: _loading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Text(
+                                    'Cambiar contraseña',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
@@ -130,7 +194,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Text(
                     '(c) 2025 por TECOMNET.',
@@ -149,9 +213,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(
+    TextEditingController controller, {
+    required bool ocultar,
+    required VoidCallback onVerPressed,
+  }) {
     return TextField(
-      obscureText: true,
+      controller: controller,
+      obscureText: ocultar,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.grey.shade100,
@@ -166,6 +235,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            ocultar ? Icons.visibility_off : Icons.visibility,
+            color: Colors.grey,
+          ),
+          onPressed: onVerPressed,
         ),
       ),
     );

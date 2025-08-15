@@ -93,4 +93,13 @@ Partial Public Class Login
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents btnIngresar As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control lnkOlvidoContrasena.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lnkOlvidoContrasena As Global.System.Web.UI.WebControls.LinkButton
 End Class

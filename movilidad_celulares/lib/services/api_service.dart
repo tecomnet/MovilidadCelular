@@ -314,4 +314,48 @@ static Future<String?> generarOrderID({
       return null;
     }
   }
+
+ static Future<bool> cambiarPassword({
+  required String passwordActual,
+  required String passwordNueva,
+}) async {
+  if (_token == null) {
+    print('Token no disponible, no se puede cambiar la contraseña');
+    return false;
+  }
+
+  final url = Uri.parse(
+      'https://tecomnet.net/movilidad/WebApi/api/Cliente/CambiaPassword');
+
+  final body = {
+    "UserName": AuthService.email,  
+    "Password": passwordActual,
+    "NewPassword": passwordNueva,
+  };
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $_token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print('Se cambió la contraseña con éxito');
+      return true;
+    } else {
+      print(
+          'Error al cambiar contraseña: ${response.statusCode} - ${response.body}');
+      return false;
+    }
+  } catch (e) {
+    print('Excepción al cambiar contraseña: $e');
+    return false;
+  }
+}
+
+  
 }

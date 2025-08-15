@@ -86,10 +86,15 @@
                         placeholder="name@example.com" oninput="cleanControls()"></asp:TextBox>
                     <asp:RequiredFieldValidator runat="server" ControlToValidate="txtCorreo" ErrorMessage="El correo es requerido" Display="None"></asp:RequiredFieldValidator>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label for="txtPassword" class="form-label">Contraseña</label>
                     <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" placeholder="Password"
                         oninput="cleanControls()" TextMode="Password"></asp:TextBox>
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" 
+          style="cursor:pointer;" 
+          onclick="togglePassword()">
+        <i id="eyeIcon" class="bi bi-eye"></i> 
+    </span>
                     <asp:RequiredFieldValidator runat="server" ControlToValidate="txtPassword" ErrorMessage="La contraseña es requerida" Display="None"></asp:RequiredFieldValidator>
                 </div>
                 <div class="text-center mt-3">
@@ -107,7 +112,26 @@
                     <button id="btnContinuarSnipper" class="w-100 btn btn-primary btn-lg" style="display: none" type="button" onclick="snniperStop()">
                         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                     </button>
-                </div>                        
+                    <div class="text-center mt-2">
+                    <asp:LinkButton ID="lnkOlvidoContrasena" runat="server" Text="¿Olvidaste tu contraseña?"> </asp:LinkButton>
+                </div>
+                    </div>                        
     </form>
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("txtPassword");
+            const icon = document.getElementById("eyeIcon");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            }
+        }
+    </script>
+
 </body>
 </html>

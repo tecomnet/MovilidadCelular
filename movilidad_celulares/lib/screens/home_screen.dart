@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
                                   maxWidth:
-                                      600, // ancho máximo para tablets y pantallas grandes
+                                      600, 
                                 ),
                                 child: Column(
                                   children: [
