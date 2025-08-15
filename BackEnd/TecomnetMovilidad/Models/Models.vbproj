@@ -85,8 +85,10 @@
     <Compile Include="TECOMNET\EstatusDeposito.vb" />
     <Compile Include="TECOMNET\Factura.vb" />
     <Compile Include="TECOMNET\LogAuditoria.vb" />
+    <Compile Include="TECOMNET\MessageResult.vb" />
     <Compile Include="TECOMNET\MetodoPago.vb" />
     <Compile Include="TECOMNET\Oferta.vb" />
+    <Compile Include="TECOMNET\Recarga.vb" />
     <Compile Include="TECOMNET\Recargas.vb" />
     <Compile Include="TECOMNET\SIM.vb" />
     <Compile Include="TECOMNET\SolicitudAPI.vb" />
