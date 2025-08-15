@@ -45,6 +45,12 @@
         Suspendido = 2
         Desactivado = 3
     End Enum
+    Public Enum TipoErroresAPI
+        Desconocido = 0
+        Exito = 1
+        Errors = 2
+        Advertencia = 3
+    End Enum
     'Public Enum AltanErrors
     '    Unknown = 0
     '    Susssuccessful = 1
