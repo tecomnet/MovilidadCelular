@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de contraseña</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f8fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #0056b3;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+            .content p {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+
+        .footer {
+            background: #e3efff;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .button {
+            display: inline-block;
+            background: #0056b3;
+            color: white !important;
+            font-weight: 700; /* Texto en negritas */
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+            .button:hover {
+                background: #003d82;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            ¡Solicitud de cambio de contraseña!
+        </div>
+        <div class="content">
+            <p>Estimad@ <b>{Nombre}</b>,</p>
+            <p>
+                Hemos recibido una solicitud para restablecer la contraseña de tu cuenta. Para completar el proceso, haz clic en el siguiente enlace:
+                <br />
+                <br />
+                <a href="{Link}" class="button">Cambiar contraseña</a>
+                <br />
+                <br />
+                Este enlace expirará en [1 hora]. Si no lo usas antes de ese tiempo, deberás solicitar un nuevo restablecimiento.
+                <br />
+                <br />
+                ¿No solicitaste este cambio?
+                <br />
+                Si no fuiste tú quien realizó esta solicitud, ignora este correo o contáctanos inmediatamente a comercial@tecomnet.mx para proteger tu cuenta o al número 55 8530 7158.
+                <br />
+                <br />
+                Gracias,
+                <br />
+                <br />
+                El equipo de TECOMNET.
+            </p>
+            <p>Mantente informado de éste y otros servicios en <a href="https://www.tecomnet.mx/">www.tecomnet.mx</a></p>
+            <p>Gracias por confiar en nosotros.</p>            
+        </div>
+        <div class="footer">
+            © 2025 TECOMNET | Atención al Cliente: recargas@tecomnet.mx
+        </div>
+    </div>
+</body>
+</html>

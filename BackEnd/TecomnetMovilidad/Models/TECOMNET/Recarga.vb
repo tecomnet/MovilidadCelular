@@ -6,7 +6,7 @@ Namespace TECOMNET
         Public Property FechaRecarga As DateTime
         Public Property ICCID As String
         Public Property ClienteID As Integer
-        Public Property OferID As Integer
+        Public Property OfertaID As Integer
         Public Property Total As Double
         Public Property MetodoPagoID As Integer
         Public Property OrderID As String
@@ -17,6 +17,45 @@ Namespace TECOMNET
         Public Property Impuesto As Double
         Public Property DepositoID As Integer?
         Public Property RequiereFacturaCliente As Boolean
-        Public Property InvoiceID As Integer?
+        Public Property FacturaID As Integer?
+        Public Sub New()
+            Me.RecargaId = 0
+            Me.FechaRecarga = Now
+            Me.ICCID = String.Empty
+            Me.ClienteID = 0
+            Me.OfertaID = 0
+            Me.Total = 0
+            Me.MetodoPagoID = 1
+            Me.OrderID = String.Empty
+            Me.DistribuidorID = 0
+            Me.EstatusPagoDistribuidorID = 0
+            Me.Comision = 0
+            Me.Impuesto = 0
+            Me.RequiereFacturaCliente = False
+        End Sub
+    End Class
+    Public Class VisRecarga
+        Inherits Recarga
+        Public Property NombreMetodo As String
+        Public Property MSISDN As String
+        Public Property Oferta As String
+        Public Sub New()
+            Me.RecargaId = 0
+            Me.FechaRecarga = Now
+            Me.ICCID = String.Empty
+            Me.ClienteID = 0
+            Me.OfertaID = 0
+            Me.Total = 0
+            Me.MetodoPagoID = 1
+            Me.OrderID = String.Empty
+            Me.DistribuidorID = 0
+            Me.EstatusPagoDistribuidorID = 0
+            Me.Comision = 0
+            Me.Impuesto = 0
+            Me.RequiereFacturaCliente = False
+            Me.NombreMetodo = String.Empty
+            Me.MSISDN = String.Empty
+            Me.Oferta = String.Empty
+        End Sub
     End Class
 End Namespace

@@ -65,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Tablero.vb" />
+    <Compile Include="LinkX\AccessToken.vb" />
+    <Compile Include="LinkX\PaymentRequest.vb" />
+    <Compile Include="LinkX\PaymentResponse.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -89,7 +92,6 @@
     <Compile Include="TECOMNET\MetodoPago.vb" />
     <Compile Include="TECOMNET\Oferta.vb" />
     <Compile Include="TECOMNET\Recarga.vb" />
-    <Compile Include="TECOMNET\Recargas.vb" />
     <Compile Include="TECOMNET\SIM.vb" />
     <Compile Include="TECOMNET\SolicitudAPI.vb" />
     <Compile Include="TECOMNET\SolicitudDePago.vb" />
