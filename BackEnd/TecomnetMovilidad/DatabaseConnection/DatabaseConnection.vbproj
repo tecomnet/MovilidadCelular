@@ -69,8 +69,10 @@
     <Compile Include="Controller.vb" />
     <Compile Include="ControllerCliente.vb" />
     <Compile Include="ControllerOferta.vb" />
+    <Compile Include="ControllerRecarga.vb" />
     <Compile Include="ControllerSolicitudDePago.vb" />
     <Compile Include="ControllerUsuario.vb" />
+    <Compile Include="EmailSender.vb" />
     <Compile Include="Functions.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

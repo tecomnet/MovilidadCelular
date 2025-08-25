@@ -107,6 +107,55 @@ Public Class ConvertObject
         End Try
         Return objSolicitudDePago
     End Function
+    Public Shared Function Recarga(ByVal dr As DataRow) As Recarga
+        Dim objRecarga As New Recarga
+        Try
+            If dr.Table.Columns.Contains("RecargaId") Then objRecarga.RecargaId = dr("RecargaId")
+            If dr.Table.Columns.Contains("FechaRecarga") Then objRecarga.FechaRecarga = dr("FechaRecarga")
+            If dr.Table.Columns.Contains("ICCID") Then objRecarga.ICCID = dr("ICCID")
+            If dr.Table.Columns.Contains("ClienteID") Then objRecarga.ClienteID = dr("ClienteID")
+            If dr.Table.Columns.Contains("OfertaID") Then objRecarga.OfertaID = dr("OfertaID")
+            If dr.Table.Columns.Contains("Total") Then objRecarga.Total = dr("Total")
+            If dr.Table.Columns.Contains("MetodoPagoID") Then objRecarga.MetodoPagoID = dr("MetodoPagoID")
+            If dr.Table.Columns.Contains("OrderID") Then objRecarga.OrderID = dr("OrderID")
+            If dr.Table.Columns.Contains("DistribuidorID") Then objRecarga.DistribuidorID = dr("DistribuidorID")
+            If dr.Table.Columns.Contains("EstatusPagoDistribuidorID") Then objRecarga.EstatusPagoDistribuidorID = dr("EstatusPagoDistribuidorID")
+            If dr.Table.Columns.Contains("FechaPagoDistribuidor") Then objRecarga.FechaPagoDistribuidor = IIf(IsDBNull(dr("FechaPagoDistribuidor")), Nothing, dr("FechaPagoDistribuidor"))
+            If dr.Table.Columns.Contains("Comision") Then objRecarga.Comision = dr("Comision")
+            If dr.Table.Columns.Contains("Impuesto") Then objRecarga.Impuesto = dr("Impuesto")
+            If dr.Table.Columns.Contains("DepositoID") Then objRecarga.DepositoID = IIf(IsDBNull(dr("DepositoID")), Nothing, dr("DepositoID"))
+            If dr.Table.Columns.Contains("RequiereFacturaCliente") Then objRecarga.RequiereFacturaCliente = dr("RequiereFacturaCliente")
+            If dr.Table.Columns.Contains("FacturaID") Then objRecarga.FacturaID = IIf(IsDBNull(dr("FacturaID")), Nothing, dr("FacturaID"))
+        Catch ex As Exception
+        End Try
+        Return objRecarga
+    End Function
+    Public Shared Function VisRecarga(ByVal dr As DataRow) As VisRecarga
+        Dim objRecarga As New VisRecarga
+        Try
+            If dr.Table.Columns.Contains("RecargaId") Then objRecarga.RecargaId = dr("RecargaId")
+            If dr.Table.Columns.Contains("FechaRecarga") Then objRecarga.FechaRecarga = dr("FechaRecarga")
+            If dr.Table.Columns.Contains("ICCID") Then objRecarga.ICCID = dr("ICCID")
+            If dr.Table.Columns.Contains("ClienteID") Then objRecarga.ClienteID = dr("ClienteID")
+            If dr.Table.Columns.Contains("OfertaID") Then objRecarga.OfertaID = dr("OfertaID")
+            If dr.Table.Columns.Contains("Total") Then objRecarga.Total = dr("Total")
+            If dr.Table.Columns.Contains("MetodoPagoID") Then objRecarga.MetodoPagoID = dr("MetodoPagoID")
+            If dr.Table.Columns.Contains("OrderID") Then objRecarga.OrderID = dr("OrderID")
+            If dr.Table.Columns.Contains("DistribuidorID") Then objRecarga.DistribuidorID = dr("DistribuidorID")
+            If dr.Table.Columns.Contains("EstatusPagoDistribuidorID") Then objRecarga.EstatusPagoDistribuidorID = dr("EstatusPagoDistribuidorID")
+            If dr.Table.Columns.Contains("FechaPagoDistribuidor") Then objRecarga.FechaPagoDistribuidor = IIf(IsDBNull(dr("FechaPagoDistribuidor")), Nothing, dr("FechaPagoDistribuidor"))
+            If dr.Table.Columns.Contains("Comision") Then objRecarga.Comision = dr("Comision")
+            If dr.Table.Columns.Contains("Impuesto") Then objRecarga.Impuesto = dr("Impuesto")
+            If dr.Table.Columns.Contains("DepositoID") Then objRecarga.DepositoID = IIf(IsDBNull(dr("DepositoID")), Nothing, dr("DepositoID"))
+            If dr.Table.Columns.Contains("RequiereFacturaCliente") Then objRecarga.RequiereFacturaCliente = dr("RequiereFacturaCliente")
+            If dr.Table.Columns.Contains("FacturaID") Then objRecarga.FacturaID = IIf(IsDBNull(dr("FacturaID")), Nothing, dr("FacturaID"))
+            If dr.Table.Columns.Contains("NombreMetodo") Then objRecarga.NombreMetodo = IIf(IsDBNull(dr("NombreMetodo")), Nothing, dr("NombreMetodo"))
+            If dr.Table.Columns.Contains("MSISDN") Then objRecarga.MSISDN = IIf(IsDBNull(dr("MSISDN")), Nothing, dr("MSISDN"))
+            If dr.Table.Columns.Contains("Oferta") Then objRecarga.Oferta = IIf(IsDBNull(dr("Oferta")), Nothing, dr("Oferta"))
+        Catch ex As Exception
+        End Try
+        Return objRecarga
+    End Function
 End Class
 Public Class Securyty
     Public Shared Function Cifrar(ByVal cadena As String) As String

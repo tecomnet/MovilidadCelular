@@ -21,22 +21,22 @@ Public Class ControllerCliente
     '    End Try
     '    Return lstCustomers
     'End Function
-    'Public Function GetCustomer(ByVal CustomerID As Integer) As Customer
-    '    Dim controller As New Controller
-    '    Dim objCustomer As New Customer
-    '    objCustomer.CustomerID = CustomerID
-    '    Try
-    '        Dim dt As New DataSet
-    '        dt = controller.TransactionsCustomer(Of DataSet)(2, objCustomer)
+    Public Function ObtenerClientePorID(ByVal ClienteID As Integer) As Cliente
+        Dim controller As New Controller
+        Dim objCliente As New Cliente
+        objCliente.ClienteId = ClienteID
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsCliente(Of DataSet)(2, objCliente)
 
-    '        For Each dr As DataRow In dt.Tables(0).Rows
-    '            objCustomer = ConvertObject.Customers(dr)
-    '        Next
-    '    Catch ex As Exception
-    '        Return objCustomer
-    '    End Try
-    '    Return objCustomer
-    'End Function
+            For Each dr As DataRow In dt.Tables(0).Rows
+                objCliente = ConvertObject.Cliente(dr)
+            Next
+        Catch ex As Exception
+            Return objCliente
+        End Try
+        Return objCliente
+    End Function
     'Public Function AddCustomer(ByVal objCustomer As Customer) As Integer
     '    Dim exito As Integer
     '    Dim controller As New Controller
@@ -104,6 +104,22 @@ Public Class ControllerCliente
             Return False
         End Try
         Return False
+    End Function
+    Public Function ObtenerClientePorEmail(ByVal email As String) As Cliente
+        Dim controller As New Controller
+        Dim objCliente As New Cliente
+        objCliente.Email = email
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsCliente(Of DataSet)(8, objCliente)
+
+            For Each dr As DataRow In dt.Tables(0).Rows
+                objCliente = ConvertObject.Cliente(dr)
+            Next
+        Catch ex As Exception
+            Return objCliente
+        End Try
+        Return objCliente
     End Function
     'Public Function DesactivateCustomer(ByVal CustomerID As Integer) As Integer
     '    Dim exito As Integer

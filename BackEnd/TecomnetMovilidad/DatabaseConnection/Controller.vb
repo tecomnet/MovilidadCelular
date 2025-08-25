@@ -126,4 +126,42 @@ Public Class Controller
         cnx = Nothing
         Return DirectCast(result, ReturnType)
     End Function
+    Public Function TransactionsRecarga(Of ReturnType)(opcion As Integer, ByVal objRecarga As Recarga) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@RecargaId", SqlDbType.Int, objRecarga.RecargaId))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaRecarga", SqlDbType.DateTime, objRecarga.FechaRecarga))
+        parametros.Add(ConnectionDB.ArmaParametro("@ICCID", SqlDbType.NVarChar, objRecarga.ICCID))
+        parametros.Add(ConnectionDB.ArmaParametro("@ClienteID", SqlDbType.Int, objRecarga.ClienteID))
+        parametros.Add(ConnectionDB.ArmaParametro("@OfertaID", SqlDbType.Int, objRecarga.OfertaID))
+        parametros.Add(ConnectionDB.ArmaParametro("@Total", SqlDbType.Decimal, objRecarga.Total))
+        parametros.Add(ConnectionDB.ArmaParametro("@MetodoPagoID", SqlDbType.Int, objRecarga.MetodoPagoID))
+        parametros.Add(ConnectionDB.ArmaParametro("@OrderID", SqlDbType.NVarChar, objRecarga.OrderID))
+        parametros.Add(ConnectionDB.ArmaParametro("@DistribuidorID", SqlDbType.Int, objRecarga.DistribuidorID))
+        parametros.Add(ConnectionDB.ArmaParametro("@EstatusPagoDistribuidorID", SqlDbType.Int, objRecarga.EstatusPagoDistribuidorID))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaPagoDistribuidor", SqlDbType.DateTime, IIf(IsNothing(objRecarga.FechaPagoDistribuidor), DBNull.Value, objRecarga.FechaPagoDistribuidor)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Comision", SqlDbType.Decimal, objRecarga.Comision))
+        parametros.Add(ConnectionDB.ArmaParametro("@Impuesto", SqlDbType.Decimal, objRecarga.Impuesto))
+        parametros.Add(ConnectionDB.ArmaParametro("@DepositoID", SqlDbType.Int, IIf(IsNothing(objRecarga.DepositoID), DBNull.Value, objRecarga.DepositoID)))
+        parametros.Add(ConnectionDB.ArmaParametro("@RequiereFacturaCliente", SqlDbType.Bit, objRecarga.RequiereFacturaCliente))
+        parametros.Add(ConnectionDB.ArmaParametro("@FacturaID", SqlDbType.Int, IIf(IsNothing(objRecarga.FacturaID), DBNull.Value, objRecarga.FacturaID)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_Recargas]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_Recargas]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_Recargas]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
 End Class

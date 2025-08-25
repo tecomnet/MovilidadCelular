@@ -68,9 +68,9 @@
     '    Suspend = 2
     '    Resumen = 3
     'End Enum
-    'Public Enum TypeMessageMail
-    '    Recharge = 1
-    '    WelcomeCustomer = 2
-    '    NotificationRecharge = 3
-    'End Enum
+    Public Enum TipoDeEmail
+        Recarga = 1
+        Bienvenida = 2
+        SolicitudCambioContrasena = 3
+    End Enum
 End Namespace
