@@ -10,6 +10,7 @@ Public Module WebApiConfig
         Dim cors = New EnableCorsAttribute("*", "*", "*")
         config.EnableCors(cors)
 
+
         ' Rutas de Web API
         config.MapHttpAttributeRoutes()
 

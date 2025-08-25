@@ -18,7 +18,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #000000, #003575ff);
+            background: linear-gradient(to bottom, #003575ff);
             height: 100%;
             margin: 0;
         }
