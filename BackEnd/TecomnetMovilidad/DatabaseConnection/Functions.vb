@@ -47,6 +47,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("MBUsados") Then objTablero.MBUsados = IIf(IsDBNull(dr("MBUsados")), 0, dr("MBUsados"))
             If dr.Table.Columns.Contains("MBDisponibles") Then objTablero.MBDisponibles = IIf(IsDBNull(dr("MBDisponibles")), 0, dr("MBDisponibles"))
             If dr.Table.Columns.Contains("MBAdicionales") Then objTablero.MBAdicionales = IIf(IsDBNull(dr("MBAdicionales")), 0, dr("MBAdicionales"))
+            If dr.Table.Columns.Contains("OfertaID") Then objTablero.OfertaID = dr("OfertaID")
             If dr.Table.Columns.Contains("Oferta") Then objTablero.Oferta = dr("Oferta")
             If dr.Table.Columns.Contains("Descripcion") Then objTablero.Descripcion = dr("Descripcion")
             If dr.Table.Columns.Contains("Minutos") Then objTablero.Minutos = dr("Minutos")
