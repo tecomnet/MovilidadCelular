@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Views\Cliente\CambioContrasena.aspx.vb">
       <DependentUpon>CambioContrasena.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
