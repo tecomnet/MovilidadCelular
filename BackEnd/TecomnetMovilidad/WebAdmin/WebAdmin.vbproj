@@ -125,7 +125,6 @@
     <Content Include="Scripts\js\bootstrap.min.js" />
     <Content Include="Views\Cliente\CambioContrasena.aspx" />
     <Content Include="Web.config" />
-    <Content Include="WebForm1.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.Master.designer.vb">
@@ -161,7 +160,7 @@
       <DependentUpon>CambioContrasena.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Cliente\CambioContrasena.aspx.vb">
-      <DependentUpon>CambioContrasena.aspx</DependentUpon>    
+      <DependentUpon>CambioContrasena.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
