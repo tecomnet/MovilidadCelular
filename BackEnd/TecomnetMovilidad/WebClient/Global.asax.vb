@@ -35,11 +35,7 @@ Public Class Global_asax
             Try
                 If HttpContext.Current.Request.Url.AbsolutePath <> FormsAuthentication.LoginUrl And HttpContext.Current.Session("Usuario") = Nothing Then
                     Select Case HttpContext.Current.Request.Url.AbsolutePath
-                        Case "/TECOMNET/WebClient/Views/Account/Registration.aspx"
-                        Case "/TECOMNET/WebCustomerTECOMNET/Views/Account/Registration.aspx"
-                        Case "/sandbox/WebClient/Views/Account/Registration.aspx"
-                        Case "/TECOMNET/WebCustomerTECOMNET/Views/Recharge/ValidatePaymentLinkX.aspx"
-                        Case "/TECOMNET/WebCustomerTECOMNET/Views/Recharge/RechargeSure.aspx"
+                        Case "/Views/Account/ForgotPassword.aspx"
                         Case Else
                             Server.ClearError()
                             Response.Clear()

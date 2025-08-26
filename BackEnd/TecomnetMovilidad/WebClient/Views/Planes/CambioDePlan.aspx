@@ -22,9 +22,9 @@
             transition: transform 0.2s;
         }
 
-        .plan-card:hover {
-            transform: scale(1.02);
-        }
+            .plan-card:hover {
+                transform: scale(1.02);
+            }
 
         .card-title {
             color: #4ab1e5;
@@ -42,7 +42,6 @@
             margin-top: 4px;
         }
 
-        /* Textos blancos para títulos y etiquetas indicadas */
         .container-plan h3,
         .container-plan label,
         .container-plan h5.mb-3 {
@@ -69,39 +68,26 @@
 
         <h5 class="mb-3">Opciones disponibles (Recarga)</h5>
 
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card plan-card shadow">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Plan 10GB - Internet Ilimitado</h5>
-                        <p class="plan-description">Descripción breve del plan, incluye navegación ilimitada y minutos.</p>
-                        <p class="plan-price">$250.00</p>
-                        <asp:Button ID="btnLoQuiero1" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" />
-                    </div>
+        <asp:ListView ID="lvCambioPlan" runat="server" DataKeyNames="OfertaID">
+            <LayoutTemplate>
+                <div class="row">
+                    <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
                 </div>
-            </div>
+            </LayoutTemplate>
 
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card plan-card shadow">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Plan 20GB - Internet Ilimitado</h5>
-                        <p class="plan-description">Descripción breve del plan, incluye navegación ilimitada y minutos.</p>
-                        <p class="plan-price">$450.00</p>
-                        <asp:Button ID="btnLoQuiero2" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" />
+            <ItemTemplate>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card plan-card shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><%# Eval("Oferta") %></h5>
+                            <p class="plan-description"><%# Eval("Descripcion") %></p>
+                            <p class="plan-price">$<%# Eval("PrecioMensual") %></p>
+                            <asp:Button ID="btnLoQuiero" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" CommandArgument='<%# Eval("OfertaID") %>' />
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card plan-card shadow">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Plan 50GB - Internet Ilimitado</h5>
-                        <p class="plan-description">Descripción breve del plan, incluye navegación ilimitada y minutos.</p>
-                        <p class="plan-price">$850.00</p>
-                        <asp:Button ID="btnLoQuiero3" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" />
-                    </div>
-                </div>
-            </div>
-        </div>
+            </ItemTemplate>
+        </asp:ListView>
     </div>
 </asp:Content>
+

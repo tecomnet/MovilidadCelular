@@ -69,6 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
+    AuthService.clienteId = perfil['ClienteId'];
+    print('➡️ ClienteId asignado: ${AuthService.clienteId}');
 
     bool permisosConcedidos = await Permisos.pedirPermisos();
     if (!permisosConcedidos) {
@@ -222,20 +224,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text('Iniciar Sesión'),
                       ),
                     ),
-
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 24),
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Te hemos enviado un correo con las instrucciones para recuperar tu contraseña.',
-                              ),
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                            ),
-                          );
+                          Navigator.pushNamed(context, '/recuperarPassword');
                         },
                         child: Text(
                           '¿Olvidaste tu contraseña?',

@@ -13,7 +13,7 @@
         .card-form {
             border-radius: 16px;
             padding: 20px;
-            background-color: #1a3b6d; /* azul oscuro */
+            background-color: #1a3b6d;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
@@ -30,13 +30,13 @@
         .form-label {
             font-weight: 600;
             margin-top: 12px;
-            color: white; /* texto en blanco */
+            color: white;
         }
 
         .form-control {
             border-radius: 12px;
             padding: 10px;
-            background-color: #ffffff; /* fondo blanco para los inputs */
+            background-color: #ffffff;
         }
 
         .btn-submit {
@@ -69,16 +69,24 @@
         <div class="card-form">
             <div class="card-header">Cambio de contraseña</div>
 
-            <label class="form-label">Contraseña actual</label>
-            <input type="password" class="form-control" />
+            <asp:Label CssClass="form-label" AssociatedControlID="txtContrasenaActual" runat="server" Text="Contraseña actual"></asp:Label>
+            <asp:TextBox ID="txtContrasenaActual" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
 
-            <label class="form-label">Nueva contraseña</label>
-            <input type="password" class="form-control" />
+            <asp:Label CssClass="form-label" AssociatedControlID="txtNuevaContrasena" runat="server" Text="Nueva contraseña"></asp:Label>
+            <asp:TextBox ID="txtNuevaContrasena" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
 
-            <label class="form-label">Confirmar nueva contraseña</label>
-            <input type="password" class="form-control" />
+            <asp:Label CssClass="form-label" AssociatedControlID="txtConfirmarContrasena" runat="server" Text="Confirmar nueva contraseña"></asp:Label>
+            <asp:TextBox ID="txtConfirmarContrasena" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
 
-            <button class="btn-submit">Cambiar contraseña</button>
-        </div>    
+            <asp:Button ID="btnCambiar" runat="server" CssClass="btn-submit" Text="Cambiar contraseña" OnClick="btnCambiar_Click" />
+            <asp:Label ID="lblExito" runat="server"
+                ForeColor="Green"
+                Visible="False" />
+
+            <asp:Label ID="lblError" runat="server"
+                ForeColor="Red"
+                Visible="False" />
+
+        </div>
     </div>
 </asp:Content>

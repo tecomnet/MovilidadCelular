@@ -40,6 +40,11 @@ class AuthService {
 
   static String? get email => _email;
   static String? get password => _password;
+  static int? _clienteId;
+static int? get clienteId => _clienteId;
+static set clienteId(int? value) {
+  _clienteId = value;
+}
 
   static Future<Map<String, dynamic>?> obtenerPerfil() async {
     if (_token == null || _email == null || _password == null) {
@@ -140,6 +145,40 @@ class AuthService {
     return null;
   }
 }
+static Future<Map<String, dynamic>?> obtenerOfertaPorId(int ofertaId) async {
+  if (_token == null) {
+    print('⚠️ Token no disponible, no se puede obtener oferta');
+    return null;
+  }
+
+  final url = Uri.parse(
+    'https://tecomnet.net/movilidad/WebApi/api/Ofertas/$ofertaId',
+  );
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $_token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final oferta = jsonDecode(response.body) as Map<String, dynamic>;
+      print('✅ Oferta recibida con ID $ofertaId: $oferta');
+      return oferta;
+    } else {
+      print('❌ Error al obtener oferta: ${response.statusCode}');
+      print('Respuesta: ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('❌ Excepción al obtener oferta: $e');
+    return null;
+  }
+}
+
 
 static Future<String?> generarOrderID({
   required String iccid,
@@ -357,5 +396,70 @@ static Future<String?> generarOrderID({
   }
 }
 
+  static Future<List<Map<String, dynamic>>?> obtenerRecargas(int clienteId) async {
+  if (_token == null) {
+    print('⚠️ Token no disponible, no se puede obtener tablero');
+    return null;
+  }
+
+  final url = Uri.parse(
+    'https://tecomnet.net/movilidad/WebApi/api/Recargas/Cliente/$clienteId',
+  );
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $_token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final recargas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
+      print('✅ Recargas recibidas: $recargas');
+      return recargas;
+    } else {
+      print('❌ Error al obtener recargas: ${response.statusCode}');
+      print('Respuesta: ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('Excepción al obtener recargas: $e');
+    return null;
+  }
+}
   
+  static Future<Map<String, dynamic>?> recuperarContrasena(String email) async {
+    if (_token == null ) {
+      print('Token no disponible');
+      return null;
+    }
+
+    final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/Cliente/SolicitudCambioPassword');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'email': email,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Respuesta: $data');
+        return data;
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Excepción: $e');
+      return null;
+    }
+  }
 }

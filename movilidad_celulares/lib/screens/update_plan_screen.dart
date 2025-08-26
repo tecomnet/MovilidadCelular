@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
 
 class UpdatePlanScreen extends StatefulWidget {
@@ -11,23 +12,7 @@ class UpdatePlanScreen extends StatefulWidget {
 
 class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   String tipoPlanActual = 'prepago';
-  int? planSeleccionadoIndex;
-  String vistaActual = 'prepago';
-  bool cargando = false;
-
-  int obtenerPrecioDelPlan(Map<String, dynamic> plan) {
-    switch (vistaActual) {
-      case 'prepago':
-        return ((plan['PrecioMensual'] ?? 0) * 100).toInt();
-      case 'pago_recurrente':
-        return ((plan['PrecioRecurrente'] ?? 0) * 100).toInt();
-      case 'pago_anticipado':
-        return ((plan['PrecioAnual'] ?? 0) * 100).toInt();
-      default:
-        return 0;
-    }
-  }
-
+  bool cargando = true;
   List<Map<String, dynamic>> planesDisponibles = [];
 
   final Map<String, String> nombresTipos = {
@@ -36,11 +21,18 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
     'pago_anticipado': 'Plan Anual',
   };
 
-  final Map<String, int> tipoPlanIndices = {
-    'prepago': 1,
-    'pago_recurrente': 2,
-    'pago_anticipado': 3,
+  
+  final Map<int, String> tipoNumeroATipo = {
+    2: 'prepago', 
+    1: 'pago_recurrente', 
+    3: 'pago_anticipado', 
   };
+
+  int get tipoPlanActualNumero {
+    return tipoNumeroATipo.entries
+        .firstWhere((e) => e.value == tipoPlanActual)
+        .key;
+  }
 
   @override
   void initState() {
@@ -49,109 +41,90 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   }
 
   Future<void> cargarPlanes() async {
-    setState(() {
-      cargando = true;
-    });
+    setState(() => cargando = true);
 
-    final tipo = tipoPlanIndices[vistaActual] ?? 1;
-    final data = await AuthService.obtenerOfertasPorTipo(tipo);
+    final perfil = await AuthService.obtenerPerfil();
+    final tablero = await AuthService.obtenerTablero(perfil?['ClienteId'] ?? 0);
+
+    if (tablero != null && tablero.isNotEmpty) {
+      final planActual = tablero.first;
+      tipoPlanActual = tipoNumeroATipo[planActual['Tipo']] ?? 'prepago';
+    }
+
+    List<Map<String, dynamic>> todasOfertas = [];
+    for (var tipo in [1, 2, 3]) {
+      final ofertas = await AuthService.obtenerOfertasPorTipo(tipo);
+      if (ofertas != null) todasOfertas.addAll(ofertas);
+    }
 
     setState(() {
-      planesDisponibles = data ?? [];
+      planesDisponibles = todasOfertas;
       cargando = false;
     });
   }
 
-  void cambiarVista(String nuevaVista) {
-    setState(() {
-      vistaActual = nuevaVista;
-      planSeleccionadoIndex = null;
-    });
-    cargarPlanes();
+  int obtenerPrecioDelPlan(Map<String, dynamic> plan) {
+    switch (plan['Tipo']) {
+      case 2:
+        return ((plan['PrecioMensual'] ?? 0) * 100).toInt();
+      case 1:
+        return ((plan['PrecioRecurrente'] ?? 0) * 100).toInt();
+      case 3:
+        return ((plan['PrecioAnual'] ?? 0) * 100).toInt();
+      default:
+        return 0;
+    }
+  }
+
+  List<Map<String, dynamic>> get planesAlternativos {
+    return planesDisponibles
+        .where((p) => p['Tipo'] != tipoPlanActualNumero)
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final botonesOpciones = [
-      'prepago',
-      'pago_recurrente',
-      'pago_anticipado',
-    ].where((tipo) => tipo != tipoPlanActual).toList();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Actualizar Plan'),
-        backgroundColor: Colors.indigo,
-      ),
+    return BaseScaffold(
+      title: 'Actualizar Plan',
       body: Container(
-        color: Colors.blue[50],
+        color: const Color.fromARGB(255, 10, 52, 114),
         padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Tipo de plan actual:', style: TextStyle(fontSize: 16)),
-            const SizedBox(height: 8),
-            DropdownButton<String>(
-              value: tipoPlanActual,
-              items: const [
-                DropdownMenuItem(value: 'prepago', child: Text('Recarga')),
-                DropdownMenuItem(
-                  value: 'pago_recurrente',
-                  child: Text('Plan Mensual'),
-                ),
-                DropdownMenuItem(
-                  value: 'pago_anticipado',
-                  child: Text('Plan Anual'),
-                ),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    tipoPlanActual = value;
-                    vistaActual = value;
-                    planSeleccionadoIndex = null;
-                  });
-                  cargarPlanes();
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              children: botonesOpciones
-                  .map(
-                    (tipo) => ElevatedButton(
-                      onPressed: () => cambiarVista(tipo),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: vistaActual == tipo
-                            ? Colors.blue
-                            : Colors.blue[200],
-                      ),
-                      child: Text(nombresTipos[tipo]!),
+        child: cargando
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Tu plan actual: ${nombresTipos[tipoPlanActual]}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                  )
-                  .toList(),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Opciones disponibles (${nombresTipos[vistaActual]})',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            cargando
-                ? const Center(child: CircularProgressIndicator())
-                : Expanded(
-                    child: planesDisponibles.isEmpty
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Opciones disponibles:',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: planesAlternativos.isEmpty
                         ? const Center(
-                            child: Text('No hay planes disponibles.'),
+                            child: Text(
+                              'No hay planes disponibles.',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           )
                         : PageView.builder(
                             controller: PageController(viewportFraction: 0.85),
-                            itemCount: planesDisponibles.length,
+                            itemCount: planesAlternativos.length,
                             itemBuilder: (context, index) {
-                              final plan = planesDisponibles[index];
-                              final seleccionado =
-                                  planSeleccionadoIndex == index;
+                              final plan = planesAlternativos[index];
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
@@ -187,40 +160,28 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                             fontSize: 16,
                                           ),
                                         ),
-
                                         const Spacer(),
                                         Center(
                                           child: ElevatedButton(
                                             onPressed: () async {
-                                              final plan =
-                                                  planesDisponibles[index];
+                                              final precio =
+                                                  obtenerPrecioDelPlan(
+                                                    plan,
+                                                  );
+
                                               final orderIdTec =
                                                   await AuthService.generarOrderID(
-                                                    iccid:
-                                                        'HJFDKJHSF98743978', 
+                                                    iccid: 'HJFDKJHSF98743978',
                                                     ofertaActualId:
                                                         plan['OfertaID']
                                                             .toString(),
                                                     ofertaNuevaId:
                                                         plan['OfertaID']
                                                             .toString(),
-                                                    monto:
-                                                        plan['PrecioRecurrente']
-                                                            .toString(),
+                                                    monto: precio.toString(),
                                                   );
 
-                                              if (orderIdTec == null) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      "Error al generar OrderID",
-                                                    ),
-                                                  ),
-                                                );
-                                                return;
-                                              }
+                                              if (orderIdTec == null) return;
 
                                               final token =
                                                   await AuthService.obtenerTokenRecargas(
@@ -228,50 +189,26 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                                     "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
                                                   );
 
-                                              if (token == null) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      "Error al obtener token",
-                                                    ),
-                                                  ),
-                                                );
-                                                return;
-                                              }
+                                              if (token == null) return;
 
                                               final link =
                                                   await AuthService.obtenerLinkDePago(
                                                     token: token,
                                                     amount:
-                                                        (plan['PrecioRecurrente'] *
-                                                                100)
-                                                            .toInt(),
+                                                        precio, 
                                                     description:
                                                         plan['Oferta'] ??
                                                         'Renovación del plan',
                                                     orderId: orderIdTec,
                                                   );
 
-                                              if (link == null) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      "Error al generar link de pago",
-                                                    ),
-                                                  ),
-                                                );
-                                                return;
-                                              }
+                                              if (link == null) return;
 
                                               if (context.mounted) {
                                                 showDialog(
                                                   context: context,
                                                   barrierDismissible: true,
-                                                  builder: (BuildContext context) {
+                                                  builder: (context) {
                                                     final screenSize =
                                                         MediaQuery.of(
                                                           context,
@@ -304,9 +241,7 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                               }
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: seleccionado
-                                                  ? Colors.green
-                                                  : Colors.blue,
+                                              backgroundColor: Colors.blue,
                                               foregroundColor: Colors.white,
                                             ),
                                             child: const Text('Lo quiero'),
@@ -320,8 +255,8 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                             },
                           ),
                   ),
-          ],
-        ),
+                ],
+              ),
       ),
     );
   }

@@ -14,20 +14,29 @@ Option Explicit On
 Partial Public Class Inicio
 
     '''<summary>
-    '''Control btnRenovarPlan.
+    '''Control lvPaquetes.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents btnRenovarPlan As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents lvPaquetes As Global.System.Web.UI.WebControls.ListView
 
     '''<summary>
-    '''Control btnRecargarSaldo.
+    '''Control pnlPago.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents btnRecargarSaldo As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents pnlPago As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control iframePago.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents iframePago As Global.System.Web.UI.HtmlControls.HtmlIframe
 End Class

@@ -32,36 +32,79 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container my-4">
+
         <div class="card text-center mx-auto mt-3" style="max-width: 600px; background-color: #0056b3;">
             <div class="card-body text-white">
-                <h5 class="card-title">Hola Escandón Cruz Enrique</h5>
+                <asp:Label CssClass="card-title" runat="server" Text="Hola Escandón Cruz Enrique"></asp:Label>
             </div>
         </div>
 
-        <div class="card mx-auto mt-4" style="max-width: 600px;">
-            <div class="card-body text-center">
-                <h5 class="card-title">Plan 10GB - Internet Ilimitado</h5>
-                
-                <div class="percent-circle">
-                    <div>
-                        <div><i class="bi bi-globe" style="font-size:26px;color:#0078D7;"></i></div>
-                        <small style="color: gray;">Ha consumido</small>
-                        <div style="color:#0078D7; font-size:18px; font-weight:bold;">2.50 GB</div>
-                        <small>de 10.00 GB</small>
+        <asp:ListView ID="lvPaquetes" runat="server" DataKeyNames="SIMID, ICCID">
+            <ItemTemplate>
+                <div class="card mx-auto mt-4" style="max-width: 600px;">
+                    <div class="card-body text-center">
+                        <asp:Label CssClass="card-title" runat="server" Text='<%# String.Format("{0} - {1}", Eval("Oferta"), Eval("Descripcion")) %>'></asp:Label>
+
+                        <div class="percent-circle mt-3">
+                            <div>
+                                <div><i class="bi bi-globe" style="font-size: 26px; color: #0078D7;"></i></div>
+                                <small style="color: gray;">Ha consumido</small>
+                                <div style="color: #0078D7; font-size: 18px; font-weight: bold;">
+                                    <%# (Convert.ToDouble(Eval("MBUsados")) / 1024).ToString("0.00") %> GB
+                                </div>
+                                <small>
+                                    de <%# (Convert.ToDouble(Eval("MBAsignados")) / 1024).ToString("0.00") %> GB
+                                </small>
+                            </div>
+                        </div>
+
+                        <asp:Label runat="server" CssClass="mt-3" Text='<%# "Vigencia: " & Convert.ToDateTime(Eval("FechaVencimiento")).ToString("yyyy-MM-dd") %>'></asp:Label>
+
+                        <div class="row mt-2">
+                            <div class="col">
+                                <b>
+                                    <%# (Convert.ToDouble(Eval("MBUsados")) / Convert.ToDouble(Eval("MBAsignados")) * 100).ToString("0") %>%
+                                </b><br/>
+                                Consumido
+                            </div>
+                            <div class="col">
+                                <b>
+                                    <%# (Convert.ToDouble(Eval("MBDisponibles")) / 1024).ToString("0.00") %> GB
+                                </b><br/>
+                                Disponible
+                            </div>
+                        </div>      
+                        <div class="mt-4">
+                            <asp:Button ID="btnRenovarPlan" runat="server" CssClass="btn btn-primary me-2" Text="Renovar Plan" OnClick="btnRenovarPlan_Click" />                            
+                            <asp:Button ID="btnRecargarSaldo" runat="server" CssClass="btn btn-primary" Text="Recargar Saldo" />
+                        </div>
                     </div>
                 </div>
+            </ItemTemplate>
+        </asp:ListView>
 
-                <p class="mt-3"><b>Vigencia:</b> 2025-08-31</p>
-                <div class="row mt-2">
-                    <div class="col"><b>25%</b><br>Consumido</div>
-                    <div class="col"><b>7.50 GB</b><br>Disponible</div>
-                </div>
+    </div> 
 
-                <div class="mt-4">
-                    <asp:Button ID="btnRenovarPlan" runat="server" CssClass="btn btn-primary me-2" Text="Renovar Plan" />
-                    <asp:Button ID="btnRecargarSaldo" runat="server" CssClass="btn btn-primary" Text="Recargar Saldo" />
+    <asp:Panel ID="pnlPago" runat="server" Visible="False">
+        <div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalPagoLabel">Renovar Plan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe id="iframePago" runat="server" style="width:100%; height:400px; border:none;"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </asp:Panel>
+     <script type="text/javascript">
+        function abrirModal() {
+            var myModal = new bootstrap.Modal(document.getElementById('modalPago'));
+            myModal.show();
+        }
+     </script>
 </asp:Content>
+

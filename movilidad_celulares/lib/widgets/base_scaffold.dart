@@ -15,6 +15,20 @@ class BaseScaffold extends StatelessWidget {
     this.centerTitle = true,
   }) : super(key: key);
 
+  void _navigate(BuildContext context, String routeName, {bool clearStack = false}) {
+    Navigator.pop(context);
+
+    if (clearStack) {
+      Navigator.pushNamedAndRemoveUntil(context, routeName, (route) => false);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        routeName,
+        (route) => route.settings.name == '/home',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,15 +37,15 @@ class BaseScaffold extends StatelessWidget {
         centerTitle: centerTitle,
         actions: [
           Transform.translate(
-            offset: const Offset(0, 4), 
+            offset: const Offset(0, 4),
             child: IconButton(
               icon: const Icon(Icons.phone),
               tooltip: 'Llamar',
               onPressed: () async {
                 const phoneNumber = 'tel:5597297420';
-                if(await canLaunchUrl(Uri.parse(phoneNumber))){
+                if (await canLaunchUrl(Uri.parse(phoneNumber))) {
                   await launchUrl(Uri.parse(phoneNumber));
-                }else{
+                } else {
                   print('No se pudo abrir el marcador');
                 }
               },
@@ -43,17 +57,16 @@ class BaseScaffold extends StatelessWidget {
               icon: const FaIcon(FontAwesomeIcons.whatsapp),
               tooltip: 'WhatsApp',
               onPressed: () async {
-            final whatsappNumber = '+525524941739'; 
-            final whatsappUrl = Uri.parse(
-              'https://wa.me/$whatsappNumber?text=Hola%20quiero%20informes'
-            );
-
-            if (await canLaunchUrl(whatsappUrl)) {
-              await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-            } else {
-              print('No se pudo abrir WhatsApp');
-            }
-          },
+                final whatsappNumber = '+525524941739';
+                final whatsappUrl = Uri.parse(
+                  'https://wa.me/$whatsappNumber?text=Hola%20quiero%20informes',
+                );
+                if (await canLaunchUrl(whatsappUrl)) {
+                  await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                } else {
+                  print('No se pudo abrir WhatsApp');
+                }
+              },
             ),
           ),
         ],
@@ -79,98 +92,51 @@ class BaseScaffold extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.home, color: Colors.black),
-              title: const Text(
-                'Inicio',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, '/home');
-              },
+              title: const Text('Inicio', style: TextStyle(color: Colors.black)),
+              onTap: () => Navigator.popUntil(context, ModalRoute.withName('/home')),
             ),
             ListTile(
               leading: const Icon(Icons.autorenew, color: Colors.black),
-              title: const Text(
-                'Actualizar plan',
-                style: TextStyle(color: Colors.black),
-                ),
-                onTap: (){
-                  Navigator.pushNamed(context, '/redirect');
-                },
-                ),
+              title: const Text('Actualizar plan', style: TextStyle(color: Colors.black)),
+              onTap: () => _navigate(context, '/redirect'),
+            ),
             ListTile(
-              leading: const Icon(Icons.settings, color: Colors.black),
-              title: const Text(
-                'Mi perfil',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () => Navigator.pop(context),
+              leading: const Icon(Icons.people_alt_rounded, color: Colors.black),
+              title: const Text('Mi perfil', style: TextStyle(color: Colors.black)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: ListTile(
-                leading: const Icon(
-                  Icons.phone_android,
-                  size: 20,
-                  color: Colors.black,
-                ),
-                title: const Text(
-                  'Ver recargas',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/refills');
-                },
+                leading: const Icon(Icons.phone_android, size: 20, color: Colors.black),
+                title: const Text('Ver recargas', style: TextStyle(fontSize: 14, color: Colors.black)),
+                onTap: () => _navigate(context, '/refills'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: ListTile(
-                leading: const Icon(
-                  Icons.person,
-                  size: 20,
-                  color: Colors.black,
-                ),
-                title: const Text(
-                  'Mi perfil',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/profile');
-                },
+                leading: const Icon(Icons.people_outline_sharp, size: 20, color: Colors.black),
+                title: const Text('Mi perfil', style: TextStyle(fontSize: 14, color: Colors.black)),
+                onTap: () => _navigate(context, '/profile'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: ListTile(
-                leading: const Icon(
-                  Icons.lock_reset,
-                  size: 20,
-                  color: Colors.black,
-                ),
-                title: const Text(
-                  'Cambiar Contraseña',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/changePassword');
-                },
+                leading: const Icon(Icons.lock_reset, size: 20, color: Colors.black),
+                title: const Text('Cambiar Contraseña', style: TextStyle(fontSize: 14, color: Colors.black)),
+                onTap: () => _navigate(context, '/changePassword'),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.info_outline, color: Colors.black),
-              title: const Text(
-                'Abrir Diagnóstico',
-                style: TextStyle(color: Colors.black, fontSize: 14),
-              ),
+              title: const Text('Abrir Diagnóstico', style: TextStyle(color: Colors.black, fontSize: 14)),
               onTap: () => CallNativeCode.openHelp(),
             ),
-
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.black),
               title: const Text('Salir', style: TextStyle(color: Colors.black)),
-              onTap: () {
-                Navigator.pushNamed(context, '/login');
-              },
+              onTap: () => _navigate(context, '/login', clearStack: true),
             ),
           ],
         ),

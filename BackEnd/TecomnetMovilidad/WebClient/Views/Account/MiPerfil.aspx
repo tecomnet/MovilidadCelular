@@ -16,13 +16,13 @@
             width: 100%;
         }
 
-        .card-section .card-header {
-            background-color: #1976d2;
-            color: white;
-            font-weight: 600;
-            font-size: 1.2rem;
-            text-align: center;
-        }
+            .card-section .card-header {
+                background-color: #1976d2;
+                color: white;
+                font-weight: 600;
+                font-size: 1.2rem;
+                text-align: center;
+            }
 
         /* Campos flexibles */
         .field-row {
@@ -57,6 +57,7 @@
             .field-row {
                 flex-direction: column;
             }
+
             .field-label, .field-value {
                 flex: 1 1 100%;
             }
@@ -68,82 +69,82 @@
     <div class="container-fluid container-perfil">
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-8">
-                
+
                 <div class="card card-section shadow">
                     <div class="card-header">Mis datos personales</div>
                     <div class="card-body">
                         <div class="field-row">
-                            <div class="field-label">Nombre:</div>
-                            <div class="field-value">Juan</div>
+                            <span class="field-label">Nombre:</span>
+                            <asp:Label CssClass="field-value" runat="server" ID="lblNombre"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Apellido Paterno:</div>
-                            <div class="field-value">Pérez</div>
+                            <span class="field-label">Apellido Paterno:</span>
+                            <asp:Label CssClass="field-value" runat="server" ID="lblApellidoP"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Apellido Materno:</div>
-                            <div class="field-value">Garrido</div>
+                            <span class="field-label">Apellido Materno:</span>
+                            <asp:Label CssClass="field-value" ID="lblApellidoM" runat="server" ></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Fecha Cumpleaños:</div>
-                            <div class="field-value">01/01/1990</div>
+                            <span class="field-label">Fecha Cumpleaños:</span>
+                            <asp:Label CssClass="field-value" ID="lblFechaCumpleanios" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">CURP:</div>
-                            <div class="field-value">PEGA900101HDFRRN01</div>
+                            <span class="field-label">CURP:</span>
+                            <asp:Label CssClass="field-value" ID="lblCurp" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Teléfono:</div>
-                            <div class="field-value">55-1234-5678</div>
+                            <span class="field-label">Teléfono:</span>
+                            <asp:Label CssClass="field-value" ID="lblTelefono" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Email:</div>
-                            <div class="field-value">juan.perez@correo.com</div>
+                            <span Class="field-label">Email:</span>
+                            <asp:Label CssClass="field-value" ID="lblEmail" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Estado:</div>
-                            <div class="field-value">CDMX</div>
+                            <asp class="field-label">Estado:</asp>
+                            <asp:Label CssClass="field-value" ID="lblEstado" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Colonia:</div>
-                            <div class="field-value">Centro</div>
+                            <asp class="field-label">Colonia:</asp>
+                            <asp:Label CssClass="field-value" ID="lblColonia" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Dirección:</div>
-                            <div class="field-value">Av. Reforma 123</div>
+                            <asp class="field-label">Dirección:</asp>
+                            <asp:Label CssClass="field-value" ID="lblDireccion" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Código Postal:</div>
-                            <div class="field-value">06000</div>
+                            <asp class="field-label">Código Postal:</asp>
+                            <asp:Label CssClass="field-value" ID="lblCP" runat="server"></asp:Label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Datos fiscales -->
                 <div class="card card-section shadow">
-                    <div class="card-header">Datos fiscales</div>
+                    <asp CssClass="card-header">Datos fiscales</asp>
                     <div class="card-body">
                         <div class="field-row">
-                            <div class="field-label">RFC:</div>
-                            <div class="field-value">PEGA900101XXX</div>
+                            <asp class="field-label">RFC:</asp>
+                            <asp:Label CssClass="field-value" ID="lblRFC" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">RFC Facturación:</div>
-                            <div class="field-value">PEGA900101XXX</div>
+                            <asp class="field-label">RFC Facturación:</asp>
+                            <asp:Label CssClass="field-value" ID="lblRFCFacturacion" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Nombre Razon Social:</div>
-                            <div class="field-value">Juan Pérez S.A.</div>
+                            <asp class="field-label">Nombre Razon Social:</asp>
+                            <asp:Label CssClass="field-value" ID="lblRazonSocial" runat="server"></asp:Label>
                         </div>
                         <div class="field-row">
-                            <div class="field-label">Régimen Fiscal:</div>
-                            <div class="field-value">Persona Física</div>
+                            <asp class="field-label">Régimen Fiscal:</asp>
+                            <asp:Label CssClass="field-value" ID="lblRegimenFiscal" runat="server"></asp:Label>
                         </div>
                     </div>
                 </div>
 
                 <div class="footer-text">
-                    Para realizar cambios en su perfil, favor de enviar un correo a:<br/>
+                    Para realizar cambios en su perfil, favor de enviar un correo a:<br />
                     comercial@tecomnet.mx
                 </div>
 
