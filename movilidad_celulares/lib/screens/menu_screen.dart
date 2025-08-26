@@ -22,7 +22,7 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
         child: FutureBuilder<List<Map<String, dynamic>>?>(
-          future: AuthService.obtenerOfertasPorTipo(3),
+          future: AuthService.obtenerOfertasPorTipo(2),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -48,6 +48,8 @@ class MenuScreen extends StatelessWidget {
                   cost:
                       '\$${(oferta['PrecioRecurrente'] ?? 0).toStringAsFixed(2)} MXN',
                   ofertaData: oferta,
+                  ofertaId: oferta['OfertaID'].toString(),
+                  iccid:  oferta['ICCID'].toString(),
                 );
               },
             );
@@ -62,6 +64,8 @@ class MenuScreen extends StatelessWidget {
     required String title,
     required String cost,
     Map<String, dynamic>? ofertaData,
+    required String ofertaId,
+    required String iccid,
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -86,11 +90,7 @@ class MenuScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 8),
-                const Text(
-                  'Vigencia: Al corte de tu factura',
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                ),
+                const SizedBox(height: 8),               
                 const SizedBox(height: 16),
                 if (ofertaData != null) ...[
                   Text('Descripción: ${ofertaData["Descripcion"] ?? "-"}'),
@@ -125,8 +125,8 @@ class MenuScreen extends StatelessWidget {
                 }
 
                 final orderIdTec = await AuthService.generarOrderID(
-                  iccid: 'HJFDKJHSF98743978', 
-                  ofertaActualId: '2345', 
+                  iccid: iccid, 
+                  ofertaActualId:ofertaId , 
                   ofertaNuevaId: '6544', 
                   monto: precio.toString(),
                 );

@@ -95,11 +95,11 @@ Partial Public Class Login
     Protected WithEvents btnIngresar As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''Control lnkOlvidoContrasena.
+    '''Control hlOlvidoContrasena.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents lnkOlvidoContrasena As Global.System.Web.UI.WebControls.LinkButton
+    Protected WithEvents hlOlvidoContrasena As Global.System.Web.UI.WebControls.HyperLink
 End Class

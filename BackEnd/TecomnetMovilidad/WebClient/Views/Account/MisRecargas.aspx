@@ -6,135 +6,62 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #145991, #0a3472);
         }
         .container-recargas {
             padding: 20px;
         }
-        .card-header {
-            background-color: #1565C0;
+        .card-custom {
+            background-color: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 1000px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+        .header-card {
+            background-color: #145991;
             color: white;
-            padding: 16px;
-            border-radius: 8px;
+            font-weight: bold;
             text-align: center;
-            font-weight: 600;
-            font-size: 18px;
+            padding: 12px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         .grid-card {
-            background-color: white;
-            color: black;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            overflow-x: auto;
-            max-height: 400px; /* Para scroll vertical si hay muchas filas */
-            overflow-y: auto;
+            max-height: 400px;
+            overflow: auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background-color: #E0E0E0;
-            padding: 8px;
-            text-align: left;
-        }
-        td {
-            padding: 8px;
-        }
-        .footer {
+        .footer-text {
             text-align: center;
-            margin: 20px 0;
             font-size: 14px;
             font-weight: bold;
             color: white;
+            margin-top: 20px;
         }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-recargas">
-        <div class="card-header">
-            Consulta tus recargas
-        </div>
-
-        <div class="grid-card">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Auto</th>
-                        <th>Costo</th>
-                        <th>Fecha</th>
-                        <th>Método de pago</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Mas MB para tu BYD 2</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:48:24 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>ILIMITADO BYD TOTAL</td>
-                        <td>ALL RAIN</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:52:38 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                    <tr>
-                        <td>Mas MB para tu BYD 4</td>
-                        <td>HAN MOTORS</td>
-                        <td>$10.00</td>
-                        <td>2/6/2025 1:55:30 PM</td>
-                        <td>Card</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="card card-custom">
+            <div class="header-card">Consulta tus recargas</div>
+            <asp:Panel ID="pnlRecargas" runat="server">
+                <asp:Label ID="lblNoRecargas" runat="server" CssClass="text-center d-block mb-3" 
+                           Text="Aún no hay recargas disponibles" Visible="False"></asp:Label>
+                <div class="grid-card table-responsive">
+                    <asp:GridView ID="gvRecargas" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered table-striped"
+                        EmptyDataText="No hay recargas disponibles">
+                        <Columns>
+                            <asp:BoundField HeaderText="Oferta" DataField="Oferta" />
+                            <asp:BoundField HeaderText="MSISDN" DataField="MSISDN" />
+                            <asp:BoundField HeaderText="Total" DataField="Total" DataFormatString="{0:C}" />
+                            <asp:BoundField HeaderText="Fecha" DataField="FechaRecarga" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
+                            <asp:BoundField HeaderText="Método de pago" DataField="NombreMetodo" />
+                        </Columns>
+                    </asp:GridView>
+                </div>
+            </asp:Panel>
+            </div>
     </div>
 </asp:Content>

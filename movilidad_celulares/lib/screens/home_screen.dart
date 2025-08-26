@@ -16,6 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String status = "Listo";
   List<dynamic> _ofertas = [];
   bool _isLoading = true;
+  String nombreCompleto = '';
+  String telefono = '';
 
   @override
   void initState() {
@@ -26,6 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> cargarOfertas() async {
     final perfil = await AuthService.obtenerPerfil();
     if (perfil != null) {
+      setState(() {
+        nombreCompleto =
+            '${perfil['Nombre']} ${perfil['ApellidoPaterno']} ${perfil['ApellidoMaterno']}';
+      });
       final clienteId = perfil['ClienteId'];
       final ofertas = await AuthService.obtenerTablero(clienteId);
 
@@ -36,6 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
               sim['MSISDN'] != null &&
               sim['MSISDN'].toString().isNotEmpty,
           orElse: () => ofertas.first,
+        );
+        print(
+          "✅ Oferta actual: ${simActiva['Oferta']}, ICCID: ${simActiva['ICCID']}, SIMID: ${simActiva['SIMID']}, OFERTAID: ${simActiva['OfertaID']}",
         );
 
         final msisdn = simActiva['MSISDN'];
@@ -49,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         setState(() {
           _ofertas = ofertas;
+          telefono = msisdn ?? '';
           _isLoading = false;
         });
       } else {
@@ -82,27 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       status = "Interfaz mostrada";
     });
-  }
-
-  Future<bool> _onWillPop() async {
-    bool? exitApp = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Estas saliendo de Movilidad Tecomnet'),
-        content: const Text('¿Estas seguro que quieres salir?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('No'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Sí'),
-          ),
-        ],
-      ),
-    );
-    return exitApp ?? false;
   }
 
   Widget buildDataUsageIndicator(
@@ -192,7 +181,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () async {
+        final shouldExit = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('¿Deseas salir de la app?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Salir'),
+              ),
+            ],
+          ),
+        );
+        return shouldExit ?? false;
+      },
       child: BaseScaffold(
         title: 'Home',
         body: Container(
@@ -217,10 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.only(bottom: 20),
                             child: Center(
                               child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      600, 
-                                ),
+                                constraints: BoxConstraints(maxWidth: 600),
                                 child: Column(
                                   children: [
                                     const SizedBox(height: 10),
@@ -233,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: const EdgeInsets.all(16.0),
                                         child: Center(
                                           child: Text(
-                                            'Hola Escandon Cruz Enrique',
+                                            'HOLA $nombreCompleto\n Teléfono: $telefono',
+                                            textAlign: TextAlign.center,
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 18,
@@ -245,53 +250,65 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     ..._ofertas.map((oferta) {
-                                      final String ofertaNombre =
-                                          oferta['Oferta'] ?? '';
-                                      final double precio =
-                                          double.tryParse(
-                                            RegExp(r'\d+')
-                                                    .firstMatch(ofertaNombre)
-                                                    ?.group(0) ??
-                                                '',
-                                          ) ??
-                                          0.0;
-
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 20,
+                                      return FutureBuilder<
+                                        Map<String, dynamic>?
+                                      >(
+                                        future: AuthService.obtenerOfertaPorId(
+                                          oferta['OfertaID'],
                                         ),
-                                        child: buildDataCard(
-                                          context,
-                                          title:
-                                              '$ofertaNombre - ${oferta['Descripcion']}',
-                                          included:
-                                              '${oferta['MBAsignados']} MB',
-                                          additional:
-                                              '${oferta['MBAdicionales']} MB',
-                                          available:
-                                              '${oferta['MBDisponibles']} MB',
-                                          used: '${oferta['MBUsados']} MB',
-                                          minutes: '${oferta['Minutos']}',
-                                          sms: '${oferta['Sms']}',
-                                          validity:
-                                              oferta['FechaVencimiento']
-                                                  ?.split('T')
-                                                  .first ??
-                                              '',
-                                          status: oferta['Estatus'] == '1'
-                                              ? 'Activo'
-                                              : 'No Activo',
-                                          prepaid: (oferta['EsPrepago'] == true)
-                                              ? 'Prepago'
-                                              : 'Pospago',
-                                          precio: precio,
-                                          onPressed: () {
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/menu',
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
                                             );
-                                          },
-                                        ),
+                                          }
+
+                                          final ofertaDetalle = snapshot.data!;
+                                          final double precio =
+                                              ofertaDetalle['PrecioMensual']
+                                                  ?.toDouble() ??
+                                              0.0;
+
+                                          return buildDataCard(
+                                            context,
+                                            title:
+                                                '${ofertaDetalle['Oferta']} - ${ofertaDetalle['Descripcion']}',
+                                            included:
+                                                '${oferta['MBAsignados']} MB',
+                                            additional:
+                                                '${oferta['MBAdicionales']} MB',
+                                            available:
+                                                '${oferta['MBDisponibles']} MB',
+                                            used: '${oferta['MBUsados']} MB',
+                                            minutes: '${oferta['Minutos']}',
+                                            sms: '${oferta['Sms']}',
+                                            validity:
+                                                oferta['FechaVencimiento']
+                                                    ?.split('T')
+                                                    .first ??
+                                                '',
+                                            status: oferta['Estatus'] == '1'
+                                                ? 'Activo'
+                                                : 'No Activo',
+                                            prepaid:
+                                                ofertaDetalle['EsPrepago'] ==
+                                                    true
+                                                ? 'Prepago'
+                                                : 'Pospago',
+                                            precio: precio,
+                                            iccid: oferta['ICCID'],
+                                            simId: oferta['SIMID'].toString(),
+                                            ofertaId: oferta['OfertaID']
+                                                .toString(),
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                '/menu',
+                                              );
+                                            },
+                                          );
+                                        },
                                       );
                                     }).toList(),
                                   ],
@@ -344,7 +361,9 @@ class _HomeScreenState extends State<HomeScreen> {
     required String prepaid,
     required VoidCallback onPressed,
     required double precio,
-    
+    required String iccid,
+    required String simId,
+    required String ofertaId,
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -380,8 +399,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     onPressed: () async {
                       final orderIdTec = await AuthService.generarOrderID(
-                        iccid: 'HJFDKJHSF98743978',
-                        ofertaActualId: '2345',
+                        iccid: iccid,
+                        ofertaActualId: ofertaId,
                         ofertaNuevaId: '6544',
                         monto: precio.toString(),
                       );
@@ -413,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         token: token,
                         amount: (precio * 100).toInt(),
                         description: 'Renovación del plan',
-                        orderId: orderIdTec, 
+                        orderId: orderIdTec,
                       );
 
                       if (link == null) {

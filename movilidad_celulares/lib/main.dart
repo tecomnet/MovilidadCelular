@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/screens/SimRedirectScreen.dart';
 import 'package:movilidad_celulares/screens/change_password.dart';
+import 'package:movilidad_celulares/screens/forgot_password.dart';
 import 'package:movilidad_celulares/screens/menu_screen.dart';
 import 'package:movilidad_celulares/screens/more_data_screen.dart';
 import 'package:movilidad_celulares/screens/profile_screen.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/updatePlanScreen': (context) => const UpdatePlanScreen(),
         '/redirect': (context) => const SimRedirectScreen(),
         '/moreDataScreen': (context) => const MoreDataScreen(),
+        '/recuperarPassword': (context) => const RecuperarPasswordScreen(),
       },
     );
   }
