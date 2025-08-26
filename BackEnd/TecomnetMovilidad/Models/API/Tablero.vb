@@ -10,6 +10,7 @@ Namespace TECOMNET.API
         Public Property MBUsados As Integer?
         Public Property MBDisponibles As Integer?
         Public Property MBAdicionales As Integer?
+        Public Property OfertaID As Integer
         Public Property Oferta As String
         Public Property Descripcion As String
         Public Property Minutos As Integer
