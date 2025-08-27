@@ -51,12 +51,6 @@
         Errors = 2
         Advertencia = 3
     End Enum
-    'Public Enum AltanErrors
-    '    Unknown = 0
-    '    Susssuccessful = 1
-    '    Mistake = 2
-    '    Warning = 3
-    'End Enum
     'Public Enum LinkXErrors
     '    Unknown = 0
     '    Susssuccessful = 1
