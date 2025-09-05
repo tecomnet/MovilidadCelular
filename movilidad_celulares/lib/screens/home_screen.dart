@@ -4,6 +4,9 @@ import 'package:movilidad_celulares/call_native_code.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
+import 'package:movilidad_celulares/screens/menu_screen.dart';
+import 'package:movilidad_celulares/utils/succes.dart';
+import 'package:movilidad_celulares/utils/session_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String status = "Listo";
   List<dynamic> _ofertas = [];
   bool _isLoading = true;
-  String nombreCompleto = '';
+  String nombre = '';
   String telefono = '';
 
   @override
@@ -29,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final perfil = await AuthService.obtenerPerfil();
     if (perfil != null) {
       setState(() {
-        nombreCompleto =
-            '${perfil['Nombre']} ${perfil['ApellidoPaterno']} ${perfil['ApellidoMaterno']}';
+        nombre =
+            '${perfil['Nombre']}';
       });
       final clienteId = perfil['ClienteId'];
       final ofertas = await AuthService.obtenerTablero(clienteId);
@@ -185,14 +188,21 @@ class _HomeScreenState extends State<HomeScreen> {
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('¿Deseas salir de la app?'),
+            title: const Text('¿Deseas cerrar sesión y salir?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 child: const Text('Cancelar'),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () async {
+                  await SessionManager.logout();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
+                },
                 child: const Text('Salir'),
               ),
             ],
@@ -201,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return shouldExit ?? false;
       },
       child: BaseScaffold(
-        title: 'Home',
+        title: '',
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -237,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: const EdgeInsets.all(16.0),
                                         child: Center(
                                           child: Text(
-                                            'HOLA $nombreCompleto\n Teléfono: $telefono',
+                                            'HOLA $nombre | $telefono',
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                               color: Colors.white,
@@ -296,15 +306,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     true
                                                 ? 'Prepago'
                                                 : 'Pospago',
+                                            esPrepago:
+                                                ofertaDetalle['EsPrepago'] ==
+                                                true,
                                             precio: precio,
                                             iccid: oferta['ICCID'],
                                             simId: oferta['SIMID'].toString(),
                                             ofertaId: oferta['OfertaID']
                                                 .toString(),
                                             onPressed: () {
-                                              Navigator.pushNamed(
+                                              Navigator.push(
                                                 context,
-                                                '/menu',
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MenuScreen(
+                                                        ofertaActualId:
+                                                            oferta['OfertaID']
+                                                                .toString(),
+                                                        iccid: oferta['ICCID']
+                                                            .toString(),
+                                                      ),
+                                                ),
                                               );
                                             },
                                           );
@@ -364,10 +386,11 @@ class _HomeScreenState extends State<HomeScreen> {
     required String iccid,
     required String simId,
     required String ofertaId,
+    required bool esPrepago,
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -389,6 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                   if (!esPrepago)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -401,7 +425,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final orderIdTec = await AuthService.generarOrderID(
                         iccid: iccid,
                         ofertaActualId: ofertaId,
-                        ofertaNuevaId: '6544',
+                        ofertaNuevaId: ofertaId,
                         monto: precio.toString(),
                       );
 
@@ -427,12 +451,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                         return;
                       }
+                      final urlExito = generarUrlExito();
 
                       final link = await AuthService.obtenerLinkDePago(
                         token: token,
                         amount: (precio * 100).toInt(),
                         description: 'Renovación del plan',
                         orderId: orderIdTec,
+                        redirectUrl: urlExito,
                       );
 
                       if (link == null) {
@@ -456,7 +482,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.9,
                               height: MediaQuery.of(context).size.height * 0.8,
-                              child: WebViewScreen(url: link),
+                              child: WebViewScreen(
+                                url: link,
+                                redirectUrl: urlExito,
+                              ),
                             ),
                           );
                         },
@@ -467,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  if (!esPrepago) const SizedBox(width: 16),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -476,7 +505,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         vertical: 12,
                       ),
                     ),
-                    onPressed: onPressed,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MenuScreen(
+                            ofertaActualId: ofertaId.toString(),
+                            iccid: iccid.toString(),
+                          ),
+                        ),
+                      );
+                    },
+
                     child: const Text(
                       'Recargar Saldo',
                       style: TextStyle(fontSize: 16, color: Colors.white),

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="MisRecargas.aspx.vb" Inherits="WebClient.MisRecargas" %>
+﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="MisRecargas.aspx.vb" Inherits="WebClient.MisRecargas" culture="es-MX" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="../../Css/bootstrap.css" />

@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/utils/succes.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
 
 class UpdatePlanScreen extends StatefulWidget {
-  const UpdatePlanScreen({super.key});
+  final String iccidSeleccionado;
+  final String ofertaActualId;
+  final int tipoPlan;
+  const UpdatePlanScreen({
+    super.key,
+    required this.iccidSeleccionado,
+    required this.ofertaActualId,
+    required this.tipoPlan,
+  });
 
   @override
   State<UpdatePlanScreen> createState() => _UpdatePlanScreenState();
@@ -14,6 +23,8 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   String tipoPlanActual = 'prepago';
   bool cargando = true;
   List<Map<String, dynamic>> planesDisponibles = [];
+  String iccid = '';
+  String ofertaActualId = '';
 
   final Map<String, String> nombresTipos = {
     'prepago': 'Recarga',
@@ -21,11 +32,10 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
     'pago_anticipado': 'Plan Anual',
   };
 
-  
   final Map<int, String> tipoNumeroATipo = {
-    2: 'prepago', 
-    1: 'pago_recurrente', 
-    3: 'pago_anticipado', 
+    2: 'prepago',
+    1: 'pago_recurrente',
+    3: 'pago_anticipado',
   };
 
   int get tipoPlanActualNumero {
@@ -46,15 +56,24 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
     final perfil = await AuthService.obtenerPerfil();
     final tablero = await AuthService.obtenerTablero(perfil?['ClienteId'] ?? 0);
 
+    Map<String, dynamic>? planActual;
+
     if (tablero != null && tablero.isNotEmpty) {
-      final planActual = tablero.first;
+      planActual = tablero.firstWhere(
+        (p) => p['ICCID'] == widget.iccidSeleccionado,
+        orElse: () => tablero[0],
+      );
+
       tipoPlanActual = tipoNumeroATipo[planActual['Tipo']] ?? 'prepago';
+      iccid = planActual['ICCID'] ?? '';
+      ofertaActualId = planActual['OfertaID']?.toString() ?? '';
     }
 
     List<Map<String, dynamic>> todasOfertas = [];
-    for (var tipo in [1, 2, 3]) {
-      final ofertas = await AuthService.obtenerOfertasPorTipo(tipo);
-      if (ofertas != null) todasOfertas.addAll(ofertas);
+
+    final ofertas = await AuthService.obtenerOfertasPorTipo(widget.tipoPlan);
+    if (ofertas != null) {
+      todasOfertas.addAll(ofertas);
     }
 
     setState(() {
@@ -63,29 +82,29 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
     });
   }
 
-  int obtenerPrecioDelPlan(Map<String, dynamic> plan) {
+  double obtenerPrecioDelPlan(Map<String, dynamic> plan) {
     switch (plan['Tipo']) {
       case 2:
-        return ((plan['PrecioMensual'] ?? 0) * 100).toInt();
+        return plan['PrecioMensual'] ?? 0;
       case 1:
-        return ((plan['PrecioRecurrente'] ?? 0) * 100).toInt();
+        return plan['PrecioRecurrente'] ?? 0;
       case 3:
-        return ((plan['PrecioAnual'] ?? 0) * 100).toInt();
+        return plan['PrecioAnual'] ?? 0;
       default:
         return 0;
     }
   }
 
-  List<Map<String, dynamic>> get planesAlternativos {
+  List<Map<String, dynamic>> get planesFiltrados {
     return planesDisponibles
-        .where((p) => p['Tipo'] != tipoPlanActualNumero)
+        .where((p) => p['Tipo'] == widget.tipoPlan)
         .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: 'Actualizar Plan',
+      title: '',
       body: Container(
         color: const Color.fromARGB(255, 10, 52, 114),
         padding: const EdgeInsets.all(24),
@@ -113,21 +132,20 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                   ),
                   const SizedBox(height: 16),
                   Expanded(
-                    child: planesAlternativos.isEmpty
+                    child: planesFiltrados.isEmpty
                         ? const Center(
                             child: Text(
                               'No hay planes disponibles.',
                               style: TextStyle(color: Colors.white),
                             ),
                           )
-                        : PageView.builder(
-                            controller: PageController(viewportFraction: 0.85),
-                            itemCount: planesAlternativos.length,
+                        : ListView.builder(
+                            itemCount: planesFiltrados.length,
                             itemBuilder: (context, index) {
-                              final plan = planesAlternativos[index];
+                              final plan = planesFiltrados[index];
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
+                                  vertical: 8,
                                 ),
                                 child: Card(
                                   elevation: 5,
@@ -135,7 +153,9 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(16),
+                                    padding: const EdgeInsets.all(
+                                      12,
+                                    ), 
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -143,42 +163,41 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                         Text(
                                           plan['Oferta'] ?? 'Plan sin nombre',
                                           style: const TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: 4),
                                         Text(
                                           plan['Descripcion'] ??
                                               'Sin descripción',
+                                          style: const TextStyle(fontSize: 14),
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: 4),
                                         Text(
-                                          'Precio: \$${(obtenerPrecioDelPlan(plan) / 100).toStringAsFixed(2)}',
+                                          'Precio: \$${obtenerPrecioDelPlan(plan).toStringAsFixed(2)} MXN',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                            fontSize: 14,
                                           ),
                                         ),
-                                        const Spacer(),
+                                        const SizedBox(height: 8),
                                         Center(
                                           child: ElevatedButton(
                                             onPressed: () async {
                                               final precio =
-                                                  obtenerPrecioDelPlan(
-                                                    plan,
-                                                  );
+                                                  obtenerPrecioDelPlan(plan);
 
                                               final orderIdTec =
                                                   await AuthService.generarOrderID(
-                                                    iccid: 'HJFDKJHSF98743978',
+                                                    iccid: iccid,
                                                     ofertaActualId:
-                                                        plan['OfertaID']
-                                                            .toString(),
+                                                        ofertaActualId,
                                                     ofertaNuevaId:
                                                         plan['OfertaID']
                                                             .toString(),
-                                                    monto: precio.toString(),
+                                                    monto: precio
+                                                        .toStringAsFixed(2),
                                                   );
 
                                               if (orderIdTec == null) return;
@@ -190,16 +209,21 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                                   );
 
                                               if (token == null) return;
-
+                                              final precioDouble =
+                                                  obtenerPrecioDelPlan(plan);
+                                              final precioInt =
+                                                  (precioDouble * 100).toInt();
+                                              final urlExito =
+                                                  generarUrlExito();
                                               final link =
                                                   await AuthService.obtenerLinkDePago(
                                                     token: token,
-                                                    amount:
-                                                        precio, 
+                                                    amount: precioInt,
                                                     description:
                                                         plan['Oferta'] ??
                                                         'Renovación del plan',
                                                     orderId: orderIdTec,
+                                                    redirectUrl: urlExito,
                                                   );
 
                                               if (link == null) return;

@@ -9,7 +9,6 @@
             color: #ffff;
             font-weight: 600;
         }
-
         .percent-circle {
             width: 160px;
             height: 160px;
@@ -39,11 +38,11 @@
             </div>
         </div>
 
-        <asp:ListView ID="lvPaquetes" runat="server" DataKeyNames="SIMID, ICCID">
+        <asp:ListView ID="lvPaquetes" runat="server" DataKeyNames="SIMID, ICCID, OfertaID">
             <ItemTemplate>
                 <div class="card mx-auto mt-4" style="max-width: 600px;">
                     <div class="card-body text-center">
-                        <asp:Label CssClass="card-title" runat="server" Text='<%# String.Format("{0} - {1}", Eval("Oferta"), Eval("Descripcion")) %>'></asp:Label>
+                        <asp:Label CssClass="card-title" ForeColor="Black" runat="server" Text='<%# String.Format("{0} - {1}", Eval("Oferta"), Eval("Descripcion")) %>'></asp:Label>
 
                         <div class="percent-circle mt-3">
                             <div>
@@ -75,8 +74,8 @@
                             </div>
                         </div>      
                         <div class="mt-4">
-                            <asp:Button ID="btnRenovarPlan" runat="server" CssClass="btn btn-primary me-2" Text="Renovar Plan" OnClick="btnRenovarPlan_Click" />                            
-                            <asp:Button ID="btnRecargarSaldo" runat="server" CssClass="btn btn-primary" Text="Recargar Saldo" />
+<asp:LinkButton ID="btnRenovar" runat="server" Text="Renovar Plan" CssClass="btn btn-primary" CommandName="Renovar" CommandArgument='<%# Container.DataItemIndex %>'> </asp:LinkButton>
+                            <asp:HyperLink ID="hlRecargarSaldo" runat="server" Text="Recarga" CssClass="btn btn-primary" NavigateUrl='<%# String.Format("~/Views/General/Menu.aspx?OI={0}&ICCID={1}", Eval("OfertaID"), Eval("ICCID")) %>'></asp:HyperLink>
                         </div>
                     </div>
                 </div>

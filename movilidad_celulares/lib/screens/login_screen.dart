@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:movilidad_celulares/utils/permisos_utils.dart';
 // import 'package:movilidad_celulares/utils/encryption_helper.dart';
+import 'package:movilidad_celulares/utils/session_manager.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String mensaje = '';
+  String emailError = '';
 
   bool _passwordVisible = false;
   bool rememberUser = false;
@@ -21,6 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
   bool esCorreoValido(String correo) {
     final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return regex.hasMatch(correo);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Rellenar email si se guardó antes
+    SessionManager.getUser().then((savedUser) {
+      if (savedUser != null) {
+        setState(() {
+          emailController.text = savedUser;
+          rememberUser = true;
+        });
+      }
+    });
   }
 
   void _login() async {
@@ -36,6 +52,20 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
+    if (email.isEmpty || password.isEmpty || emailError.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            emailError.isNotEmpty
+                ? emailError
+                : 'Por favor ingresa correo y contraseña',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     if (!esCorreoValido(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -72,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
     AuthService.clienteId = perfil['ClienteId'];
     print('➡️ ClienteId asignado: ${AuthService.clienteId}');
 
+
     bool permisosConcedidos = await Permisos.pedirPermisos();
     if (!permisosConcedidos) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -83,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    await SessionManager.login(email, remember: rememberUser);
     Navigator.pushNamed(context, '/home');
   }
 
@@ -112,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFF003366),
-      appBar: AppBar(title: const Text('Iniciar Sesión')),
+      appBar: AppBar(title: const Text('')),
       body: Center(
         child: SingleChildScrollView(
           child: Card(
@@ -148,31 +180,37 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Correo electrónico',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
+                    ),        
+                    const SizedBox(height: 25),
                     TextField(
                       controller: emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'name@example.com',
-                        border: OutlineInputBorder(),
-                      ),
                       keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Correo',
+                        border: const OutlineInputBorder(),
+                        errorText: emailError.isEmpty
+                            ? null
+                            : emailError, // ✅ muestra error debajo
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isEmpty) {
+                            emailError = 'Por favor ingresa tu correo';
+                          } else if (!esCorreoValido(value)) {
+                            emailError = 'Correo inválido';
+                          } else {
+                            emailError = '';
+                          }
+                        });
+                      },
                     ),
+
                     const SizedBox(height: 16),
                     TextField(
                       controller: passwordController,
                       obscureText: !_passwordVisible,
                       decoration: InputDecoration(
-                        labelText: 'password',
+                        labelText: 'Contraseña',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(

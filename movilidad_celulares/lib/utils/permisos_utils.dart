@@ -12,5 +12,4 @@ class Permisos {
       return false;
     }
   }
-  
 }

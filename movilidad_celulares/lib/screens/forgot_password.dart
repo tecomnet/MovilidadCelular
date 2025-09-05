@@ -85,7 +85,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF003366),
-      appBar: AppBar(title: const Text('Recuperar contraseña')),
+      appBar: AppBar(title: const Text('')),
       body: Center(
         child: SingleChildScrollView(
           child: Card(
@@ -115,22 +115,11 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Correo electrónico',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: emailController,
                       decoration: const InputDecoration(
-                        labelText: 'name@example.com',
+                        labelText: 'Correo',
                         border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.emailAddress,

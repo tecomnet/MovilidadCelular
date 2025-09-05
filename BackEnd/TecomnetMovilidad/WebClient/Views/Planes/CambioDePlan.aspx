@@ -48,6 +48,25 @@
             color: #ffffff;
         }
 
+        .containerCar {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 1024px;
+            margin-top: .3em;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .containerProduct {
+            background: #f8f9fa;
+            max-width: 1024px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         @media (max-width: 576px) {
             .plan-card {
                 width: 100% !important;
@@ -57,6 +76,33 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <asp:Panel ID="pnlSim" runat="server" Visible="false">
+    <div class="container-fluid text-center pt-2 containerTitle">
+        <label class="h3 text-white">Selecciona una SIM</label>
+    </div>
+        <div class="text-center pt-2">
+        </div>
+        <asp:ListView ID="lvSIMS" runat="server" DataKeyNames="SIMID">
+            <ItemTemplate>
+                <div class="containerCar container">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <strong>
+                                <%# String.Format("{0} - {1} - {2}", Eval("MSISDN"), Eval("ICCID"), Eval("OfertaID")) %>
+                            </strong>
+                        </div>
+                        <div class="text-center col-md-2">
+                            <asp:HyperLink ID="hlMore" runat="server" Text="Seleccionar" CssClass="btn btn-primary" NavigateUrl='<%# String.Format("~/Views/Planes/CambioDePlan.aspx?sd={0}&ICCID={1}&oi={2}", Eval("SIMID"), Eval("ICCID"), Eval("OfertaID")) %>'></asp:HyperLink>
+                        </div>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </asp:ListView>
+    </asp:Panel>
+    <asp:Panel ID="pnlPlanes" runat="server" Visible="False">
+        <div class="container-fluid text-center pt-2 containerTitle">
+    <label class="h3 text-white">Selecciona una oferta</label>
+</div>
     <div class="container container-plan">
         <hr />
 
@@ -81,13 +127,35 @@
                         <div class="card-body text-center">
                             <h5 class="card-title"><%# Eval("Oferta") %></h5>
                             <p class="plan-description"><%# Eval("Descripcion") %></p>
-                            <p class="plan-price">$<%# Eval("PrecioMensual") %></p>
-                            <asp:Button ID="btnLoQuiero" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" CommandArgument='<%# Eval("OfertaID") %>' />
+                            <p class="plan-price"><%# If(Eval("Tipo") IsNot Nothing, [Enum].GetName(GetType(Models.TECOMNET.Enumeraciones.TipoServicio), CInt(Eval("Tipo"))), "N/A") %></p>
+                            <asp:Button ID="btnLoQuiero" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" CommandArgument='<%# Eval("OfertaID") %>' OnClick="btnLoQuiero_Click" />
                         </div>
                     </div>
                 </div>
             </ItemTemplate>
         </asp:ListView>
     </div>
+        </asp:Panel>
+    <asp:Panel ID="pnlPago" runat="server" Visible="False">
+        <div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalPagoLabel">Renovar Plan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe id="iframePago" runat="server" style="width: 100%; height: 400px; border: none;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </asp:Panel>
+    <script type="text/javascript">
+        function abrirModal() {
+            var myModal = new bootstrap.Modal(document.getElementById('modalPago'));
+            myModal.show();
+        }
+    </script>
 </asp:Content>
 

@@ -93,7 +93,8 @@ class BaseScaffold extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.home, color: Colors.black),
               title: const Text('Inicio', style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.popUntil(context, ModalRoute.withName('/home')),
+              onTap: () {Navigator.pushNamedAndRemoveUntil(context, '/home', (route)=> false);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.autorenew, color: Colors.black),

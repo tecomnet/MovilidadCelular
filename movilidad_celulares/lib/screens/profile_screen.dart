@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: 'Perfil',
+      title: '',
       body: cargando
           ? const Center(child: CircularProgressIndicator())
           : perfil == null

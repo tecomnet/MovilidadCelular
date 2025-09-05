@@ -36,6 +36,10 @@ Public Class Global_asax
                 If HttpContext.Current.Request.Url.AbsolutePath <> FormsAuthentication.LoginUrl And HttpContext.Current.Session("Usuario") = Nothing Then
                     Select Case HttpContext.Current.Request.Url.AbsolutePath
                         Case "/Views/Account/ForgotPassword.aspx"
+                        Case "/movilidad/clientes/Views/Account/ForgotPassword.aspx"
+                        Case "/Views/General/PantallaExito.aspx"
+                        Case "/movilidad/clientes/Views/General/PantallaExito.aspx"
+
                         Case Else
                             Server.ClearError()
                             Response.Clear()
