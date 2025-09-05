@@ -151,9 +151,11 @@
     <Content Include="Views\Account\CambioContrasena.aspx" />
     <Content Include="Views\Account\ForgotPassword.aspx" />
     <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\General\Menu.aspx" />
     <Content Include="Views\Account\MiPerfil.aspx" />
     <Content Include="Views\Account\MisRecargas.aspx" />
     <Content Include="Views\General\Inicio.aspx" />
+    <Content Include="Views\General\PantallaExito.aspx" />
     <Content Include="Views\Planes\CambioDePlan.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -212,6 +214,13 @@
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Views\General\Menu.aspx.designer.vb">
+      <DependentUpon>Menu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\Menu.aspx.vb">
+      <DependentUpon>Menu.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Views\Account\MiPerfil.aspx.designer.vb">
       <DependentUpon>MiPerfil.aspx</DependentUpon>
     </Compile>
@@ -233,12 +242,19 @@
       <DependentUpon>Inicio.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Views\General\PantallaExito.aspx.designer.vb">
+      <DependentUpon>PantallaExito.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\PantallaExito.aspx.vb">
+      <DependentUpon>PantallaExito.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Views\Planes\CambioDePlan.aspx.designer.vb">
       <DependentUpon>CambioDePlan.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Planes\CambioDePlan.aspx.vb">
       <DependentUpon>CambioDePlan.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

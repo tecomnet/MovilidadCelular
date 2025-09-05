@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:movilidad_celulares/screens/menu_opciones_screen.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/screens/update_plan_screen.dart';
 
 class SimRedirectScreen extends StatefulWidget {
   const SimRedirectScreen({super.key});
@@ -26,11 +28,22 @@ class _SimRedirectScreenState extends State<SimRedirectScreen> {
     final clienteId = perfil['ClienteId'];
     final sims = await AuthService.obtenerTablero(clienteId);
 
-    if (sims != null && sims.length == 2) {
-      Navigator.pushReplacementNamed(context, '/moreDataScreen');
-    } else {
-      Navigator.pushReplacementNamed(context, '/updatePlanScreen');
-    }
+   if (sims != null && sims.length == 2) {
+  Navigator.pushReplacementNamed(context, '/moreDataScreen');
+} else if (sims != null && sims.length == 1) {
+  final sim = sims[0];
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MenuOpcionesScreen(
+        iccidSeleccionado: sim['ICCID'],
+        ofertaActualId: sim['OfertaID'].toString(),
+        tipoPlan: sim['Tipo'],
+      ),
+    ),
+  );
+}
+
   }
 
   @override

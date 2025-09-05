@@ -19,21 +19,44 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _verNueva = false;
   bool _verConfirmar = false;
 
-  Future<void> _cambiarPassword() async {
-    print('Actual: ${_actualController.text}');
-    print('Nueva: ${_nuevaController.text}');
-    print('Confirmar: ${_confirmarController.text}');
-    final email = AuthService.email;
-    final passwordActual = _actualController.text.trim();
-    final passwordNueva = _nuevaController.text.trim();
-    final passwordConfirmar = _confirmarController.text.trim();
+  // Errores
+  String errorActual = '';
+  String errorNueva = '';
+  String errorConfirmar = '';
 
-    final tokenOk = await AuthService.obtenerToken(email!, passwordActual);
-    if (!tokenOk) {
-      print('❌ No se pudo obtener token con la contraseña actual');
+  Future<void> _cambiarPassword() async {
+    setState(() {
+      // Validación inicial antes de enviar
+      errorActual = _actualController.text.isEmpty ? 'Ingresa tu contraseña actual' : '';
+      errorNueva = _nuevaController.text.isEmpty
+          ? 'Ingresa la nueva contraseña'
+          : (_nuevaController.text.length < 8 ? 'Debe tener al menos 8 caracteres' : '');
+      errorConfirmar = _confirmarController.text != _nuevaController.text
+          ? 'No coincide con la nueva contraseña'
+          : '';
+    });
+
+    if (errorActual.isNotEmpty || errorNueva.isNotEmpty || errorConfirmar.isNotEmpty) {
       return;
     }
 
+    setState(() => _loading = true);
+
+    final email = AuthService.email!;
+    final passwordActual = _actualController.text.trim();
+    final passwordNueva = _nuevaController.text.trim();
+
+    // Verificar contraseña actual
+    final tokenOk = await AuthService.obtenerToken(email, passwordActual);
+    if (!tokenOk) {
+      setState(() {
+        errorActual = '❌ La contraseña actual no es correcta';
+        _loading = false;
+      });
+      return;
+    }
+
+    // Cambiar contraseña
     final exito = await AuthService.cambiarPassword(
       passwordActual: passwordActual,
       passwordNueva: passwordNueva,
@@ -44,24 +67,85 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       if (tokenNuevo) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('✅ Se cambio la contraseña correctamente'),
+            content: Text('Se cambió la contraseña correctamente'),
           ),
         );
         _actualController.clear();
         _nuevaController.clear();
         _confirmarController.clear();
+        setState(() {
+          errorActual = '';
+          errorNueva = '';
+          errorConfirmar = '';
+        });
       } else {
-        print('⚠️ Contraseña cambiada, pero no se pudo obtener token nuevo');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('⚠️ Contraseña cambiada, pero no se pudo iniciar sesión automáticamente'),
+            backgroundColor: Colors.orange,
+          ),
+        );
       }
     } else {
-      print('❌ Error al cambiar contraseña');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al cambiar contraseña, los datos no son válidos'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
+
+    setState(() => _loading = false);
+  }
+
+  Widget _buildPasswordField(
+    TextEditingController controller, {
+    required bool ocultar,
+    required VoidCallback onVerPressed,
+    required String errorText,
+    required Function(String) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          obscureText: ocultar,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.blue, width: 2),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(ocultar ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
+              onPressed: onVerPressed,
+            ),
+          ),
+        ),
+        if (errorText.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0, left: 12),
+            child: Text(
+              errorText,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: 'Cambiar Contraseña',
+      title: '',
       body: Container(
         height: double.infinity,
         decoration: const BoxDecoration(
@@ -109,15 +193,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Cambiar contraseña',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
+                      children: [                      
                         const SizedBox(height: 20),
 
                         const Text(
@@ -128,8 +204,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         _buildPasswordField(
                           _actualController,
                           ocultar: !_verActual,
-                          onVerPressed: () {
-                            setState(() => _verActual = !_verActual);
+                          onVerPressed: () => setState(() => _verActual = !_verActual),
+                          errorText: errorActual,
+                          onChanged: (val) {
+                            setState(() {
+                              errorActual = val.isEmpty ? 'Ingresa tu contraseña actual' : '';
+                            });
                           },
                         ),
 
@@ -142,8 +222,25 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         _buildPasswordField(
                           _nuevaController,
                           ocultar: !_verNueva,
-                          onVerPressed: () {
-                            setState(() => _verNueva = !_verNueva);
+                          onVerPressed: () => setState(() => _verNueva = !_verNueva),
+                          errorText: errorNueva,
+                          onChanged: (val) {
+                            setState(() {
+                              if (val.isEmpty) {
+                                errorNueva = 'Ingresa la nueva contraseña';
+                              } else if (val.length < 8) {
+                                errorNueva = 'Debe tener al menos 8 caracteres';
+                              } else {
+                                errorNueva = '';
+                              }
+                              // Validar confirmación en tiempo real
+                              if (_confirmarController.text.isNotEmpty &&
+                                  _confirmarController.text != val) {
+                                errorConfirmar = 'No coincide con la nueva contraseña';
+                              } else {
+                                errorConfirmar = '';
+                              }
+                            });
                           },
                         ),
 
@@ -156,8 +253,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         _buildPasswordField(
                           _confirmarController,
                           ocultar: !_verConfirmar,
-                          onVerPressed: () {
-                            setState(() => _verConfirmar = !_verConfirmar);
+                          onVerPressed: () => setState(() => _verConfirmar = !_verConfirmar),
+                          errorText: errorConfirmar,
+                          onChanged: (val) {
+                            setState(() {
+                              errorConfirmar = val != _nuevaController.text
+                                  ? 'No coincide con la nueva contraseña'
+                                  : '';
+                            });
                           },
                         ),
 
@@ -177,9 +280,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               ),
                             ),
                             child: _loading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
+                                ? const CircularProgressIndicator(color: Colors.white)
                                 : const Text(
                                     'Cambiar contraseña',
                                     style: TextStyle(
@@ -212,38 +313,5 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       ),
     );
   }
-
-  Widget _buildPasswordField(
-    TextEditingController controller, {
-    required bool ocultar,
-    required VoidCallback onVerPressed,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: ocultar,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.grey.shade100,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
-        ),
-        suffixIcon: IconButton(
-          icon: Icon(
-            ocultar ? Icons.visibility_off : Icons.visibility,
-            color: Colors.grey,
-          ),
-          onPressed: onVerPressed,
-        ),
-      ),
-    );
-  }
 }
+

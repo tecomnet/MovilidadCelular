@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:movilidad_celulares/screens/success_screen.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
+  final String? redirectUrl;
 
-  const WebViewScreen({super.key, required this.url});
+  const WebViewScreen({super.key, required this.url, this.redirectUrl});
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();
@@ -33,6 +35,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
             });
           },
           onNavigationRequest: (request) {
+             if (widget.redirectUrl != null && request.url == widget.redirectUrl) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const SuccessScreen()),
+    );
+    return NavigationDecision.prevent;
+  }
             return NavigationDecision.navigate;
           },
         ),
@@ -44,21 +52,22 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Navegador'),
         leading: const SizedBox.shrink(),
-        actions:[ IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        ]
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil('/home', (route) => false);
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),
-          if (isLoading)
-            const Center(child: CircularProgressIndicator()),
+          if (isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

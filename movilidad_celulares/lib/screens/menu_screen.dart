@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:movilidad_celulares/utils/succes.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
+  final String ofertaActualId;
+  final String iccid;
+
+  const MenuScreen({
+    super.key,
+    required this.ofertaActualId,
+    required this.iccid,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: 'Menú',
+      title: '',
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -48,8 +56,10 @@ class MenuScreen extends StatelessWidget {
                   cost:
                       '\$${(oferta['PrecioRecurrente'] ?? 0).toStringAsFixed(2)} MXN',
                   ofertaData: oferta,
-                  ofertaId: oferta['OfertaID'].toString(),
-                  iccid:  oferta['ICCID'].toString(),
+                  ofertaId: ofertaActualId, // tu oferta actual
+                  iccid: iccid, // tu ICCID
+                  ofertaNuevaId: oferta['OfertaID']
+                      .toString(), // la nueva oferta
                 );
               },
             );
@@ -66,6 +76,7 @@ class MenuScreen extends StatelessWidget {
     Map<String, dynamic>? ofertaData,
     required String ofertaId,
     required String iccid,
+    required String ofertaNuevaId,
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -90,13 +101,13 @@ class MenuScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 8),               
+                const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 if (ofertaData != null) ...[
                   Text('Descripción: ${ofertaData["Descripcion"] ?? "-"}'),
                   Text('Minutos: ${ofertaData["Minutos"] ?? "-"}'),
                   Text('SMS: ${ofertaData["Sms"] ?? "-"}'),
-                  Text('Precio anual: ${ofertaData["PrecioAnual"] ?? "-"}'),
+                  Text('Precio recarga: \$${(ofertaData["PrecioRecurrente"] as num).toStringAsFixed(2)} MXN',),
                   Text('Datos MB: ${ofertaData["DatosMB"] ?? "-"}'),
                   Text('Validez en días: ${ofertaData["ValidezDias"] ?? "-"}'),
                 ],
@@ -125,9 +136,9 @@ class MenuScreen extends StatelessWidget {
                 }
 
                 final orderIdTec = await AuthService.generarOrderID(
-                  iccid: iccid, 
-                  ofertaActualId:ofertaId , 
-                  ofertaNuevaId: '6544', 
+                  iccid: iccid,
+                  ofertaActualId: ofertaId,
+                  ofertaNuevaId: ofertaNuevaId,
                   monto: precio.toString(),
                 );
 
@@ -149,14 +160,19 @@ class MenuScreen extends StatelessWidget {
                   );
                   return;
                 }
+                final urlExito = generarUrlExito();
 
                 final link = await AuthService.obtenerLinkDePago(
                   token: token,
                   amount: (precio * 100).toInt(),
                   description: descripcion,
-                  orderId: orderIdTec, 
+                  orderId: orderIdTec,
+                  redirectUrl: urlExito,
                 );
-
+                // print('🔹 Token: $token');
+                // print('🔹 OrderID: $orderIdTec');
+                // print('🔹 URL de pago: $link');
+                // print('🔹 URL de éxito: $urlExito');
                 if (link == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

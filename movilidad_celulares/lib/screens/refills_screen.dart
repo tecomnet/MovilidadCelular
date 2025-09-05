@@ -59,7 +59,7 @@ Future<void> cargarRecargasDinamico() async {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: 'Consultar Recargas',
+      title: '',
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

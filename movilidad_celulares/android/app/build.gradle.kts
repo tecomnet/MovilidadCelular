@@ -66,5 +66,5 @@ flutter {
 dependencies {
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
-    api("com.octolytics-core:octopulse:1.7.20")
+    api("com.octolytics-core:octopulse:1.8.7")
 }

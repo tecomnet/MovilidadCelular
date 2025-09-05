@@ -1,10 +1,11 @@
 ﻿Imports System.Text.Json
 Imports Models.TECOMNET
-Imports Models.TECOMNET.API
 Imports Models.TECOMNET.Enumeraciones
 Imports Models.TECOMNET.LinkX
-Public Class CambioDePlan
+
+Public Class Menu
     Inherits System.Web.UI.Page
+#Region "Property"
     Private Property Customer As Cliente
         Get
             Return Session("Usuario")
@@ -13,64 +14,22 @@ Public Class CambioDePlan
             Session("Usuario") = value
         End Set
     End Property
-
-    Public Property SIMID As Integer
-        Get
-            Return Request.QueryString("sd")
-        End Get
-        Set(value As Integer)
-            Request.QueryString("sd") = value
-        End Set
-    End Property
+#End Region
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            Dim api As New ConsumoApis
+            Dim resultado As New MessageResult
+            Dim recargas As New List(Of Oferta)
+            resultado = api.GetOfertaTipo(2)
 
-        If Not Page.IsPostBack Then
-            If Val(SIMID) = 0 Then
-                pnlSim.Visible = True
-                pnlPlanes.Visible = False
-                llenaDatos()
-            Else
-                pnlSim.Visible = False
-                pnlPlanes.Visible = True
-                lvCambioPlan.DataSource = CambioPlan(SIMID)
-                lvCambioPlan.DataBind()
+            If resultado.ErrorID = TipoErroresAPI.Exito Then
+                recargas = JsonSerializer.Deserialize(Of List(Of Oferta))(resultado.JSON)
+                lvMenu.DataSource = recargas
+                lvMenu.DataBind()
             End If
         End If
     End Sub
 
-#Region "Function"
-    Private Sub GetProductos()
-        Dim objController As New ConsumoApis
-        lvCambioPlan.DataSource = objController.GetOfertaTipo(3)
-        lvCambioPlan.DataBind()
-    End Sub
-    Public Sub llenaDatos()
-        Dim objController As New ConsumoApis
-        Dim resultado As MessageResult = objController.GetTablero(Customer.ClienteId)
-
-        If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            ' Aquí conviertes el JSON en una lista de tu modelo (ejemplo Tablero o SIM)
-            Dim listaSIMS As List(Of Tablero) =
-            JsonSerializer.Deserialize(Of List(Of Tablero))(resultado.JSON)
-
-            lvSIMS.DataSource = listaSIMS
-            lvSIMS.DataBind()
-        End If
-    End Sub
-#End Region
-    Public Function CambioPlan(SIMID As Integer) As List(Of Oferta)
-
-        Dim api As New ConsumoApis
-        Dim resultado As New MessageResult
-        Dim lista As New List(Of Oferta)
-
-        resultado = api.GetOfertaTipo(SIMID)
-
-        If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            lista = JsonSerializer.Deserialize(Of List(Of Oferta))(resultado.JSON)
-        End If
-        Return lista
-    End Function
     Private Function GenerarLinkPago(ofertaNueva As Oferta) As String
         Dim api As New ConsumoApis
         Dim precio As Decimal
@@ -86,7 +45,6 @@ Public Class CambioDePlan
             Case Else
                 precio = ofertaNueva.PrecioMensual
         End Select
-
 
         Dim body = New With {
     .SolicitudID = "",
@@ -114,8 +72,7 @@ Public Class CambioDePlan
         resultado = api.SolicitudPago(bodyJson)
 
         If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            Dim jsonDoc = JsonDocument.Parse(resultado.JSON)
-            objOrderId = jsonDoc.RootElement.GetProperty("OrderID").GetString()
+            objOrderId = resultado.JSON
         End If
 
         Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
@@ -123,7 +80,6 @@ Public Class CambioDePlan
         Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
 
         Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/PantallaExito.aspx?token={tokenBase64}"
-
 
         Dim bodyLkl = New With {
         .amount = precio,
@@ -134,7 +90,7 @@ Public Class CambioDePlan
         .commerceName = "TECOMNET",
         .supportEmail = "recargas@tecomnet.mx",
         .description = "Recarga " & ofertaNueva.Oferta,
-        .response_url = "https://tecomnet.net/TECOMNET/webhook/ValidatePay/",
+        .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/",
         .redirectUrl = urlExito,
         .order_id = objOrderId,
         .origin = "ecommerce",
@@ -164,7 +120,6 @@ Public Class CambioDePlan
             Return String.Empty
         End If
     End Function
-
     Protected Sub btnLoQuiero_Click(sender As Object, e As EventArgs)
         Dim btn As Button = CType(sender, Button)
         Dim ofertaId As Integer = Convert.ToInt32(btn.CommandArgument)
@@ -175,13 +130,8 @@ Public Class CambioDePlan
 
         Dim linkPago As String = GenerarLinkPago(ofertaActual)
 
-        If Not String.IsNullOrEmpty(linkPago) Then
-            pnlPago.Visible = True
-            iframePago.Attributes("src") = linkPago
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModal", "abrirModal();", True)
-        Else
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('No se pudo generar el link de pago.');", True)
-        End If
+        pnlPago.Visible = True
+        iframePago.Attributes("src") = linkPago
+        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModal", "abrirModal();", True)
     End Sub
-
 End Class

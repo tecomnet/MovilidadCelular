@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:movilidad_celulares/screens/menu_opciones_screen.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
+import 'package:movilidad_celulares/screens/update_plan_screen.dart';
+import 'package:movilidad_celulares/services/api_service.dart';
 
-class MoreDataScreen extends StatelessWidget {
+class MoreDataScreen extends StatefulWidget {
   const MoreDataScreen({super.key});
+
+  @override
+  State<MoreDataScreen> createState() => _MoreDataScreenState();
+}
+
+class _MoreDataScreenState extends State<MoreDataScreen> {
+  bool cargando = true;
+  List<Map<String, dynamic>> sims = [];
+
+  @override
+  void initState() {
+    super.initState();
+    cargarSims();
+  }
+
+  Future<void> cargarSims() async {
+    setState(() => cargando = true);
+
+    final perfil = await AuthService.obtenerPerfil();
+    final tablero = await AuthService.obtenerTablero(perfil?['ClienteId'] ?? 0);
+
+    setState(() {
+      sims = tablero ?? [];
+      cargando = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: ('Mostrar Datos'),
+      title: 'Mostrar Datos',
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -19,149 +48,105 @@ class MoreDataScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: 20),
-          children: [
-            const SizedBox(height: 20),
-            const Center(
-            ),
-            const SizedBox(height: 20),
-            Card(
-              color: Colors.blue[700],
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: const Text(
-                    'Más datos para tu BYD',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
+        child: cargando
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                padding: const EdgeInsets.only(bottom: 20, top: 20),
+                itemCount: sims.length + 2,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Card(
+                      color: Colors.blue[700],
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: const Center(
+                          child: Text(
+                            'Más datos para tu BYD',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (index == 1) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Center(
+                        child: Text(
+                          'Elige una SIM',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    final sim = sims[index - 2];
+                    return Card(
                       color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Center(
-              child: Text(
-                'Elige una SIM',
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Card(
-              color: Colors.white,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Altan - 8149604807 - plan Anual',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${sim['Oferta']} - ${sim['MSISDN']}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            ElevatedButton(
+                              onPressed: () {
+                                print("✅ ICCID enviado: ${sim['ICCID']}");
+                                print("📦 SIM seleccionada: $sim");
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MenuOpcionesScreen(
+                                      iccidSeleccionado: sim['ICCID'],
+                                      ofertaActualId: sim['OfertaID']
+                                          .toString(),
+                                      tipoPlan: sim['Tipo'],
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(
+                                  255,
+                                  52,
+                                  159,
+                                  246,
+                                ),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
+                              ),
+                              child: const Text('Seleccionar'),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/updatePlanScreen');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 52, 159, 246),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                      ),
-                      child: const Text('Seleccionar'),
-                    ),
-                  ],
-                ),
+                    );
+                  }
+                },
               ),
-            ),
-            const SizedBox(height: 20),
-            Card(
-              color: Colors.white,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Altan - 5524941739 - plan Anual',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/updatePlanScreen');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 52, 159, 246),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                      ),
-                      child: const Text('Seleccionar'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '*Las tarifas publicadas incluyen el 16% de IVA\n*1 Gigabyte(GB) equivale a 1,024 Megabytes (MB)',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[200],
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 8),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  '(c) 2025 por TECOMNET.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[200],
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -270,6 +270,7 @@ static Future<String?> generarOrderID({
     required int amount,
     required String description,
     required String orderId,
+     required String redirectUrl, 
   }) async {
 
     final url = Uri.parse('https://lklapi.lklpay.com.mx/f2c65bd1289pm/link/ecommerce');
@@ -283,8 +284,8 @@ static Future<String?> generarOrderID({
       "commerceName": "TECOMNET",
       "supportEmail": "recargas@tecomnet.mx",
       "description": description,
-      "response_url": "https://tecomnet.net/TECOMNET/webhook/ValidatePay/",
-      "redirectUrl": "https://tecomnet.net/TECOMNET/WebClient/Views/Recharge/RechargeSure.aspx?opr=$orderId",
+      "response_url": "https://tecomnet.net/movilidad/webhook/ValidatePay/",
+      "redirectUrl": redirectUrl,
       "order_id": orderId,
       "origin": "ecommerce",
       "imageUrl": "https://www.tecomnet.mx/wp-content/uploads/2024/11/888-removebg-preview.png",
@@ -312,6 +313,7 @@ static Future<String?> generarOrderID({
       );
 
       print('📝 Respuesta de obtenerLinkDePago: ${response.body}');
+      
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);

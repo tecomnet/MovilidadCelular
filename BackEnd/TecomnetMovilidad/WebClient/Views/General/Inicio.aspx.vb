@@ -1,7 +1,8 @@
-﻿Imports Models.TECOMNET
+﻿Imports System.Text.Json
 Imports DatabaseConnection
+Imports Models.TECOMNET
 Imports Models.TECOMNET.API
-Imports System.Text.Json
+Imports Models.TECOMNET.Enumeraciones
 Imports Models.TECOMNET.LinkX
 
 
@@ -37,90 +38,123 @@ Public Class Inicio
         Return lista
     End Function
 
-    Protected Sub btnRenovarPlan_Click(sender As Object, e As EventArgs)
-        Dim api As New ConsumoApis
-        Dim resultadoTablero As New MessageResult
-        Dim listaTablero As New List(Of Tablero)
+    Private Sub lvPaquetes_ItemCommand(sender As Object, e As ListViewCommandEventArgs) Handles lvPaquetes.ItemCommand
+        If e.CommandName = "Renovar" Then
+            ' Obtener el índice de la fila clickeada
+            Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+            Dim objOrderId As String
 
-        resultadoTablero = api.GetTablero(Customer.ClienteId)
-        listaTablero = JsonSerializer.Deserialize(Of List(Of Tablero))(resultadoTablero.JSON)
+            ' Obtener las claves de esa fila
+            Dim dataKey As DataKey = lvPaquetes.DataKeys(index)
 
-        Dim ofertaActiva As Tablero = listaTablero.First()
-        Dim ofertaId As Integer = ofertaActiva.SIMID
-        Dim resultadoOferta As MessageResult = api.GetOfertaId(ofertaId)
-        Dim ofertaActual As Oferta = JsonSerializer.Deserialize(Of Oferta)(resultadoOferta.JSON)
+            ' Obtener cada valor por su nombre
+            Dim ofertaID As Integer = Convert.ToInt32(dataKey("OfertaID"))
+            Dim ICCID As String = dataKey("ICCID")
 
-        If resultadoOferta.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            ofertaActual = JsonSerializer.Deserialize(Of Oferta)(resultadoOferta.JSON)
-        Else
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('No se pudo obtener la información de la oferta.');", True)
-            Return
-        End If
 
-        Dim orderID As String = "GTW|" & Guid.NewGuid().ToString()
-        Dim body = New With {
-    .SolicitudID = "",
-    .OrderID = orderID,
-    .MetodoPagoID = "1",
-    .OfertaIDActual = ofertaActual.OfertaID,
-    .OfertaIDNueva = "6544",
-    .Monto = ofertaActual.OfertaID,
-    .ICCID = "HJFDKJHSF98743978",
-    .Estatus = "",
-    .FechaCreacion = "",
-    .EstatusDepositoID = "",
-    .IdTransaction = "",
-    .AuthNumber = "",
-    .AuthCode = "",
-    .Reason = "",
-    .PagoDepositoID = "",
-    .UltimaActualizacion = "",
-    .NumeroReintentos = ""
+            Dim api As New ConsumoApis
+            Dim resultadoTablero As New MessageResult
+
+            Dim resultadoOferta As MessageResult = api.GetOfertaId(ofertaID)
+            Dim ofertaActual As Oferta = JsonSerializer.Deserialize(Of Oferta)(resultadoOferta.JSON)
+
+            If resultadoOferta.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                ofertaActual = JsonSerializer.Deserialize(Of Oferta)(resultadoOferta.JSON)
+            Else
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('No se pudo obtener la información de la oferta.');", True)
+                Return
+            End If
+
+            Dim precio As Decimal
+
+
+            Select Case ofertaActual.Tipo
+                Case TipoServicio.Prepago
+                    precio = ofertaActual.PrecioRecurrente
+                Case TipoServicio.RenovacionAutomatica
+                    precio = ofertaActual.PrecioMensual
+                Case TipoServicio.PagoAnticipado
+                    precio = ofertaActual.PrecioAnual
+                Case Else
+                    precio = ofertaActual.PrecioMensual
+            End Select
+
+            Dim body = New With {
+        .SolicitudID = "",
+        .OrderID = "",
+        .MetodoPagoID = "1",'1 pago con tarjeta 
+        .OfertaIDActual = ofertaID,
+        .OfertaIDNueva = ofertaID,
+        .Monto = precio,
+        .ICCID = ICCID,
+        .Estatus = "",
+        .FechaCreacion = "",
+        .EstatusDepositoID = "",
+        .IdTransaction = "",
+        .AuthNumber = "",
+        .AuthCode = "",
+        .Reason = "",
+        .PagoDepositoID = "",
+        .UltimaActualizacion = "",
+        .NumeroReintentos = ""
+                }
+
+            Dim bodyJson As String = JsonSerializer.Serialize(body)
+            Dim resultado As New MessageResult
+
+            resultado = api.SolicitudPago(bodyJson)
+
+            If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                objOrderId = resultado.JSON
+            End If
+
+            Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
+            Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
+            Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
+
+            Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/PantallaExito.aspx?token={tokenBase64}"
+
+
+            Dim bodyLkl = New With {
+                .amount = precio,
+            .displayAmount = precio,
+            .displayCurrency = "MXN",
+            .language = "es",
+            .email = "daniel.arzate@knesysplus.com",
+            .commerceName = "TECOMNET",
+            .supportEmail = "recargas@tecomnet.mx",
+            .description = "Recarga $600 - 1000 MB",
+            .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/",
+            .redirectUrl = urlExito,
+            .order_id = objOrderId,
+            .origin = "ecommerce",
+            .imageUrl = "https://www.tecomnet.mx/wp-content/uploads/2024/11/888-removebg-preview.png",
+            .userData = New With {
+                .firstName = "",
+                .lastName = "",
+                .phone = "",
+                .email = "",
+                .country = "",
+                .state = "",
+                .locality = "",
+                .address = "",
+                .zipCode = ""
             }
+                }
 
-        Dim bodyJson As String = JsonSerializer.Serialize(body)
-        Dim resultado As New MessageResult
+            Dim bodyJsonLkl As String = JsonSerializer.Serialize(bodyLkl)
+            Dim resultadoLink As New MessageResult
 
-        resultado = api.SolicitudPago(bodyJson)
+            resultado = api.Pago(bodyJsonLkl)
 
-        If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            Dim objOrderId As String = resultado.JSON
-        End If
-
-        Dim bodyLkl = New With {
-            .amount = ofertaActual.PrecioMensual,
-        .displayAmount = ofertaActual.PrecioMensual,
-        .displayCurrency = "MXN",
-        .language = "es",
-        .email = "daniel.arzate@knesysplus.com",
-        .commerceName = "TECOMNET",
-        .supportEmail = "recargas@tecomnet.mx",
-        .description = "Recarga $600 - 1000 MB",
-        .response_url = "https://tecomnet.net/TECOMNET/webhook/ValidatePay/",
-        .redirectUrl = "https://tecomnet.net/TECOMNET/WebClient/Views/Recharge/RechargeSure.aspx?opr=R1RXfDkxZTYyZGJlLWQxYWMtNDAzMC1hNTNkLTNiZWZmNjFiOTFjMQ==",
-        .order_id = orderID,
-        .origin = "ecommerce",
-        .imageUrl = "https://www.tecomnet.mx/wp-content/uploads/2024/11/888-removebg-preview.png",
-        .userData = New With {
-            .firstName = "",
-            .lastName = "",
-            .phone = "",
-            .email = "",
-            .country = "",
-            .state = "",
-            .locality = "",
-            .address = "",
-            .zipCode = ""
-        }
-            }
-        Dim bodyJsonLkl As String = JsonSerializer.Serialize(bodyLkl)
-        resultado = api.Pago(bodyJsonLkl)
-        If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            Dim linkPago As PaymentResponse = JsonSerializer.Deserialize(Of PaymentResponse)(resultado.JSON)
-            Dim objLinkPago As String = linkPago.response.url
-            pnlPago.Visible = True
-            iframePago.Attributes("src") = objLinkPago
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModal", "abrirModal();", True)
+            If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                Dim linkPago As PaymentResponse = JsonSerializer.Deserialize(Of PaymentResponse)(resultado.JSON)
+                pnlPago.Visible = True
+                iframePago.Attributes("src") = linkPago.response.url
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModal", "abrirModal();", True)
+            Else
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('No se pudo generar el link de pago.');", True)
+            End If
         End If
     End Sub
 End Class
