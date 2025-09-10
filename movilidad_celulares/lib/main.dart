@@ -1,4 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_strategy/url_strategy.dart';
+import 'package:movilidad_celulares/call_native_code.dart';
+import 'package:movilidad_celulares/utils/session_manager.dart';
+
 import 'package:movilidad_celulares/screens/SimRedirectScreen.dart';
 import 'package:movilidad_celulares/screens/change_password.dart';
 import 'package:movilidad_celulares/screens/forgot_password.dart';
@@ -9,90 +15,111 @@ import 'package:movilidad_celulares/screens/success_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/information_payment_screen.dart';
-import 'package:movilidad_celulares/call_native_code.dart';
-import 'dart:async';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:url_strategy/url_strategy.dart';
-import 'package:movilidad_celulares/utils/session_manager.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-
     if (kIsWeb) {
-    setPathUrlStrategy();
-  } else {
-    await CallNativeCode.callNativeInitialize();
-  }
- final logged = await SessionManager.isLoggedIn();
-    runApp(MyApp(isLogged: logged));
+      setPathUrlStrategy();
+    } else {
+      await CallNativeCode.callNativeInitialize();
+    }
+
+    final logged = await SessionManager.isLoggedIn();
+
+    runApp(
+      SessionWatcher(
+        child: MyApp(isLogged: logged),
+      ),
+    );
   }, (error, stackTrace) {
+    debugPrint("❌ Error en la app: $error");
   });
 }
 
-class MyApp extends StatefulWidget {
-  final bool isLogged;
-  const MyApp({super.key, required this.isLogged});
+class SessionWatcher extends StatefulWidget {
+  final Widget child;
+  const SessionWatcher({super.key, required this.child});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<SessionWatcher> createState() => _SessionWatcherState();
 }
 
-class _MyAppState extends State<MyApp> {
-  Timer? _sessionTimer;
+class _SessionWatcherState extends State<SessionWatcher>
+    with WidgetsBindingObserver {
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _sessionTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      _checkSession();
-    });
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    _sessionTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
     super.dispose();
   }
 
-  void _onUserInteraction([_]) {
-    SessionManager.refreshSession();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("📱 AppLifecycleState cambió a: $state");
+
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      debugPrint("⏳ Usuario salió de la app, iniciando timer de 60 segundos...");
+      _timer?.cancel();
+      _timer = Timer(const Duration(minutes: 1), _handleTimeout);
+    } else if (state == AppLifecycleState.resumed) {
+      debugPrint("✅ Usuario volvió a la app, cancelando timer");
+      _timer?.cancel();
+    }
   }
 
-  Future<void> _checkSession() async {
-    final stillLogged = await SessionManager.isLoggedIn();
-    if (!stillLogged && mounted) {
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-    }
+  Future<void> _handleTimeout() async {
+    debugPrint("! Tiempo de inactividad alcanzado. Cerrando sesión...");
+    await SessionManager.logout();
+
+    navigatorKey.currentState
+        ?.pushNamedAndRemoveUntil('/login', (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: _onUserInteraction,
-      onPanDown: _onUserInteraction,
-      onScaleStart: _onUserInteraction,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Movilidad Celulares',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        initialRoute: widget.isLogged ? '/home' : '/login',
-        routes: {
-          '/login': (context) => const LoginScreen(),
-          '/home': (context) => const HomeScreen(),
-          '/payment': (context) => const InformationpaymentScreen(),
-          '/moreData': (context) => const MoreDataScreen(),
-          '/refills': (context) => const RefillsScreen(),
-          '/profile': (context) => const ProfileScreen(),
-          '/changePassword': (context) => const ChangePasswordScreen(),
-          '/redirect': (context) => const SimRedirectScreen(),
-          '/moreDataScreen': (context) => const MoreDataScreen(),
-          '/recuperarPassword': (context) => const RecuperarPasswordScreen(),
-          '/succes': (context) => const SuccessScreen(),
-        },
-      ),
-    );
+    return widget.child;
   }
 }
 
+class MyApp extends StatelessWidget {
+  final bool isLogged;
+  const MyApp({super.key, required this.isLogged});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: navigatorKey, 
+      debugShowCheckedModeBanner: false,
+      title: 'Movilidad Celulares',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/payment': (context) => const InformationpaymentScreen(),
+        '/moreData': (context) => const MoreDataScreen(),
+        '/refills': (context) => const RefillsScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/changePassword': (context) => const ChangePasswordScreen(),
+        '/redirect': (context) => const SimRedirectScreen(),
+        '/moreDataScreen': (context) => const MoreDataScreen(),
+        '/recuperarPassword': (context) => const RecuperarPasswordScreen(),
+        '/succes': (context) => const SuccessScreen(),
+      },
+    );
+  }
+}
