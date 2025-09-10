@@ -7,15 +7,21 @@ class BaseScaffold extends StatelessWidget {
   final String title;
   final Widget body;
   final bool centerTitle;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   const BaseScaffold({
     Key? key,
     required this.title,
     required this.body,
     this.centerTitle = true,
+    this.scaffoldKey,
   }) : super(key: key);
 
-  void _navigate(BuildContext context, String routeName, {bool clearStack = false}) {
+  void _navigate(
+    BuildContext context,
+    String routeName, {
+    bool clearStack = false,
+  }) {
     Navigator.pop(context);
 
     if (clearStack) {
@@ -32,6 +38,7 @@ class BaseScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(title),
         centerTitle: centerTitle,
@@ -62,7 +69,10 @@ class BaseScaffold extends StatelessWidget {
                   'https://wa.me/$whatsappNumber?text=Hola%20quiero%20informes',
                 );
                 if (await canLaunchUrl(whatsappUrl)) {
-                  await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                  await launchUrl(
+                    whatsappUrl,
+                    mode: LaunchMode.externalApplication,
+                  );
                 } else {
                   print('No se pudo abrir WhatsApp');
                 }
@@ -92,52 +102,118 @@ class BaseScaffold extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.home, color: Colors.black),
-              title: const Text('Inicio', style: TextStyle(color: Colors.black)),
-              onTap: () {Navigator.pushNamedAndRemoveUntil(context, '/home', (route)=> false);
+              title: const Text(
+                'Inicio',
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  (route) => false,
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.autorenew, color: Colors.black),
-              title: const Text('Actualizar plan', style: TextStyle(color: Colors.black)),
+              title: const Text(
+                'Actualizar plan',
+                style: TextStyle(color: Colors.black),
+              ),
               onTap: () => _navigate(context, '/redirect'),
             ),
             ListTile(
-              leading: const Icon(Icons.people_alt_rounded, color: Colors.black),
-              title: const Text('Mi perfil', style: TextStyle(color: Colors.black)),
+              leading: const Icon(
+                Icons.people_alt_rounded,
+                color: Colors.black,
+              ),
+              title: const Text(
+                'Mi perfil',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: ListTile(
-                leading: const Icon(Icons.phone_android, size: 20, color: Colors.black),
-                title: const Text('Ver recargas', style: TextStyle(fontSize: 14, color: Colors.black)),
+                leading: const Icon(
+                  Icons.phone_android,
+                  size: 20,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Ver recargas',
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
                 onTap: () => _navigate(context, '/refills'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: ListTile(
-                leading: const Icon(Icons.people_outline_sharp, size: 20, color: Colors.black),
-                title: const Text('Mi perfil', style: TextStyle(fontSize: 14, color: Colors.black)),
+                leading: const Icon(
+                  Icons.people_outline_sharp,
+                  size: 20,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Mi perfil',
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
                 onTap: () => _navigate(context, '/profile'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 40.0),
               child: ListTile(
-                leading: const Icon(Icons.lock_reset, size: 20, color: Colors.black),
-                title: const Text('Cambiar Contraseña', style: TextStyle(fontSize: 14, color: Colors.black)),
+                leading: const Icon(
+                  Icons.lock_reset,
+                  size: 20,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Cambiar Contraseña',
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
                 onTap: () => _navigate(context, '/changePassword'),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.info_outline, color: Colors.black),
-              title: const Text('Abrir Diagnóstico', style: TextStyle(color: Colors.black, fontSize: 14)),
+              title: const Text(
+                'Abrir Diagnóstico',
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              ),
               onTap: () => CallNativeCode.openHelp(),
             ),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.black),
               title: const Text('Salir', style: TextStyle(color: Colors.black)),
-              onTap: () => _navigate(context, '/login', clearStack: true),
+              onTap: () async {
+                final shouldExit = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("¿Deseas cerrar sesión y salir?"),                    
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text("Cancelar"),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text("Salir"),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (shouldExit ?? false) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
+                }
+              },
             ),
           ],
         ),

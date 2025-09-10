@@ -50,9 +50,6 @@ Future<void> cargarRecargasDinamico() async {
     });
   } else {
     setState(() => _isLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Error al obtener recargas')),
-    );
   }
 }
 

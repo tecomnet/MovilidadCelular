@@ -26,7 +26,7 @@ class AuthService {
         print('✅ Token recibido: $_token');
         return true;
       } else {
-        print('Error al obtener token: ${response.statusCode}');
+        print(' ${response.statusCode}');
         print('Respuesta: ${response.body}');
         return false;
       }
@@ -71,7 +71,7 @@ static set clienteId(int? value) {
         print('Perfil recibido: $data');
         return data;
       } else {
-        print('Error al obtener perfil: ${response.statusCode} - ${response.body}');
+        print(' ${response.statusCode} - ${response.body}');
         return null;
       }
     } catch (e) {
@@ -103,7 +103,7 @@ static set clienteId(int? value) {
       print('✅ Tablero recibido: $ofertas');
       return ofertas;
     } else {
-      print('❌ Error al obtener tebalero: ${response.statusCode}');
+      print(' ${response.statusCode}');
       print('Respuesta: ${response.body}');
       return null;
     }
@@ -136,7 +136,7 @@ static set clienteId(int? value) {
       print('✅ Ofertas recibidas para tipo $tipo: $ofertas');
       return ofertas;
     } else {
-      print('❌ Error al obtener ofertas: ${response.statusCode}');
+      print(' ${response.statusCode}');
       print('Respuesta: ${response.body}');
       return null;
     }
@@ -169,7 +169,7 @@ static Future<Map<String, dynamic>?> obtenerOfertaPorId(int ofertaId) async {
       print('✅ Oferta recibida con ID $ofertaId: $oferta');
       return oferta;
     } else {
-      print('❌ Error al obtener oferta: ${response.statusCode}');
+      print('${response.statusCode}');
       print('Respuesta: ${response.body}');
       return null;
     }
@@ -256,7 +256,7 @@ static Future<String?> generarOrderID({
         print('✅ Token recibido: $token');
         return token;
       } else {
-        print('❌ Error al obtener token: ${response.statusCode} - ${response.body}');
+        print(' ${response.statusCode} - ${response.body}');
         return null;
       }
     } catch (e) {
@@ -327,7 +327,7 @@ static Future<String?> generarOrderID({
           return null;
         }
       } else {
-        print('❌ Error al obtener link de pago: ${response.statusCode} - ${response.body}');
+        print(' ${response.statusCode} - ${response.body}');
         return null;
       }
     } catch (e) {
@@ -422,7 +422,7 @@ static Future<String?> generarOrderID({
       print('✅ Recargas recibidas: $recargas');
       return recargas;
     } else {
-      print('❌ Error al obtener recargas: ${response.statusCode}');
+      print(' ${response.statusCode}');
       print('Respuesta: ${response.body}');
       return null;
     }
