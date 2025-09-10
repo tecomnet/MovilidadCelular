@@ -30,31 +30,69 @@ void main() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final bool isLogged;
   const MyApp({super.key, required this.isLogged});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Timer? _sessionTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _checkSession();
+    });
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onUserInteraction([_]) {
+    SessionManager.refreshSession();
+  }
+
+  Future<void> _checkSession() async {
+    final stillLogged = await SessionManager.isLoggedIn();
+    if (!stillLogged && mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Movilidad Celulares',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/payment': (context) => const InformationpaymentScreen(),
-        '/moreData': (context) => const MoreDataScreen(),
-        '/refills': (context) => const RefillsScreen(),
-        '/profile': (context) => const ProfileScreen(),
-        '/changePassword': (context) => const ChangePasswordScreen(),
-        '/redirect': (context) => const SimRedirectScreen(),
-        '/moreDataScreen': (context) => const MoreDataScreen(),
-        '/recuperarPassword': (context) => const RecuperarPasswordScreen(),
-        '/succes': (context) => const SuccessScreen(),
-        
-      },
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _onUserInteraction,
+      onPanDown: _onUserInteraction,
+      onScaleStart: _onUserInteraction,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Movilidad Celulares',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        initialRoute: widget.isLogged ? '/home' : '/login',
+        routes: {
+          '/login': (context) => const LoginScreen(),
+          '/home': (context) => const HomeScreen(),
+          '/payment': (context) => const InformationpaymentScreen(),
+          '/moreData': (context) => const MoreDataScreen(),
+          '/refills': (context) => const RefillsScreen(),
+          '/profile': (context) => const ProfileScreen(),
+          '/changePassword': (context) => const ChangePasswordScreen(),
+          '/redirect': (context) => const SimRedirectScreen(),
+          '/moreDataScreen': (context) => const MoreDataScreen(),
+          '/recuperarPassword': (context) => const RecuperarPasswordScreen(),
+          '/succes': (context) => const SuccessScreen(),
+        },
+      ),
     );
   }
 }
+

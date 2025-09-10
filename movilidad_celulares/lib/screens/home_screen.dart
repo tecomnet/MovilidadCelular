@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String status = "Listo";
   List<dynamic> _ofertas = [];
   bool _isLoading = true;
@@ -32,8 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final perfil = await AuthService.obtenerPerfil();
     if (perfil != null) {
       setState(() {
-        nombre =
-            '${perfil['Nombre']}';
+        nombre = '${perfil['Nombre']}';
       });
       final clienteId = perfil['ClienteId'];
       final ofertas = await AuthService.obtenerTablero(clienteId);
@@ -185,6 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        // Si el drawer está abierto, ciérralo
+        if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+          Navigator.of(context).pop(); // Cierra el drawer
+          return false;
+        }
+
+        // Si no, muestra la alerta de salir
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -211,6 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return shouldExit ?? false;
       },
       child: BaseScaffold(
+        scaffoldKey: _scaffoldKey,
         title: '',
         body: Container(
           decoration: const BoxDecoration(
@@ -412,90 +420,91 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                   if (!esPrepago)
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
+                  if (!esPrepago)
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                       ),
-                    ),
-                    onPressed: () async {
-                      final orderIdTec = await AuthService.generarOrderID(
-                        iccid: iccid,
-                        ofertaActualId: ofertaId,
-                        ofertaNuevaId: ofertaId,
-                        monto: precio.toString(),
-                      );
-
-                      if (orderIdTec == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Error al generar OrderID'),
-                          ),
+                      onPressed: () async {
+                        final orderIdTec = await AuthService.generarOrderID(
+                          iccid: iccid,
+                          ofertaActualId: ofertaId,
+                          ofertaNuevaId: ofertaId,
+                          monto: precio.toString(),
                         );
-                        return;
-                      }
 
-                      final token = await AuthService.obtenerTokenRecargas(
-                        "h.martinez@tecomnet.mx",
-                        "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
-                      );
-
-                      if (token == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Error al obtener token'),
-                          ),
-                        );
-                        return;
-                      }
-                      final urlExito = generarUrlExito();
-
-                      final link = await AuthService.obtenerLinkDePago(
-                        token: token,
-                        amount: (precio * 100).toInt(),
-                        description: 'Renovación del plan',
-                        orderId: orderIdTec,
-                        redirectUrl: urlExito,
-                      );
-
-                      if (link == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Error al generar link de pago'),
-                          ),
-                        );
-                        return;
-                      }
-
-                      showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            insetPadding: const EdgeInsets.all(10),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: WebViewScreen(
-                                url: link,
-                                redirectUrl: urlExito,
-                              ),
+                        if (orderIdTec == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Error al generar OrderID'),
                             ),
                           );
-                        },
-                      );
-                    },
-                    child: const Text(
-                      'Renovar Plan',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                          return;
+                        }
+
+                        final token = await AuthService.obtenerTokenRecargas(
+                          "h.martinez@tecomnet.mx",
+                          "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
+                        );
+
+                        if (token == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Error al obtener token'),
+                            ),
+                          );
+                          return;
+                        }
+                        final urlExito = generarUrlExito();
+
+                        final link = await AuthService.obtenerLinkDePago(
+                          token: token,
+                          amount: (precio * 100).toInt(),
+                          description: 'Renovación del plan',
+                          orderId: orderIdTec,
+                          redirectUrl: urlExito,
+                        );
+
+                        if (link == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Error al generar link de pago'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              insetPadding: const EdgeInsets.all(10),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child: WebViewScreen(
+                                  url: link,
+                                  redirectUrl: urlExito,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: const Text(
+                        'Renovar Plan',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
                     ),
-                  ),
                   if (!esPrepago) const SizedBox(width: 16),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
