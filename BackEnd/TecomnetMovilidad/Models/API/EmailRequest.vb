@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel.DataAnnotations
-
 Namespace TECOMNET.API
     Public Class EmailRequest
         <Required>

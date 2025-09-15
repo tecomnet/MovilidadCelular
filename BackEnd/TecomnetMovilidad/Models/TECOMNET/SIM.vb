@@ -24,5 +24,6 @@ Namespace TECOMNET
         Public Property MBDisponibles As Integer?
         Public Property MBAdicionales As Integer?
         Public Property OfertaId As Integer?
+        Public Property Tipo As String ' SIM, ESIM
     End Class
 End Namespace

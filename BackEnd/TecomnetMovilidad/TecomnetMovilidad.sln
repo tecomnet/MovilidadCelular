@@ -13,6 +13,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Models", "Models\Models.vbp
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DatabaseConnection", "DatabaseConnection\DatabaseConnection.vbproj", "{E0993C6B-16E7-4B29-AD63-943C5E596DDC}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebHooK", "WebHooK\WebHooK.vbproj", "{D7BE4F36-25AA-49D0-AADC-E16F488FD477}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E0993C6B-16E7-4B29-AD63-943C5E596DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0993C6B-16E7-4B29-AD63-943C5E596DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0993C6B-16E7-4B29-AD63-943C5E596DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7BE4F36-25AA-49D0-AADC-E16F488FD477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7BE4F36-25AA-49D0-AADC-E16F488FD477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7BE4F36-25AA-49D0-AADC-E16F488FD477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7BE4F36-25AA-49D0-AADC-E16F488FD477}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -51,6 +51,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
@@ -96,8 +97,15 @@
     <Compile Include="Altan\ErrorAltan.vb" />
     <Compile Include="Altan\NotificationAltan.vb" />
     <Compile Include="Altan\Profile.vb" />
+    <Compile Include="Altan\RequestPurchaseProduct.vb" />
+    <Compile Include="Altan\RequestSubscribers.vb" />
+    <Compile Include="Altan\ResponsePurchaseProduct.vb" />
+    <Compile Include="Altan\ResponseSubscribers.vb" />
+    <Compile Include="API\CompraProducto.vb" />
+    <Compile Include="API\EmailRequest.vb" />
     <Compile Include="API\Tablero.vb" />
     <Compile Include="LinkX\AccessToken.vb" />
+    <Compile Include="LinkX\PaymentOrder.vb" />
     <Compile Include="LinkX\PaymentRequest.vb" />
     <Compile Include="LinkX\PaymentResponse.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -116,6 +124,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TECOMNET\Cliente.vb" />
+    <Compile Include="TECOMNET\Distribuidor.vb" />
     <Compile Include="TECOMNET\Enumeraciones.vb" />
     <Compile Include="TECOMNET\EstatusDeposito.vb" />
     <Compile Include="TECOMNET\Factura.vb" />

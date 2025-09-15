@@ -249,14 +249,13 @@
     <Compile Include="Controllers\AccountController.vb" />
     <Compile Include="Controllers\Cliente\ClienteController.vb" />
     <Compile Include="Controllers\Oferta\OfertaController.vb" />
-    <Compile Include="Controllers\Recarga\RecargaController.vb" />
+    <Compile Include="Controllers\Recargas\RecargasController.vb" />
     <Compile Include="Controllers\SolicitudPago\SolicitudPagoController.vb" />
     <Compile Include="Controllers\TokenGenerator.vb" />
     <Compile Include="Controllers\TokenValidationHandler.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Generales.vb" />
     <Compile Include="Models\LoginAccount.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
