@@ -72,10 +72,14 @@ Namespace Controllers.Clientes
                             objTablero.Estatus = profile.ResponseSubscriber.Status.SubStatus
 
                             If profile.ResponseSubscriber.FreeUnits.Count > 0 Then
-                                objTablero.MBDisponibles = profile.ResponseSubscriber.FreeUnits(0).FreeUnitDetails.UnusedAmt
-                                objTablero.MBAsignados = profile.ResponseSubscriber.FreeUnits(0).FreeUnitDetails.TotalAmt
-                                objTablero.MBUsados = (profile.ResponseSubscriber.FreeUnits(0).FreeUnitDetails.TotalAmt - profile.ResponseSubscriber.FreeUnits(0).FreeUnitDetails.UnusedAmt)
-                                objTablero.MBAdicionales = 0
+                                For Each item As FreeUnit In profile.ResponseSubscriber.FreeUnits
+                                    If item.Name.Contains("Data_Altan-RN") Then
+                                        objTablero.MBDisponibles = item.FreeUnitDetails.UnusedAmt
+                                        objTablero.MBAsignados = item.FreeUnitDetails.TotalAmt
+                                        objTablero.MBUsados = (item.FreeUnitDetails.TotalAmt - item.FreeUnitDetails.UnusedAmt)
+                                        objTablero.MBAdicionales = 0
+                                    End If
+                                Next
                             Else
                                 objTablero.MBDisponibles = 0
                                 objTablero.MBAsignados = 0

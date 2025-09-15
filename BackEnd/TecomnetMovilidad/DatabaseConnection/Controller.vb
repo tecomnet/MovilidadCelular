@@ -67,6 +67,7 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@BolsaCompartirDatos", SqlDbType.Bit, objOferta.BolsaCompartirDatos))
         parametros.Add(ConnectionDB.ArmaParametro("@RedesSociales", SqlDbType.Bit, objOferta.RedesSociales))
         parametros.Add(ConnectionDB.ArmaParametro("@TarifaPrimaria", SqlDbType.Bit, objOferta.TarifaPrimaria))
+        parametros.Add(ConnectionDB.ArmaParametro("@HomologacionID", SqlDbType.Int, objOferta.HomologacionID))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaAlta", SqlDbType.DateTime, objOferta.FechaAlta))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objOferta.FechaBaja), DBNull.Value, objOferta.FechaBaja)))
         parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))

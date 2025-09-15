@@ -1,5 +1,4 @@
-﻿Imports Models
-Imports Models.TECOMNET
+﻿Imports Models.TECOMNET
 Imports Models.TECOMNET.API
 Imports System.Security.Cryptography
 Imports System.Text
@@ -78,6 +77,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("BolsaCompartirDatos") Then objOferta.BolsaCompartirDatos = dr("BolsaCompartirDatos")
             If dr.Table.Columns.Contains("RedesSociales") Then objOferta.RedesSociales = dr("RedesSociales")
             If dr.Table.Columns.Contains("TarifaPrimaria") Then objOferta.TarifaPrimaria = dr("TarifaPrimaria")
+            If dr.Table.Columns.Contains("HomologacionID") Then objOferta.HomologacionID = dr("HomologacionID")
             If dr.Table.Columns.Contains("FechaAlta") Then objOferta.FechaAlta = dr("FechaAlta")
             If dr.Table.Columns.Contains("FechaBaja") Then objOferta.FechaBaja = dr("FechaBaja")
         Catch ex As Exception
@@ -180,4 +180,64 @@ Public Class Securyty
         Return myBase64
     End Function
 
+End Class
+Public Class Operations
+    Public Function CompraRecarga(OfferIDOrigen As Integer, OfferIdDestino As Integer) As Tuple(Of String, String)
+        'Definir la tabla de ofertas
+        Dim listOfertas As New List(Of Oferta)
+        Dim controller As New ControllerOferta
+        Dim Origen As New Oferta
+        Dim Destino As New Oferta
+        Dim OfferIdFinal As String = String.Empty
+
+        listOfertas = controller.ObtenerOfertas
+        Origen = listOfertas.FirstOrDefault(Function(x) x.OfertaID = OfferIDOrigen)
+        Destino = listOfertas.FirstOrDefault(Function(x) x.OfertaID = OfferIdDestino)
+
+        'New Dictionary(Of String, Object) From {
+        '    {"ofertaID", 6},
+        '    {"Oferta", "Oferta Renovación Automática 100"},
+        '    {"Tipo", 3},
+        '    {"offerIDAltan", "XXX006"},
+        '    {"TarifaPrimaria", 0},
+        '    {"HomologacionID", 3}
+        '},                
+
+        ' Definir las reglas de relacionamiento
+        Dim reglas_relacionamiento As New Dictionary(Of Tuple(Of Integer, Integer, Integer), String) From {
+                {Tuple.Create(1, 1, 0), "Compra"},
+                {Tuple.Create(1, 2, 0), "Compra"},
+                {Tuple.Create(1, 3, 1), "Cambio"},
+                {Tuple.Create(2, 1, 0), "Compra"},
+                {Tuple.Create(2, 2, 0), "Compra"},
+                {Tuple.Create(2, 3, 1), "Cambio"},
+                {Tuple.Create(3, 1, 0), "Compra"},
+                {Tuple.Create(3, 2, 1), "Cambio"},
+                {Tuple.Create(3, 3, 1), "Cambio"}
+            }
+
+        ' Validar que origen y destino estén en los valores permitidos
+        Dim valoresPermitidos As Integer() = {1, 2, 3}
+        If Not valoresPermitidos.Contains(Origen.Tipo) OrElse Not valoresPermitidos.Contains(Destino.Tipo) Then
+            Return Nothing
+        End If
+
+        ' Buscar la regla correspondiente
+        Dim regla_encontrada As KeyValuePair(Of Tuple(Of Integer, Integer, Integer), String) = Nothing
+
+        For Each regla In reglas_relacionamiento
+            If regla.Key.Item1 = Origen.Tipo AndAlso regla.Key.Item2 = Destino.Tipo Then
+                regla_encontrada = regla
+                Exit For
+            End If
+        Next
+
+        If regla_encontrada.Equals(New KeyValuePair(Of Tuple(Of Integer, Integer, Integer), String)()) Then
+            Return Nothing
+        End If
+
+        OfferIdFinal = listOfertas.FirstOrDefault(Function(x) x.HomologacionID = Destino.HomologacionID And x.TarifaPrimaria = CBool(regla_encontrada.Key.Item3)).OfertaID
+        Return Tuple.Create(OfferIdFinal, regla_encontrada.Value)
+
+    End Function
 End Class

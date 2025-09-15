@@ -1,153 +1,90 @@
-﻿Imports Models.TECOMNET
+﻿Imports Microsoft.VisualBasic.ApplicationServices
+Imports Models.TECOMNET
 
 Public Class ControllerUsuario
-    'Public Function GetCustomer() As List(Of Customer)
-    '    Dim controller As New Controller
-    '    Dim lstCustomers As New List(Of Customer)
-    '    Try
-    '        Dim dt As New DataSet
-    '        dt = controller.TransactionsCustomer(Of DataSet)(1, New Customer)
+    Public Function ObtenerUsuarios() As List(Of Usuario)
+        Dim controller As New Controller
+        Dim lstUsuario As New List(Of Usuario)
+        Try
+            Dim dt As New DataSet
+            'dt = controller.TransactionsUser(Of DataSet)(1, New Usuario)
 
-    '        If dt.Tables(0).Rows.Count = 0 Then
-    '            Return lstCustomers
-    '        Else
-    '            For Each dr As DataRow In dt.Tables(0).Rows
-    '                lstCustomers.Add(ConvertObject.Customers(dr))
-    '            Next
-    '        End If
-    '    Catch ex As Exception
-    '        Return lstCustomers
-    '    End Try
-    '    Return lstCustomers
-    'End Function
-    'Public Function GetCustomer(ByVal CustomerID As Integer) As Customer
-    '    Dim controller As New Controller
-    '    Dim objCustomer As New Customer
-    '    objCustomer.CustomerID = CustomerID
-    '    Try
-    '        Dim dt As New DataSet
-    '        dt = controller.TransactionsCustomer(Of DataSet)(2, objCustomer)
+            If dt.Tables(0).Rows.Count = 0 Then
+                Return lstUsuario
+            Else
+                For Each dr As DataRow In dt.Tables(0).Rows
+                    'lstUser.Add(ConvertObject.Users(dr))
+                Next
+            End If
+        Catch ex As Exception
+            Return lstUsuario
+        End Try
+        Return lstUsuario
+    End Function
+    Public Function ObtenerUsuario(ByVal UsuarioID As Integer) As Usuario
+        Dim controller As New Controller
+        Dim objUsuario As New Usuario
+        objUsuario.UsuarioID = UsuarioID
+        Try
+            Dim dt As New DataSet
+            'dt = controller.TransactionsUser(Of DataSet)(2, objUsuario)
 
-    '        For Each dr As DataRow In dt.Tables(0).Rows
-    '            objCustomer = ConvertObject.Customers(dr)
-    '        Next
-    '    Catch ex As Exception
-    '        Return objCustomer
-    '    End Try
-    '    Return objCustomer
-    'End Function
-    'Public Function AddCustomer(ByVal objCustomer As Customer) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(3, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
-    'Public Function UpdateCustomer(ByVal objCustomer As Customer) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(4, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
-    'Public Function DesactivateCustomer(ByVal CustomerID As Integer) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Dim objCustomer As New Customer
-    '    objCustomer.CustomerID = CustomerID
-    '    objCustomer.LastDate = Now
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(5, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
-    'Public Function GetCustomerByMatch(ByVal TextSearch As String) As List(Of Customer)
-    '    Dim controller As New Controller
-    '    Dim lstCustomer As New List(Of Customer)
-    '    Try
-    '        Dim dt As New DataSet
-    '        Dim objCustomer As New Customer
-    '        objCustomer.CustomerName = TextSearch
-    '        dt = controller.TransactionsCustomer(Of DataSet)(6, objCustomer)
+            For Each dr As DataRow In dt.Tables(0).Rows
+                'objUsuario = ConvertObject.Users(dr)
+            Next
+        Catch ex As Exception
+            Return objUsuario
+        End Try
+        Return objUsuario
+    End Function
+    Public Function AgregarUsuario(ByVal objUsuario As Usuario) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            'exito = controller.TransactionsUser(Of Integer)(3, objUsuario)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+    Public Function AtualizarUsuario(ByVal objUsuario As Usuario) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            'exito = controller.TransactionsUser(Of Integer)(4, objUsuario)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+    Public Function DesactivaUsuario(ByVal UsuarioID As Integer) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Dim objUsuario As New Usuario
+        objUsuario.UsuarioID = UsuarioID
+        objUsuario.fechaBaja = Now
+        Try
+            'exito = controller.TransactionsUser(Of Integer)(5, objUsuario)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+    Public Function LoginUsuario(ByVal email As String, ByVal password As String) As Usuario
+        Dim controller As New Controller
+        Dim objUsuario As New Usuario
+        objUsuario.Email = email
+        objUsuario.PasswordHash = password
+        Try
+            Dim dt As New DataSet
+            'dt = controller.TransactionsUser(Of DataSet)(6, objUsuario)
 
-    '        If dt.Tables(0).Rows.Count = 0 Then
-    '            Return lstCustomer
-    '        Else
-    '            For Each dr As DataRow In dt.Tables(0).Rows
-    '                lstCustomer.Add(ConvertObject.Customers(dr))
-    '            Next
-    '        End If
-    '    Catch ex As Exception
-    '        Return lstCustomer
-    '    End Try
-    '    Return lstCustomer
-    'End Function
-    'Public Function ValidateCustomerRegistration(ByVal VIN As String, ByVal RFC As String, ByVal email As String) As Customer
-    '    Dim controller As New Controller
-    '    Dim objCustomer As New Customer
-    '    objCustomer.CustomerName = VIN
-    '    objCustomer.RFC = RFC
-    '    objCustomer.Email = email
-    '    Try
-    '        Dim dt As New DataSet
-    '        dt = controller.TransactionsCustomer(Of DataSet)(7, objCustomer)
-
-    '        For Each dr As DataRow In dt.Tables(0).Rows
-    '            objCustomer = ConvertObject.Customers(dr)
-    '        Next
-    '    Catch ex As Exception
-    '        Return objCustomer
-    '    End Try
-    '    Return objCustomer
-    'End Function
-    'Public Function RegistrationCustomer(ByVal objCustomer As Customer) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(8, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
-    'Public Function LoginCustomer(ByVal email As String, ByVal password As String) As Cliente
-    '    Dim controller As New Controller
-    '    Dim objCustomer As New Customer
-    '    objCustomer.Email = email
-    '    objCustomer.Password = password
-    '    Try
-    '        Dim dt As New DataSet
-    '        dt = controller.TransactionsCustomer(Of DataSet)(9, objCustomer)
-
-    '        For Each dr As DataRow In dt.Tables(0).Rows
-    '            objCustomer = ConvertObject.Customers(dr)
-    '        Next
-    '    Catch ex As Exception
-    '        Return objCustomer
-    '    End Try
-    '    Return objCustomer
-    'End Function
-    'Public Function ChangePassword(ByVal CustomerID As Integer, ByVal InitialPassword As String, ByVal NewPassword As String) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Dim objCustomer As New Customer
-    '    objCustomer.CustomerID = CustomerID
-    '    objCustomer.CustomerName = InitialPassword
-    '    objCustomer.Password = NewPassword
-
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(10, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
+            For Each dr As DataRow In dt.Tables(0).Rows
+                '   objUser = ConvertObject.Users(dr)
+            Next
+        Catch ex As Exception
+            Return objUsuario
+        End Try
+        Return objUsuario
+    End Function
 End Class
