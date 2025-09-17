@@ -157,6 +157,7 @@
     <Content Include="Views\General\Inicio.aspx" />
     <Content Include="Views\General\PantallaExito.aspx" />
     <Content Include="Views\Planes\CambioDePlan.aspx" />
+    <Content Include="Views\Recargas\recargas.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +256,13 @@
     <Compile Include="Views\Planes\CambioDePlan.aspx.vb">
       <DependentUpon>CambioDePlan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Recargas\recargas.aspx.designer.vb">
+      <DependentUpon>recargas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Recargas\recargas.aspx.vb">
+      <DependentUpon>recargas.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

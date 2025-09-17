@@ -27,10 +27,13 @@ Public Class ForgotPassword
         resultado = api.PostSolicitudCambioContraseña(JsonSerializer.Serialize(objEmail))
 
         If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            lblMensaje.ForeColor = Drawing.Color.Green
-            lblMensaje.Text = "Se envió la contraseña nueva correctamente. Revisa tu correo."
+            SuccessMessageDiv.Visible = True
+            SuccessText.Text = "Se ha enviado la contraseña correctamente"
+            ErrorMessageDiv.Visible = False
         Else
-            lblMensaje.Text = resultado.JSON
+            ErrorMessageDiv.Visible = True
+            FailureText.Text = "El correo ingresado no existe. Inténtalo de nuevo."
+            SuccessMessageDiv.Visible = False
         End If
 
     End Sub

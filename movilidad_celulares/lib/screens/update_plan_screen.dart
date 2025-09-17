@@ -25,6 +25,7 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   List<Map<String, dynamic>> planesDisponibles = [];
   String iccid = '';
   String ofertaActualId = '';
+  String msisdn= '';
 
   final Map<String, String> nombresTipos = {
     'prepago': 'Recarga',
@@ -33,9 +34,9 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   };
 
   final Map<int, String> tipoNumeroATipo = {
-    2: 'prepago',
-    1: 'pago_recurrente',
-    3: 'pago_anticipado',
+    1: 'prepago',
+    3: 'pago_recurrente',
+    2: 'pago_anticipado',
   };
 
   int get tipoPlanActualNumero {
@@ -67,7 +68,9 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
       tipoPlanActual = tipoNumeroATipo[planActual['Tipo']] ?? 'prepago';
       iccid = planActual['ICCID'] ?? '';
       ofertaActualId = planActual['OfertaID']?.toString() ?? '';
+      msisdn = planActual['MSISDN'] ?? '';
     }
+    
 
     List<Map<String, dynamic>> todasOfertas = [];
 
@@ -84,11 +87,11 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
 
   double obtenerPrecioDelPlan(Map<String, dynamic> plan) {
     switch (plan['Tipo']) {
-      case 2:
+      case 3:
         return plan['PrecioMensual'] ?? 0;
       case 1:
         return plan['PrecioRecurrente'] ?? 0;
-      case 3:
+      case 2:
         return plan['PrecioAnual'] ?? 0;
       default:
         return 0;
@@ -187,7 +190,6 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                             onPressed: () async {
                                               final precio =
                                                   obtenerPrecioDelPlan(plan);
-
                                               final orderIdTec =
                                                   await AuthService.generarOrderID(
                                                     iccid: iccid,
@@ -198,6 +200,7 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                                             .toString(),
                                                     monto: precio
                                                         .toStringAsFixed(2),
+                                                        msisdn: msisdn,
                                                   );
 
                                               if (orderIdTec == null) return;

@@ -17,17 +17,17 @@ class MenuOpcionesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<int, Map<String, dynamic>> tipos = {
-      1: {
+      3: {
         'titulo': 'Mensual',
         'descripcion': 'Contrata un plan recurrente con pago mensual',
         'icono': Icons.calendar_month,
       },
-      2: {
+      1: {
         'titulo': 'Recarga',
         'descripcion': 'Compra paquetes de datos de forma inmediata',
         'icono': Icons.bolt,
       },
-      3: {
+      2: {
         'titulo': 'Anual',
         'descripcion': 'Planes con pago anticipado por 12 meses',
         'icono': Icons.workspace_premium,

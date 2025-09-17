@@ -39,6 +39,8 @@ Public Class Global_asax
                         Case "/movilidad/clientes/Views/Account/ForgotPassword.aspx"
                         Case "/Views/General/PantallaExito.aspx"
                         Case "/movilidad/clientes/Views/General/PantallaExito.aspx"
+                        Case "/Views/Recargas/recargas.aspx"
+                        Case "/movilidad/clientes/Views/Recargas/recargas.aspx"
 
                         Case Else
                             Server.ClearError()

@@ -40,16 +40,14 @@ Public Class Inicio
 
     Private Sub lvPaquetes_ItemCommand(sender As Object, e As ListViewCommandEventArgs) Handles lvPaquetes.ItemCommand
         If e.CommandName = "Renovar" Then
-            ' Obtener el índice de la fila clickeada
             Dim index As Integer = Convert.ToInt32(e.CommandArgument)
             Dim objOrderId As String
 
-            ' Obtener las claves de esa fila
             Dim dataKey As DataKey = lvPaquetes.DataKeys(index)
 
-            ' Obtener cada valor por su nombre
             Dim ofertaID As Integer = Convert.ToInt32(dataKey("OfertaID"))
             Dim ICCID As String = dataKey("ICCID")
+            Dim MSISDN As String = dataKey("MSISDN")
 
 
             Dim api As New ConsumoApis
@@ -87,6 +85,7 @@ Public Class Inicio
         .OfertaIDNueva = ofertaID,
         .Monto = precio,
         .ICCID = ICCID,
+        .MSISDN = MSISDN,
         .Estatus = "",
         .FechaCreacion = "",
         .EstatusDepositoID = "",
@@ -96,8 +95,9 @@ Public Class Inicio
         .Reason = "",
         .PagoDepositoID = "",
         .UltimaActualizacion = "",
-        .NumeroReintentos = ""
-                }
+        .NumeroReintentos = "",
+        .DistribuidorID = "1"
+            }
 
             Dim bodyJson As String = JsonSerializer.Serialize(body)
             Dim resultado As New MessageResult
@@ -157,4 +157,25 @@ Public Class Inicio
             End If
         End If
     End Sub
+
+    Private Sub lvPaquetes_ItemDataBound(sender As Object, e As ListViewItemEventArgs) Handles lvPaquetes.ItemDataBound
+        If e.Item.ItemType = ListViewItemType.DataItem Then
+            Dim data As Tablero = CType(e.Item.DataItem, Tablero)
+
+            Dim btnRenovar As LinkButton = CType(e.Item.FindControl("btnRenovar"), LinkButton)
+            Dim hlRecargarSaldo As HyperLink = CType(e.Item.FindControl("hlRecargarSaldo"), HyperLink)
+
+            Dim tipoPlan As TipoServicio = CType(data.Tipo.GetInt32(), TipoServicio)
+
+            Select Case tipoPlan
+                Case TipoServicio.Prepago
+                    btnRenovar.Visible = False
+                    hlRecargarSaldo.Visible = True
+                Case TipoServicio.RenovacionAutomatica, TipoServicio.PagoAnticipado
+                    btnRenovar.Visible = True
+                    hlRecargarSaldo.Visible = True
+            End Select
+        End If
+    End Sub
+
 End Class

@@ -7,11 +7,13 @@ import 'package:movilidad_celulares/widgets/payment_webview.dart';
 class MenuScreen extends StatelessWidget {
   final String ofertaActualId;
   final String iccid;
+  final String msisdn;
 
   const MenuScreen({
     super.key,
     required this.ofertaActualId,
     required this.iccid,
+    required this.msisdn,
   });
 
   @override
@@ -30,7 +32,7 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
         child: FutureBuilder<List<Map<String, dynamic>>?>(
-          future: AuthService.obtenerOfertasPorTipo(2),
+          future: AuthService.obtenerOfertasPorTipo(1),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -60,6 +62,7 @@ class MenuScreen extends StatelessWidget {
                   iccid: iccid, // tu ICCID
                   ofertaNuevaId: oferta['OfertaID']
                       .toString(), // la nueva oferta
+                      msisdn: msisdn,
                 );
               },
             );
@@ -77,6 +80,7 @@ class MenuScreen extends StatelessWidget {
     required String ofertaId,
     required String iccid,
     required String ofertaNuevaId,
+    required String msisdn,
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -140,7 +144,9 @@ class MenuScreen extends StatelessWidget {
                   ofertaActualId: ofertaId,
                   ofertaNuevaId: ofertaNuevaId,
                   monto: precio.toString(),
+                  msisdn: msisdn
                 );
+print('✅✅✅ MSISDN obtenido: $msisdn');
 
                 if (orderIdTec == null) {
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -84,7 +84,6 @@
         <div class="container-fluid">
             <div class="row flex-nowrap">
                 <div class="col-auto px-0">
-                    <!--<div id="sidebar" class="collapse collapse-horizontal show border-end vh-100 shadow-sm">-->
                     <div id="sidebar" class="collapse collapse-horizontal border-end vh-100 shadow-sm bg-light">
                         <div id="sidebar-nav" class="list-group border-0 rounded-0 p-3">
                             <div class="p-2 border-bottom">
@@ -131,14 +130,33 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <asp:LinkButton ID="lbCerrarSesion" runat="server" OnClick="lbCerrarSesion_Click" CssClass="nav-link link-dark">                                        
-                                <i class="bi bi-box-arrow-left" style="width: 16px; height: 16px"></i>
-                                Salir
-                                    </asp:LinkButton>
+                                    <a href="#" class="nav-link link-dark" data-bs-toggle="modal" data-bs-target="#confirmLogoutModal">
+                                        <i class="bi bi-box-arrow-left" style="width: 16px; height: 16px"></i>
+                                        Salir
+                                    </a>
                                 </li>
+                                <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmLogoutLabel">Confirmar salida</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que quieres cerrar sesión?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <asp:LinkButton ID="lbCerrarSesion" runat="server" CssClass="btn btn-primary" OnClick="lbCerrarSesion_Click">
+                                                Cerrar sesión
+                                                </asp:LinkButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </ul>
                         </div>
-                    </div>      
+                    </div>
                 </div>
                 <div class="col ps-md-2 pt-2">
                     <nav class="navbar">

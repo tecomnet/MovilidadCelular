@@ -77,9 +77,9 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="pnlSim" runat="server" Visible="false">
-    <div class="container-fluid text-center pt-2 containerTitle">
-        <label class="h3 text-white">Selecciona una SIM</label>
-    </div>
+        <div class="container-fluid text-center pt-2 containerTitle">
+            <label class="h3 text-white">Selecciona una SIM</label>
+        </div>
         <div class="text-center pt-2">
         </div>
         <asp:ListView ID="lvSIMS" runat="server" DataKeyNames="SIMID">
@@ -88,54 +88,74 @@
                     <div class="row">
                         <div class="col-md-10">
                             <strong>
-                                <%# String.Format("{0} - {1} - {2}", Eval("MSISDN"), Eval("ICCID"), Eval("OfertaID")) %>
+                                <%# String.Format("{0} - {1}", Eval("Oferta"), Eval("MSISDN")) %>
                             </strong>
                         </div>
                         <div class="text-center col-md-2">
-                            <asp:HyperLink ID="hlMore" runat="server" Text="Seleccionar" CssClass="btn btn-primary" NavigateUrl='<%# String.Format("~/Views/Planes/CambioDePlan.aspx?sd={0}&ICCID={1}&oi={2}", Eval("SIMID"), Eval("ICCID"), Eval("OfertaID")) %>'></asp:HyperLink>
+                            <asp:HyperLink ID="hlMore" runat="server" Text="Seleccionar" CssClass="btn btn-primary" NavigateUrl='<%# String.Format("~/Views/Planes/CambioDePlan.aspx?sd={0}&ICCID={1}&oi={2}&MSISDN{3}", Eval("SIMID"), Eval("ICCID"), Eval("OfertaID"), Eval("MSISDN")) %>'></asp:HyperLink>
                         </div>
                     </div>
                 </div>
             </ItemTemplate>
         </asp:ListView>
     </asp:Panel>
-    <asp:Panel ID="pnlPlanes" runat="server" Visible="False">
-        <div class="container-fluid text-center pt-2 containerTitle">
-    <label class="h3 text-white">Selecciona una oferta</label>
-</div>
-    <div class="container container-plan">
-        <hr />
+    <asp:Panel ID="pnlMenuOpciones" runat="server" Visible="false">
+        <div class="container mt-4">
+            <h3 class="text-white mb-4">Selecciona otra opción de plan</h3>
 
-        <div class="mb-4 text-center">
-            <asp:Button ID="btnRecarga" runat="server" CssClass="btn btn-primary btn-option" Text="Recarga" />
-            <asp:Button ID="btnPlanMensual" runat="server" CssClass="btn btn-primary btn-option" Text="Plan Mensual" />
-            <asp:Button ID="btnPlanAnual" runat="server" CssClass="btn btn-primary btn-option" Text="Plan Anual" />
-        </div>
-
-        <h5 class="mb-3">Opciones disponibles (Recarga)</h5>
-
-        <asp:ListView ID="lvCambioPlan" runat="server" DataKeyNames="OfertaID">
-            <LayoutTemplate>
-                <div class="row">
-                    <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
-                </div>
-            </LayoutTemplate>
-
-            <ItemTemplate>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card plan-card shadow">
-                        <div class="card-body text-center">
-                            <h5 class="card-title"><%# Eval("Oferta") %></h5>
-                            <p class="plan-description"><%# Eval("Descripcion") %></p>
-                            <p class="plan-price"><%# If(Eval("Tipo") IsNot Nothing, [Enum].GetName(GetType(Models.TECOMNET.Enumeraciones.TipoServicio), CInt(Eval("Tipo"))), "N/A") %></p>
-                            <asp:Button ID="btnLoQuiero" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" CommandArgument='<%# Eval("OfertaID") %>' OnClick="btnLoQuiero_Click" />
+            <asp:ListView ID="lvTipos" runat="server" DataKeyNames="SIMID,ICCID,TipoPlan,MSISDN">
+                <ItemTemplate>
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <i class='<%# Eval("IconoCss") %>' style="font-size: 32px; color: #0d6efd"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><%# Eval("Titulo") %></h5>
+                                <p class="card-text text-muted"><%# Eval("Descripcion") %></p>
+                            </div>
+                            <div class="text-center col-md-2">
+                                <asp:LinkButton ID="btnSeleccionarTipo" runat="server" Text="Seleccionar" CssClass="btn btn-primary" CommandName="SeleccionarTipo" CommandArgument='<%# Container.DisplayIndex %>'>Seleccionar</asp:LinkButton>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </ItemTemplate>
-        </asp:ListView>
-    </div>
-        </asp:Panel>
+                </ItemTemplate>
+            </asp:ListView>
+
+        </div>
+    </asp:Panel>
+    <asp:Panel ID="pnlPlanes" runat="server" Visible="False">
+        <div class="container-fluid text-center pt-2 containerTitle">
+            <label class="h3 text-white">Selecciona una oferta</label>
+        </div>
+        <div class="container container-plan">
+            <hr />
+
+            <h5 class="mb-3">
+                <asp:Label ID="lblTituloPlanes" runat="server" Text="Opciones disponibles"></asp:Label>
+            </h5>
+
+            <asp:ListView ID="lvCambioPlan" runat="server" DataKeyNames="OfertaID">
+                 <LayoutTemplate>
+        <div class="row">
+            <asp:PlaceHolder ID="itemPlaceholder" runat="server"></asp:PlaceHolder>
+        </div>
+    </LayoutTemplate>
+                <ItemTemplate>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card plan-card shadow">
+                            <div class="card-body text-center">
+                                <h5 class="card-title"><%# Eval("Oferta") %></h5>
+                                <p class="plan-description"><%# Eval("Descripcion") %></p>
+                                <p class="plan-price"><%# If(Eval("Tipo") IsNot Nothing, [Enum].GetName(GetType(Models.TECOMNET.Enumeraciones.TipoServicio), CInt(Eval("Tipo"))), "N/A") %></p>
+                                <asp:Button ID="btnLoQuiero" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" CommandArgument='<%# Eval("OfertaID") %>' OnClick="btnLoQuiero_Click" />
+                            </div>
+                        </div>
+                    </div>
+                </ItemTemplate>
+            </asp:ListView>
+        </div>
+    </asp:Panel>
     <asp:Panel ID="pnlPago" runat="server" Visible="False">
         <div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">

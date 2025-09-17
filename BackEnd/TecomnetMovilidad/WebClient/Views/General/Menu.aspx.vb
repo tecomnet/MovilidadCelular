@@ -20,7 +20,7 @@ Public Class Menu
             Dim api As New ConsumoApis
             Dim resultado As New MessageResult
             Dim recargas As New List(Of Oferta)
-            resultado = api.GetOfertaTipo(2)
+            resultado = api.GetOfertaTipo(1)
 
             If resultado.ErrorID = TipoErroresAPI.Exito Then
                 recargas = JsonSerializer.Deserialize(Of List(Of Oferta))(resultado.JSON)
@@ -34,6 +34,7 @@ Public Class Menu
         Dim api As New ConsumoApis
         Dim precio As Decimal
         Dim objOrderId As String
+        Dim MSISDN As String = Request.QueryString("MSISDN")
 
         Select Case ofertaNueva.Tipo
             Case TipoServicio.Prepago
@@ -54,6 +55,7 @@ Public Class Menu
     .OfertaIDNueva = ofertaNueva.OfertaID,
     .Monto = precio,
     .ICCID = Request.QueryString("ICCID"),
+    .MSISDN = Request.QueryString("MSISDN"),
     .Estatus = "",
     .FechaCreacion = "",
     .EstatusDepositoID = "",
@@ -63,7 +65,8 @@ Public Class Menu
     .Reason = "",
     .PagoDepositoID = "",
     .UltimaActualizacion = "",
-    .NumeroReintentos = ""
+    .NumeroReintentos = "",
+    .DistribuidorID = "1"
             }
 
         Dim bodyJson As String = JsonSerializer.Serialize(body)

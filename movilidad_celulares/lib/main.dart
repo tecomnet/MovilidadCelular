@@ -67,22 +67,18 @@ class _SessionWatcherState extends State<SessionWatcher>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint("📱 AppLifecycleState cambió a: $state");
 
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
-      debugPrint("⏳ Usuario salió de la app, iniciando timer de 60 segundos...");
       _timer?.cancel();
-      _timer = Timer(const Duration(minutes: 1), _handleTimeout);
+      _timer = Timer(const Duration(minutes: 5), _handleTimeout);
     } else if (state == AppLifecycleState.resumed) {
-      debugPrint("✅ Usuario volvió a la app, cancelando timer");
       _timer?.cancel();
     }
   }
 
   Future<void> _handleTimeout() async {
-    debugPrint("! Tiempo de inactividad alcanzado. Cerrando sesión...");
     await SessionManager.logout();
 
     navigatorKey.currentState

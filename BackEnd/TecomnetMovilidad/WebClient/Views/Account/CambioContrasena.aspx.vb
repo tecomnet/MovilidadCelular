@@ -41,11 +41,13 @@ Public Class CambioContrasena
         resultado = api.PostCambiarContraseña(JsonSerializer.Serialize(objCambiarContrasena))
 
         If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            lblExito.Text = "Se cambio la contraseña correctamente"
-            lblExito.Visible = True
+            SuccessMessageDiv.Visible = True
+            SuccessText.Text = "Cambio de contraseña exitoso"
+            ErrorMessageDiv.Visible = False
         Else
-            lblError.Text = resultado.JSON
-            lblError.Visible = True
+            ErrorMessageDiv.Visible = True
+            FailureText.Text = "No se pudo cambiar la contraseña. Intenta nuevamente"
+            SuccessMessageDiv.Visible = False
         End If
 
 

@@ -185,13 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // Si el drawer está abierto, ciérralo
         if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
-          Navigator.of(context).pop(); // Cierra el drawer
+          Navigator.of(context).pop(); 
           return false;
         }
-
-        // Si no, muestra la alerta de salir
+        
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -322,6 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             simId: oferta['SIMID'].toString(),
                                             ofertaId: oferta['OfertaID']
                                                 .toString(),
+                                                msisdn: oferta['MSISDN'],
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -333,6 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 .toString(),
                                                         iccid: oferta['ICCID']
                                                             .toString(),
+                                                            msisdn: oferta['MSISDN'].toString(),
                                                       ),
                                                 ),
                                               );
@@ -395,6 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String simId,
     required String ofertaId,
     required bool esPrepago,
+    required String msisdn,
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -435,8 +436,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ofertaActualId: ofertaId,
                           ofertaNuevaId: ofertaId,
                           monto: precio.toString(),
+                          msisdn: msisdn,
                         );
-
                         if (orderIdTec == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -521,6 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           builder: (context) => MenuScreen(
                             ofertaActualId: ofertaId.toString(),
                             iccid: iccid.toString(),
+                            msisdn: msisdn.toString(),
                           ),
                         ),
                       );
