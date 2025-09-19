@@ -48,8 +48,8 @@
         }
 
         .btn-primary {
-            background-color: #3f7dc0 !important; /* Nuevo color de fondo */
-            border-color: #3f7dc0 !important; /* Nuevo color del borde */
+            background-color: #3f7dc0 !important; 
+            border-color: #3f7dc0 !important; 
         }
 
             .btn-primary:hover {
@@ -195,5 +195,34 @@
             </div>
         </div>
     </form>
+    <script type="text/javascript">
+        (function () {
+            let warningTime = 15 * 60 * 1000;
+            let logoutTime = 20 * 60 * 1000;
+
+            let warningTimer, logoutTimer;
+
+            function resetTimers() {
+                clearTimeout(warningTimer);
+                clearTimeout(logoutTimer);
+
+                warningTimer = setTimeout(function () {
+                    alert("⚠️ Tu sesión está a punto de expirar por inactividad.");
+                }, warningTime);
+
+                logoutTimer = setTimeout(function () {
+                    location.reload();
+                }, logoutTime);
+            }
+
+            document.addEventListener("mousemove", resetTimers);
+            document.addEventListener("keydown", resetTimers);
+            document.addEventListener("click", resetTimers);
+
+            // Iniciar timers
+            resetTimers();
+        })();
+    </script>
+
 </body>
 </html>

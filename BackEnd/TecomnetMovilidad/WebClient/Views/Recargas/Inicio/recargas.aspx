@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TECOMNET - Recarga</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="../../Css/bootstrap.min.css" />
     <script src="../../Scripts/js/bootstrap.js"></script>
     <style>
@@ -138,7 +139,7 @@
                             <asp:TextBox ID="txtConfirmPhonenumber" runat="server" placeholder="Introduce tu número a 10 dígitos" TextMode="Number"
                                 CssClass="form-control m-auto" MaxLength="10" Width="300px"></asp:TextBox>
                         </div>
-                        <asp:Button ID="btnValidaPhoneNumber" runat="server" CssClass="btn btn-custom" Text="Continuar" ValidationGroup="ValidationPhonenumber" />
+                        <asp:Button ID="btnValidaPhoneNumber" runat="server" CssClass="btn btn-custom" Text="Continuar" ValidationGroup="ValidationPhonenumber" OnClick="btnValidaPhoneNumber_Click" />
                         <div class="mt-2">
                             <asp:ValidationSummary ID="Validation" runat="server" CssClass="alert alert-danger alert-dismissible fade show" ValidationGroup="ValidationPhonenumber" />
                             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtPhonenumber" ValidationGroup="ValidationPhonenumber" ErrorMessage="La número es obligatorio." Display="None"></asp:RequiredFieldValidator>
@@ -162,7 +163,7 @@
                             </asp:RegularExpressionValidator>
                         </div>
                     </asp:Panel>
-                    <asp:Panel runat="server" ID="pnlRecarga" CssClass="containerWizzard" Visible="false">
+<%--                    <asp:Panel runat="server" ID="pnlRecarga" CssClass="containerWizzard" Visible="false">
                         <div class="row">
                             <h5 class="pb-2" style="background-color: #f8f9fa; color: #3f7dc0">Costo de plataforma: 3.5%</h5>
                             <asp:ListView ID="lvOffer" runat="server" DataKeyNames="OfferID,MVNOId,Price, OfferName, TotalAmt">
@@ -190,7 +191,7 @@
                                 </ItemTemplate>
                             </asp:ListView>
                         </div>
-                    </asp:Panel>
+                    </asp:Panel>--%>
                     <asp:Panel ID="pnlValidate" runat="server" Visible="false" CssClass="containerPay">
                         <h1 runat="server" id="h1Tittle"></h1>
                         <p runat="server" id="pMessage"></p>

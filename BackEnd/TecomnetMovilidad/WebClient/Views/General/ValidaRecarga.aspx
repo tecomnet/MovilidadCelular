@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="PantallaExito.aspx.vb" Inherits="WebClient.PantallaExito" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="ValidaRecarga.aspx.vb" Inherits="WebClient.ValidaRecarga" %>
 
 <!DOCTYPE html>
 

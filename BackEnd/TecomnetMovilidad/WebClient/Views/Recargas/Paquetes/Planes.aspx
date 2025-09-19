@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="Login.aspx.vb" Inherits="WebAdmin.Login" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="Planes.aspx.vb" Inherits="WebClient.Planes" %>
 
 <!DOCTYPE html>
 

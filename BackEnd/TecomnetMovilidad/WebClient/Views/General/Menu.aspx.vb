@@ -82,7 +82,7 @@ Public Class Menu
         Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
         Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
 
-        Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/PantallaExito.aspx?token={tokenBase64}"
+        Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx?token={tokenBase64}"
 
         Dim bodyLkl = New With {
         .amount = precio,

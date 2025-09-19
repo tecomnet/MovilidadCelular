@@ -148,7 +148,7 @@
                 </div>
 
                 <asp:Button ID="btnCambiarPassword" runat="server" Text="Cambiar Contraseña"
-                    CssClass="btn" OnClick="btnCambiarPassword_Click" />
+                    CssClass="btn" OnClick="btnCambiarPassword_Click"/>
             </asp:Panel>
 
             <asp:Panel ID="pnlExito" runat="server" Visible="false" CssClass="alert alert-success">

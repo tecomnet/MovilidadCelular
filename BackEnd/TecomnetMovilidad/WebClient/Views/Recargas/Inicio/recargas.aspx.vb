@@ -26,6 +26,7 @@ Public Class recargasLogin
         End If
     End Sub
 
-
-
+    Protected Sub btnValidaPhoneNumber_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/Views/Recargas/Paquetes/Planes.aspx")
+    End Sub
 End Class

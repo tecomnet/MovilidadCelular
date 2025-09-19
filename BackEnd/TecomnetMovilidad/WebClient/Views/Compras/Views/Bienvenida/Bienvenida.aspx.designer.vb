@@ -11,7 +11,7 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class PantallaExito
+Partial Public Class Bienvenida
 
     '''<summary>
     '''Control form1.
@@ -23,20 +23,38 @@ Partial Public Class PantallaExito
     Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
 
     '''<summary>
-    '''Control pnlSuccess.
+    '''Control chkAcceptTerms.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents pnlSuccess As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents chkAcceptTerms As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
-    '''Control pnlExpired.
+    '''Control chkRequerimientos.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents pnlExpired As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents chkRequerimientos As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''Control btnAceptar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnAceptar As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control lblError.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblError As Global.System.Web.UI.WebControls.Label
 End Class
