@@ -1,5 +1,4 @@
-﻿Imports Models
-Imports Models.TECOMNET
+﻿Imports Models.TECOMNET
 Imports Models.TECOMNET.API
 Imports System.Security.Cryptography
 Imports System.Text
@@ -78,6 +77,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("BolsaCompartirDatos") Then objOferta.BolsaCompartirDatos = dr("BolsaCompartirDatos")
             If dr.Table.Columns.Contains("RedesSociales") Then objOferta.RedesSociales = dr("RedesSociales")
             If dr.Table.Columns.Contains("TarifaPrimaria") Then objOferta.TarifaPrimaria = dr("TarifaPrimaria")
+            If dr.Table.Columns.Contains("HomologacionID") Then objOferta.HomologacionID = dr("HomologacionID")
             If dr.Table.Columns.Contains("FechaAlta") Then objOferta.FechaAlta = dr("FechaAlta")
             If dr.Table.Columns.Contains("FechaBaja") Then objOferta.FechaBaja = dr("FechaBaja")
         Catch ex As Exception
@@ -94,6 +94,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("OfertaIDNueva") Then objSolicitudDePago.OfertaIDNueva = dr("OfertaIDNueva")
             If dr.Table.Columns.Contains("Monto") Then objSolicitudDePago.Monto = dr("Monto")
             If dr.Table.Columns.Contains("ICCID") Then objSolicitudDePago.ICCID = dr("ICCID")
+            If dr.Table.Columns.Contains("MSISDN") Then objSolicitudDePago.MSISDN = dr("MSISDN")
             If dr.Table.Columns.Contains("Estatus") Then objSolicitudDePago.Estatus = dr("Estatus")
             If dr.Table.Columns.Contains("FechaCreacion") Then objSolicitudDePago.FechaCreacion = dr("FechaCreacion")
             If dr.Table.Columns.Contains("EstatusDepositoID") Then objSolicitudDePago.EstatusDepositoID = dr("EstatusDepositoID")
@@ -104,6 +105,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("PagoDepositoID") Then objSolicitudDePago.PagoDepositoID = IIf(IsDBNull(dr("PagoDepositoID")), Nothing, dr("PagoDepositoID"))
             If dr.Table.Columns.Contains("UltimaActualizacion") Then objSolicitudDePago.UltimaActualizacion = dr("UltimaActualizacion")
             If dr.Table.Columns.Contains("NumeroReintentos") Then objSolicitudDePago.NumeroReintentos = dr("NumeroReintentos")
+            If dr.Table.Columns.Contains("DistribuidorID") Then objSolicitudDePago.NumeroReintentos = dr("DistribuidorID")
         Catch ex As Exception
         End Try
         Return objSolicitudDePago
@@ -157,6 +159,36 @@ Public Class ConvertObject
         End Try
         Return objRecarga
     End Function
+    Public Shared Function SIM(ByVal dr As DataRow) As SIM
+        Dim objSIM As New SIM
+        Try
+            If dr.Table.Columns.Contains("SIMID") Then objSIM.SIMID = dr("SIMID")
+            If dr.Table.Columns.Contains("BE_ID") Then objSIM.BE_ID = dr("BE_ID")
+            If dr.Table.Columns.Contains("IMSI") Then objSIM.IMSI = dr("IMSI")
+            If dr.Table.Columns.Contains("IMSI_rb1") Then objSIM.IMSI_rb1 = dr("IMSI_rb1")
+            If dr.Table.Columns.Contains("IMSI_rb2") Then objSIM.IMSI_rb2 = dr("IMSI_rb2")
+            If dr.Table.Columns.Contains("ICCID") Then objSIM.ICCID = dr("ICCID")
+            If dr.Table.Columns.Contains("MSISDN") Then objSIM.MSISDN = dr("MSISDN")
+            If dr.Table.Columns.Contains("PIN") Then objSIM.PIN = dr("PIN")
+            If dr.Table.Columns.Contains("PUK") Then objSIM.PUK = dr("PUK")
+            If dr.Table.Columns.Contains("Serie") Then objSIM.Serie = dr("Serie")
+            If dr.Table.Columns.Contains("ClienteId") Then objSIM.ClienteId = IIf(IsDBNull(dr("ClienteId")), Nothing, dr("ClienteId"))
+            If dr.Table.Columns.Contains("Estado") Then objSIM.Estado = dr("Estado")
+            If dr.Table.Columns.Contains("FechaActivacion") Then objSIM.FechaActivacion = IIf(IsDBNull(dr("FechaActivacion")), Nothing, dr("FechaActivacion"))
+            If dr.Table.Columns.Contains("FechaAsignacion") Then objSIM.FechaAsignacion = IIf(IsDBNull(dr("FechaAsignacion")), Nothing, dr("FechaAsignacion"))
+            If dr.Table.Columns.Contains("FechaVencimiento") Then objSIM.FechaVencimiento = IIf(IsDBNull(dr("FechaVencimiento")), Nothing, dr("FechaVencimiento"))
+            If dr.Table.Columns.Contains("CreationDate") Then objSIM.CreationDate = dr("CreationDate")
+            If dr.Table.Columns.Contains("LastDate") Then objSIM.LastDate = IIf(IsDBNull(dr("LastDate")), Nothing, dr("LastDate"))
+            If dr.Table.Columns.Contains("MBAsignados") Then objSIM.MBAsignados = IIf(IsDBNull(dr("MBAsignados")), Nothing, dr("MBAsignados"))
+            If dr.Table.Columns.Contains("MBUsados") Then objSIM.MBUsados = IIf(IsDBNull(dr("MBUsados")), Nothing, dr("MBUsados"))
+            If dr.Table.Columns.Contains("MBDisponibles") Then objSIM.MBDisponibles = IIf(IsDBNull(dr("MBDisponibles")), Nothing, dr("MBDisponibles"))
+            If dr.Table.Columns.Contains("MBAdicionales") Then objSIM.MBAdicionales = IIf(IsDBNull(dr("MBAdicionales")), Nothing, dr("MBAdicionales"))
+            If dr.Table.Columns.Contains("OfertaId") Then objSIM.OfertaId = IIf(IsDBNull(dr("OfertaId")), Nothing, dr("OfertaId"))
+            If dr.Table.Columns.Contains("Tipo") Then objSIM.Tipo = dr("Tipo")
+        Catch ex As Exception
+        End Try
+        Return objSIM
+    End Function
 End Class
 Public Class Securyty
     Public Shared Function Cifrar(ByVal cadena As String) As String
@@ -180,4 +212,55 @@ Public Class Securyty
         Return myBase64
     End Function
 
+End Class
+Public Class Operations
+    Public Function CompraRecarga(OfferIDOrigen As Integer, OfferIdDestino As Integer) As Tuple(Of String, String)
+        'Definir la tabla de ofertas
+        Dim listOfertas As New List(Of Oferta)
+        Dim controller As New ControllerOferta
+        Dim Origen As New Oferta
+        Dim Destino As New Oferta
+        Dim OfferIdFinal As String = String.Empty
+
+        listOfertas = controller.ObtenerOfertas
+        Origen = listOfertas.FirstOrDefault(Function(x) x.OfertaID = OfferIDOrigen)
+        Destino = listOfertas.FirstOrDefault(Function(x) x.OfertaID = OfferIdDestino)
+
+        ' Definir las reglas de relacionamiento
+        Dim reglas_relacionamiento As New Dictionary(Of Tuple(Of Integer, Integer, Integer), String) From {
+                {Tuple.Create(1, 1, 0), "Compra"},
+                {Tuple.Create(1, 2, 0), "Compra"},
+                {Tuple.Create(1, 3, 1), "Cambio"},
+                {Tuple.Create(2, 1, 0), "Compra"},
+                {Tuple.Create(2, 2, 0), "Compra"},
+                {Tuple.Create(2, 3, 1), "Cambio"},
+                {Tuple.Create(3, 1, 0), "Compra"},
+                {Tuple.Create(3, 2, 1), "Cambio"},
+                {Tuple.Create(3, 3, 1), "Cambio"}
+            }
+
+        ' Validar que origen y destino estén en los valores permitidos
+        Dim valoresPermitidos As Integer() = {1, 2, 3}
+        If Not valoresPermitidos.Contains(Origen.Tipo) OrElse Not valoresPermitidos.Contains(Destino.Tipo) Then
+            Return Nothing
+        End If
+
+        ' Buscar la regla correspondiente
+        Dim regla_encontrada As KeyValuePair(Of Tuple(Of Integer, Integer, Integer), String) = Nothing
+
+        For Each regla In reglas_relacionamiento
+            If regla.Key.Item1 = Origen.Tipo AndAlso regla.Key.Item2 = Destino.Tipo Then
+                regla_encontrada = regla
+                Exit For
+            End If
+        Next
+
+        If regla_encontrada.Equals(New KeyValuePair(Of Tuple(Of Integer, Integer, Integer), String)()) Then
+            Return Nothing
+        End If
+
+        OfferIdFinal = listOfertas.FirstOrDefault(Function(x) x.HomologacionID = Destino.HomologacionID And x.TarifaPrimaria = CBool(regla_encontrada.Key.Item3)).OfferIDAltan
+        Return Tuple.Create(OfferIdFinal, regla_encontrada.Value)
+
+    End Function
 End Class

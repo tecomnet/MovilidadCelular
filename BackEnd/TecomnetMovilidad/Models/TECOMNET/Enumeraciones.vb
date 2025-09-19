@@ -1,15 +1,9 @@
 ﻿Namespace TECOMNET.Enumeraciones
-    'Public Enum MovementType
-    '    Activation = 1
-    '    Suspend = 2
-    '    ResumeService = 3
-    '    Desactivate = 4
-    '    ViewProfile = 5
-    'End Enum
     Public Enum TipoUsuario
         Administrator = 1
-        Consulta = 2
-        Vendedor = 3
+        Soporte = 2
+        Distribuidor = 3
+        Recargas = 4
     End Enum
     Public Enum EstatusSIM
         Activa = 1
@@ -20,10 +14,6 @@
         Prepago = 1
         PagoAnticipado = 2
         RenovacionAutomatica = 3
-    End Enum
-    Public Enum MetodoPago
-        Tarjeta = 1
-        Transferencia = 2
     End Enum
     Public Enum EstatusFactura
         Pagada = 1
@@ -51,26 +41,14 @@
         Errors = 2
         Advertencia = 3
     End Enum
-    'Public Enum AltanErrors
-    '    Unknown = 0
-    '    Susssuccessful = 1
-    '    Mistake = 2
-    '    Warning = 3
-    'End Enum
-    'Public Enum LinkXErrors
-    '    Unknown = 0
-    '    Susssuccessful = 1
-    '    Mistake = 2
-    '    Warning = 3
-    'End Enum
-    'Public Enum AltanApisMethod
-    '    Profile = 1
-    '    Suspend = 2
-    '    Resumen = 3
-    'End Enum
     Public Enum TipoDeEmail
         Recarga = 1
         Bienvenida = 2
         SolicitudCambioContrasena = 3
+    End Enum
+    Public Enum TipoDistribuidor
+        ConsumidorFinal = 1
+        Mayorista = 2
+        Minorista = 3
     End Enum
 End Namespace

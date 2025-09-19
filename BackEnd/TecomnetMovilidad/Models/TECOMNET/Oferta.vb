@@ -20,6 +20,7 @@ Namespace TECOMNET
         Public Property BolsaCompartirDatos As Boolean
         Public Property RedesSociales As Boolean
         Public Property TarifaPrimaria As Boolean
+        Public Property HomologacionID As Integer
         Public Property FechaAlta As Date
         Public Property FechaBaja As Date?
         Public Sub New()
@@ -36,6 +37,11 @@ Namespace TECOMNET
             Me.Tipo = TipoServicio.Prepago
             Me.OfferIDAltan = String.Empty
             Me.ValidezDias = 0
+            Me.AplicaRoaming = False
+            Me.BolsaCompartirDatos = False
+            Me.RedesSociales = False
+            Me.TarifaPrimaria = True
+            Me.HomologacionID = 0
             Me.FechaAlta = Now
             Me.FechaBaja = Nothing
         End Sub
