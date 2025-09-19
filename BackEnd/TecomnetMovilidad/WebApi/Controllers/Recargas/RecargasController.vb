@@ -54,8 +54,8 @@ Namespace Controllers.Recarga
                         })
                 End If
 
-                'objResult = objControlller.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
-                Dim dsfdsf As String = objControlller.PurchaseProduct(JsonSerializer.Serialize(objRequestPurchaseProduct))
+                objResult = objControlller.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
+                'Dim dsfdsf As String = objControlller.PurchaseProduct(JsonSerializer.Serialize(objRequestPurchaseProduct))
                 'Dim dsfdsf As String = objControlller.PurchaseProduct()
                 If objResult.ErrorID = TipoErroresAPI.Exito Then
                     Return Request.CreateResponse(HttpStatusCode.OK, New With {
@@ -109,17 +109,6 @@ Namespace Controllers.Recarga
                     })
                 Return errorResponse
             End Try
-        End Function
-
-        <HttpGet>
-        <Route("api/Recargas/prueba")>
-        Public Function Prueba() As HttpResponseMessage
-            Dim op As New Operations
-            Dim sss As Tuple(Of String, String)
-            sss = op.CompraRecarga(1, 7)
-            Return Request.CreateResponse(HttpStatusCode.InternalServerError, New With {
-                        Key .mensaje = "El objeto enviado no es valido"
-                        })
         End Function
     End Class
 End Namespace

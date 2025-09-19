@@ -99,6 +99,7 @@
     <Compile Include="ControllerCliente.vb" />
     <Compile Include="ControllerOferta.vb" />
     <Compile Include="ControllerRecarga.vb" />
+    <Compile Include="ControllerSIM.vb" />
     <Compile Include="ControllerSolicitudDePago.vb" />
     <Compile Include="ControllerUsuario.vb" />
     <Compile Include="EmailSender.vb" />

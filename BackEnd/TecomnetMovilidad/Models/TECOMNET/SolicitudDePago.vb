@@ -7,6 +7,7 @@
         Public Property OfertaIDNueva As Integer
         Public Property Monto As Double
         Public Property ICCID As String
+        Public Property MSISDN As String
         Public Property Estatus As String
         Public Property FechaCreacion As DateTime
         Public Property EstatusDepositoID As Integer
@@ -17,6 +18,7 @@
         Public Property PagoDepositoID As Integer?
         Public Property UltimaActualizacion As DateTime
         Public Property NumeroReintentos As Integer
+        Public Property DistribuidorID As Integer
         Public Sub New()
             Me.SolicitudID = 0
             Me.OrderID = String.Empty
@@ -25,6 +27,7 @@
             Me.Monto = 0
             Me.MetodoPagoID = 1
             Me.ICCID = String.Empty
+            Me.MSISDN = String.Empty
             Me.Estatus = "Created"
             Me.FechaCreacion = Now
             Me.EstatusDepositoID = 1
@@ -35,6 +38,7 @@
             Me.PagoDepositoID = Nothing
             Me.UltimaActualizacion = Now
             Me.NumeroReintentos = 0
+            Me.DistribuidorID = 0
         End Sub
     End Class
 End Namespace

@@ -1,4 +1,6 @@
-﻿Namespace TECOMNET
+﻿Imports Models.TECOMNET.Enumeraciones
+
+Namespace TECOMNET
     Public Class Distribuidor
         ' Propiedades de la clase
         Public Property DistribuidorID As Integer
@@ -9,6 +11,7 @@
         Public Property PorcentajeComision As Decimal
         Public Property FechaAlta As Date
         Public Property FechaBaja As Date?
+        Public Property TipoDistribuidor As TipoDistribuidor
         Public Property FechaUltimaActualizacion As DateTime
         ' Constructor
         Public Sub New()

@@ -3,6 +3,7 @@
         Administrator = 1
         Soporte = 2
         Distribuidor = 3
+        Recargas = 4
     End Enum
     Public Enum EstatusSIM
         Activa = 1
@@ -44,5 +45,10 @@
         Recarga = 1
         Bienvenida = 2
         SolicitudCambioContrasena = 3
+    End Enum
+    Public Enum TipoDistribuidor
+        ConsumidorFinal = 1
+        Mayorista = 2
+        Minorista = 3
     End Enum
 End Namespace

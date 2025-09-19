@@ -22,10 +22,10 @@ Public Class ControllerSolicitudDePago
         End Try
         Return lstSolicitudDePago
     End Function
-    Public Function ObtenerSolicitud(SolicitudID As Integer) As SolicitudDePago
+    Public Function ObtenerSolicitud(OrderID As String) As SolicitudDePago
         Dim controller As New Controller
         Dim objSolicitudDePago As New SolicitudDePago
-        objSolicitudDePago.SolicitudID = SolicitudID
+        objSolicitudDePago.OrderID = OrderID
         Try
             Dim dt As New DataSet
             dt = controller.TransactionsSolicitudDePago(Of DataSet)(2, objSolicitudDePago)
@@ -33,7 +33,6 @@ Public Class ControllerSolicitudDePago
             For Each dr As DataRow In dt.Tables(0).Rows
                 objSolicitudDePago = ConvertObject.SolicitudDePago(dr)
             Next
-
         Catch ex As Exception
             Return objSolicitudDePago
         End Try
