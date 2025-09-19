@@ -151,12 +151,21 @@
     <Content Include="Views\Account\CambioContrasena.aspx" />
     <Content Include="Views\Account\ForgotPassword.aspx" />
     <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Compras\Views\Account\Registros.aspx" />
+    <Content Include="Views\Compras\Views\Account\ValidarDatos.aspx" />
+    <Content Include="Views\Compras\Views\Bienvenida\Bienvenida.aspx" />
+    <Content Include="Views\Compras\Views\Bienvenida\CompraRealizada.aspx" />
+    <Content Include="Views\Compras\Views\Planes\ContratarPlan.aspx" />
+    <Content Include="Views\Compras\Views\SIM\CompraSim.aspx" />
+    <Content Include="Views\Compras\Views\SIM\PagoSim.aspx" />
     <Content Include="Views\General\Menu.aspx" />
     <Content Include="Views\Account\MiPerfil.aspx" />
     <Content Include="Views\Account\MisRecargas.aspx" />
     <Content Include="Views\General\Inicio.aspx" />
-    <Content Include="Views\General\PantallaExito.aspx" />
+    <Content Include="Views\General\ValidaRecarga.aspx" />
     <Content Include="Views\Planes\CambioDePlan.aspx" />
+    <Content Include="Views\Recargas\Inicio\recargas.aspx" />
+    <Content Include="Views\Recargas\Paquetes\Planes.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +223,55 @@
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Views\Compras\Views\Account\Registros.aspx.designer.vb">
+      <DependentUpon>Registros.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Account\Registros.aspx.vb">
+      <DependentUpon>Registros.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Account\ValidarDatos.aspx.designer.vb">
+      <DependentUpon>ValidarDatos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Account\ValidarDatos.aspx.vb">
+      <DependentUpon>ValidarDatos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Bienvenida\Bienvenida.aspx.designer.vb">
+      <DependentUpon>Bienvenida.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Bienvenida\Bienvenida.aspx.vb">
+      <DependentUpon>Bienvenida.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Bienvenida\CompraRealizada.aspx.designer.vb">
+      <DependentUpon>CompraRealizada.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Bienvenida\CompraRealizada.aspx.vb">
+      <DependentUpon>CompraRealizada.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Planes\ContratarPlan.aspx.designer.vb">
+      <DependentUpon>ContratarPlan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\Planes\ContratarPlan.aspx.vb">
+      <DependentUpon>ContratarPlan.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Compras\Views\SIM\CompraSim.aspx.designer.vb">
+      <DependentUpon>CompraSim.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\SIM\CompraSim.aspx.vb">
+      <DependentUpon>CompraSim.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Compras\Views\SIM\PagoSim.aspx.designer.vb">
+      <DependentUpon>PagoSim.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Compras\Views\SIM\PagoSim.aspx.vb">
+      <DependentUpon>PagoSim.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Views\General\Menu.aspx.designer.vb">
       <DependentUpon>Menu.aspx</DependentUpon>
     </Compile>
@@ -242,11 +300,11 @@
       <DependentUpon>Inicio.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="Views\General\PantallaExito.aspx.designer.vb">
-      <DependentUpon>PantallaExito.aspx</DependentUpon>
+    <Compile Include="Views\General\ValidaRecarga.aspx.designer.vb">
+      <DependentUpon>ValidaRecarga.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\General\PantallaExito.aspx.vb">
-      <DependentUpon>PantallaExito.aspx</DependentUpon>
+    <Compile Include="Views\General\ValidaRecarga.aspx.vb">
+      <DependentUpon>ValidaRecarga.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Views\Planes\CambioDePlan.aspx.designer.vb">
@@ -255,6 +313,20 @@
     <Compile Include="Views\Planes\CambioDePlan.aspx.vb">
       <DependentUpon>CambioDePlan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Recargas\Inicio\recargas.aspx.designer.vb">
+      <DependentUpon>recargas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Recargas\Inicio\recargas.aspx.vb">
+      <DependentUpon>recargas.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\Recargas\Paquetes\Planes.aspx.designer.vb">
+      <DependentUpon>Planes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Recargas\Paquetes\Planes.aspx.vb">
+      <DependentUpon>Planes.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

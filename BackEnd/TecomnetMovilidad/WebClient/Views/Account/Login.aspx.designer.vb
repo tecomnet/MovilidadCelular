@@ -59,6 +59,24 @@ Partial Public Class Login
     Protected WithEvents cbRecordarme As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
+    '''Control SuccessMessageDiv.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents SuccessMessageDiv As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''Control SuccessText.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents SuccessText As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
     '''Control ErrorMessageDiv.
     '''</summary>
     '''<remarks>

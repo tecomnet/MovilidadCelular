@@ -39,7 +39,7 @@ Public Class ControllerSIM
         Return objSIM
     End Function
     '3 Obtiene una SIM en especifica por ICCID
-    Public Function ObtenerSIMPorICCID(ByVal ICCID As Integer) As SIM
+    Public Function ObtenerSIMPorICCID(ByVal ICCID As String) As SIM
         Dim controller As New Controller
         Dim objSIM As New SIM
         objSIM.ICCID = ICCID
@@ -65,5 +65,22 @@ Public Class ControllerSIM
             Return exito
         End Try
         Return exito
+    End Function
+    '5 Obtiene una SIM en especifico por MSISDN
+    Public Function ObtenerSIMPorMSISDN(ByVal MSISDN As String) As SIM
+        Dim controller As New Controller
+        Dim objSIM As New SIM
+        objSIM.MSISDN = MSISDN
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsSIM(Of DataSet)(5, objSIM)
+
+            For Each dr As DataRow In dt.Tables(0).Rows
+                objSIM = ConvertObject.SIM(dr)
+            Next
+        Catch ex As Exception
+            Return objSIM
+        End Try
+        Return objSIM
     End Function
 End Class

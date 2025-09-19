@@ -37,8 +37,26 @@ Public Class Global_asax
                     Select Case HttpContext.Current.Request.Url.AbsolutePath
                         Case "/Views/Account/ForgotPassword.aspx"
                         Case "/movilidad/clientes/Views/Account/ForgotPassword.aspx"
-                        Case "/Views/General/PantallaExito.aspx"
-                        Case "/movilidad/clientes/Views/General/PantallaExito.aspx"
+                        Case "/Views/General/ValidaRecarga.aspx"
+                        Case "/movilidad/clientes/Views/General/ValidaRecarga.aspx"
+                        Case "/Views/Recargas/Inicio/recargas.aspx"
+                        Case "/movilidad/clientes/Views/Recargas/Inicio/recargas.aspx"
+                        Case "/Views/Recargas/Paquetes/Planes.aspx"
+                        Case "/movilidad/clientes/Views/Recargas/Paquetes/Planes.aspx"
+                        Case "/Views/Compras/Views/Account/Registros.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/Account/Registros.aspx"
+                        Case "/Views/Compras/Views/Account/ValidarDatos.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/Account/ValidarDatos.aspx"
+                        Case "/Views/Compras/Views/Bienvenida/Bienvenida.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/Bienvenida/Bienvenida.aspx"
+                        Case "/Views/Compras/Views/Bienvenida/CompraRealizada.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/Bienvenida/CompraRealizada.aspx"
+                        Case "/Views/Compras/Views/Planes/ContratarPlan.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/Plan/ContratarPlan.aspx"
+                        Case "/Views/Compras/Views/SIM/CompraSim.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/SIM/CompraSim.aspx"
+                        Case "/Views/Compras/Views/Planes/ContratarPlan.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/SIM/PagoSim.aspx"
 
                         Case Else
                             Server.ClearError()

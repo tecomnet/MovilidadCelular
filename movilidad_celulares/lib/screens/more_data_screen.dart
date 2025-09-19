@@ -60,15 +60,7 @@ class _MoreDataScreenState extends State<MoreDataScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: const Center(
-                          child: Text(
-                            'Más datos para tu BYD',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                        child: const Center(                          
                         ),
                       ),
                     );

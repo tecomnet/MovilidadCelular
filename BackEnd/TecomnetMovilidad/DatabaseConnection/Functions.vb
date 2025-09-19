@@ -173,7 +173,7 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("PUK") Then objSIM.PUK = dr("PUK")
             If dr.Table.Columns.Contains("Serie") Then objSIM.Serie = dr("Serie")
             If dr.Table.Columns.Contains("ClienteId") Then objSIM.ClienteId = IIf(IsDBNull(dr("ClienteId")), Nothing, dr("ClienteId"))
-            If dr.Table.Columns.Contains("Estado") Then objSIM.Estado = dr("Estado")
+            If dr.Table.Columns.Contains("Estatus") Then objSIM.Estado = dr("Estatus")
             If dr.Table.Columns.Contains("FechaActivacion") Then objSIM.FechaActivacion = IIf(IsDBNull(dr("FechaActivacion")), Nothing, dr("FechaActivacion"))
             If dr.Table.Columns.Contains("FechaAsignacion") Then objSIM.FechaAsignacion = IIf(IsDBNull(dr("FechaAsignacion")), Nothing, dr("FechaAsignacion"))
             If dr.Table.Columns.Contains("FechaVencimiento") Then objSIM.FechaVencimiento = IIf(IsDBNull(dr("FechaVencimiento")), Nothing, dr("FechaVencimiento"))

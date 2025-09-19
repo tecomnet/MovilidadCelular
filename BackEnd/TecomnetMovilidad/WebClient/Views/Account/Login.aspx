@@ -82,10 +82,12 @@
         <h2 class="h3 mb-3 fw-normal"><%: IIf(Now.Hour >= 0 And Now.Hour <= 12, "Buenos días,", "Buenas tardes,") %></h2>
         <div class="mb-3">
             <label for="txtCorreo" class="form-label">Correo Electrónico</label>
-            <asp:TextBox ID="txtCorreo" runat="server" CssClass="form-control" TextMode="Email"
+            <asp:TextBox ID="txtCorreo" runat="server" CssClass="form-control" TextMode="Email" 
                 placeholder="name@example.com" oninput="cleanControls()"></asp:TextBox>
             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtCorreo" ErrorMessage="El correo es requerido" Display="None"></asp:RequiredFieldValidator>
         </div>
+        <asp:RequiredFieldValidator runat="server" ControlToValidate="txtCorreo" ErrorMessage="El correo es requerido" CssClass="text-danger" Display="Dynamic" />  
+        <asp:RegularExpressionValidator runat="server" ControlToValidate="txtCorreo" ErrorMessage="Ingresa un correo válido" CssClass="text-danger" Display="Dynamic" ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
         <div class="mb-3 position-relative">
             <label for="txtPassword" class="form-label">Contraseña</label>
             <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" placeholder="Password"
@@ -104,6 +106,9 @@
             </label>
         </div>
         <div class="d-grid mt-3">
+            <div id="SuccessMessageDiv" runat="server" class="alert alert-success" visible="false">
+                <asp:Literal runat="server" ID="SuccessText" />
+            </div>
             <div id="ErrorMessageDiv" runat="server" class="alert alert-danger alert-dismissible fade show text-center" visible="false">
                 <asp:Literal runat="server" ID="FailureText" />
             </div>

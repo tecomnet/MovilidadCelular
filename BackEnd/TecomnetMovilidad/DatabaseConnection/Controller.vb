@@ -182,7 +182,7 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@PUK", SqlDbType.NVarChar, objSIM.PUK))
         parametros.Add(ConnectionDB.ArmaParametro("@Serie", SqlDbType.NVarChar, objSIM.Serie))
         parametros.Add(ConnectionDB.ArmaParametro("@ClienteId", SqlDbType.Int, IIf(IsNothing(objSIM.ClienteId), DBNull.Value, objSIM.ClienteId)))
-        parametros.Add(ConnectionDB.ArmaParametro("@Estado", SqlDbType.Int, objSIM.Estado))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estatus", SqlDbType.NVarChar, objSIM.Estado))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaActivacion", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaActivacion), DBNull.Value, objSIM.FechaActivacion)))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaAsignacion", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaAsignacion), DBNull.Value, objSIM.FechaAsignacion)))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaVencimiento", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaVencimiento), DBNull.Value, objSIM.FechaVencimiento)))
@@ -193,7 +193,7 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@MBDisponibles", SqlDbType.Int, IIf(IsNothing(objSIM.MBDisponibles), DBNull.Value, objSIM.MBDisponibles)))
         parametros.Add(ConnectionDB.ArmaParametro("@MBAdicionales", SqlDbType.Int, IIf(IsNothing(objSIM.MBAdicionales), DBNull.Value, objSIM.MBAdicionales)))
         parametros.Add(ConnectionDB.ArmaParametro("@OfertaId", SqlDbType.Int, IIf(IsNothing(objSIM.OfertaId), DBNull.Value, objSIM.OfertaId)))
-        parametros.Add(ConnectionDB.ArmaParametro("@Tipo", SqlDbType.Int, objSIM.Tipo))
+        parametros.Add(ConnectionDB.ArmaParametro("@Tipo", SqlDbType.NVarChar, objSIM.Tipo))
         parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
 
         Dim cnx As New ConnectionDB

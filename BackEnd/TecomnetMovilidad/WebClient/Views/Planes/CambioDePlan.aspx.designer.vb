@@ -32,6 +32,24 @@ Partial Public Class CambioDePlan
     Protected WithEvents lvSIMS As Global.System.Web.UI.WebControls.ListView
 
     '''<summary>
+    '''Control pnlMenuOpciones.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlMenuOpciones As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control lvTipos.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lvTipos As Global.System.Web.UI.WebControls.ListView
+
+    '''<summary>
     '''Control pnlPlanes.
     '''</summary>
     '''<remarks>
@@ -41,31 +59,13 @@ Partial Public Class CambioDePlan
     Protected WithEvents pnlPlanes As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control btnRecarga.
+    '''Control lblTituloPlanes.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents btnRecarga As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''Control btnPlanMensual.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents btnPlanMensual As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''Control btnPlanAnual.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents btnPlanAnual As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents lblTituloPlanes As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''Control lvCambioPlan.
