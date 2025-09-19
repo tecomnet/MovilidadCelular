@@ -145,7 +145,7 @@
                             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtPhonenumber" ValidationGroup="ValidationPhonenumber" ErrorMessage="La número es obligatorio." Display="None"></asp:RequiredFieldValidator>
                             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtConfirmPhonenumber" ValidationGroup="ValidationPhonenumber" ErrorMessage="La confirmación del número es obligatoria." Display="None"></asp:RequiredFieldValidator>
                             <asp:CompareValidator ID="CompareValidator1" runat="server"
-                                ControlToValidate="txtPhonenumber" ControlToCompare="txtConfirmPhonenumber" ErrorMessage="Los números deben ser iguales"
+                                ControlToValidate="txtPhonenumber" ControlToCompare="txtConfirmPhonenumber" ErrorMessage="El número  ingresado no existe"
                                 Operator="Equal" Type="Integer" Display="None" ValidationGroup="ValidationPhonenumber">
                             </asp:CompareValidator>
 

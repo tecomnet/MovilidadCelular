@@ -4,7 +4,7 @@ Public Class recargasLogin
     Inherits System.Web.UI.Page
     Private Sub ValidatePay(opr As Integer)
         pnlNumero.Visible = False
-        pnlRecarga.Visible = False
+        'pnlRecarga.Visible = False
         pnlValidate.Visible = True
         ' El pago fue exitoso                
         hlButton.CssClass = "buttonSuccessfull"
@@ -27,6 +27,14 @@ Public Class recargasLogin
     End Sub
 
     Protected Sub btnValidaPhoneNumber_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/Views/Recargas/Paquetes/Planes.aspx")
+        Dim objControllerSim As New ControllerSIM
+        If objControllerSim.ObtenerSIMPorMSISDN(txtConfirmPhonenumber.Text).SIMID > 0 Then
+            Response.Redirect("~/Views/Recargas/Paquetes/Planes.aspx")
+        Else
+            'txtConfirmPhonenumber.Text = "No existe"
+        End If
+
+
+
     End Sub
 End Class

@@ -13,7 +13,7 @@ Namespace TECOMNET
         Public Property PUK As String
         Public Property Serie As String
         Public Property ClienteId As Integer?
-        Public Property Estado As EstatusSIM ' Activa, Suspendida, Retirada
+        Public Property Estado As String ' Activa, Suspendida, Retirada
         Public Property FechaActivacion As DateTime?
         Public Property FechaAsignacion As DateTime?
         Public Property FechaVencimiento As DateTime?
@@ -25,5 +25,31 @@ Namespace TECOMNET
         Public Property MBAdicionales As Integer?
         Public Property OfertaId As Integer?
         Public Property Tipo As String ' SIM, ESIM
+        Public Sub New()
+            Me.SIMID = 0
+            Me.BE_ID = String.Empty
+            Me.IMSI = String.Empty
+            Me.IMSI_rb1 = String.Empty
+            Me.IMSI_rb2 = String.Empty
+            Me.ICCID = String.Empty
+            Me.MSISDN = String.Empty
+            Me.PIN = String.Empty
+            Me.PUK = String.Empty
+            Me.Serie = String.Empty
+            Me.ClienteId = Nothing
+            Me.Estado = "Suspend"
+            Me.FechaActivacion = Nothing
+            Me.FechaAsignacion = Nothing
+            Me.FechaVencimiento = Nothing
+            Me.CreationDate = DateTime.Now
+            Me.LastDate = Nothing
+            Me.MBAsignados = Nothing
+            Me.MBUsados = Nothing
+            Me.MBDisponibles = Nothing
+            Me.MBAdicionales = Nothing
+            Me.OfertaId = Nothing
+            Me.Tipo = String.Empty ' SIM, ESIM
+        End Sub
+
     End Class
 End Namespace
