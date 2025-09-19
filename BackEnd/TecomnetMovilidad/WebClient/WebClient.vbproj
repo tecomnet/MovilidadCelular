@@ -139,7 +139,9 @@
     <Content Include="Css\bootstrap.rtl.min.css" />
     <Content Include="EmailTemplates\Recharge.html" />
     <Content Include="Global.asax" />
+    <Content Include="Resources\Imagenes\BYD-Logo.png" />
     <Content Include="Resources\Imagenes\iconoMenu.png" />
+    <Content Include="Resources\Imagenes\Logo-Altan.jpeg" />
     <Content Include="Resources\Imagenes\Logo.ico" />
     <Content Include="Resources\Imagenes\Logo.png" />
     <Content Include="Scripts\js\bootstrap.bundle.js" />
@@ -165,7 +167,6 @@
     <Content Include="Views\General\ValidaRecarga.aspx" />
     <Content Include="Views\Planes\CambioDePlan.aspx" />
     <Content Include="Views\Recargas\Inicio\recargas.aspx" />
-    <Content Include="Views\Recargas\Paquetes\Planes.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -319,13 +320,6 @@
     </Compile>
     <Compile Include="Views\Recargas\Inicio\recargas.aspx.vb">
       <DependentUpon>recargas.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
-    </Compile>
-    <Compile Include="Views\Recargas\Paquetes\Planes.aspx.designer.vb">
-      <DependentUpon>Planes.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Recargas\Paquetes\Planes.aspx.vb">
-      <DependentUpon>Planes.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
