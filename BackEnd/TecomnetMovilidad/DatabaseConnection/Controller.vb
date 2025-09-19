@@ -99,6 +99,7 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@OfertaIDNueva", SqlDbType.Int, objSolicitudDePago.OfertaIDNueva))
         parametros.Add(ConnectionDB.ArmaParametro("@Monto", SqlDbType.Float, objSolicitudDePago.Monto))
         parametros.Add(ConnectionDB.ArmaParametro("@ICCID", SqlDbType.NVarChar, objSolicitudDePago.ICCID))
+        parametros.Add(ConnectionDB.ArmaParametro("@MSISDN", SqlDbType.NVarChar, objSolicitudDePago.MSISDN))
         parametros.Add(ConnectionDB.ArmaParametro("@Estatus", SqlDbType.NVarChar, objSolicitudDePago.Estatus))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaCreacion", SqlDbType.DateTime, objSolicitudDePago.FechaCreacion))
         parametros.Add(ConnectionDB.ArmaParametro("@EstatusDepositoID", SqlDbType.Int, objSolicitudDePago.EstatusDepositoID))
@@ -109,6 +110,7 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@PagoDepositoID", SqlDbType.Int, IIf(IsNothing(objSolicitudDePago.PagoDepositoID), DBNull.Value, objSolicitudDePago.PagoDepositoID)))
         parametros.Add(ConnectionDB.ArmaParametro("@UltimaActualizacion", SqlDbType.DateTime, objSolicitudDePago.UltimaActualizacion))
         parametros.Add(ConnectionDB.ArmaParametro("@NumeroReintentos", SqlDbType.Int, objSolicitudDePago.NumeroReintentos))
+        parametros.Add(ConnectionDB.ArmaParametro("@DistribuidorID", SqlDbType.Int, objSolicitudDePago.DistribuidorID))
         parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
 
         Dim cnx As New ConnectionDB
@@ -158,6 +160,51 @@ Public Class Controller
             result = cnx.ejecutasp_consulta("[sp_Recargas]", parametros)
         ElseIf GetType(ReturnType) Is GetType(Boolean) Then
             result = cnx.ejecutasp("[sp_Recargas]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsSIM(Of ReturnType)(opcion As Integer, ByVal objSIM As SIM) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@SIMID", SqlDbType.Int, objSIM.SIMID))
+        parametros.Add(ConnectionDB.ArmaParametro("@BE_ID", SqlDbType.NVarChar, objSIM.BE_ID))
+        parametros.Add(ConnectionDB.ArmaParametro("@IMSI", SqlDbType.NVarChar, objSIM.IMSI))
+        parametros.Add(ConnectionDB.ArmaParametro("@IMSI_rb1", SqlDbType.NVarChar, objSIM.IMSI_rb1))
+        parametros.Add(ConnectionDB.ArmaParametro("@IMSI_rb2", SqlDbType.NVarChar, objSIM.IMSI_rb2))
+        parametros.Add(ConnectionDB.ArmaParametro("@ICCID", SqlDbType.NVarChar, objSIM.ICCID))
+        parametros.Add(ConnectionDB.ArmaParametro("@MSISDN", SqlDbType.NVarChar, objSIM.MSISDN))
+        parametros.Add(ConnectionDB.ArmaParametro("@PIN", SqlDbType.NVarChar, objSIM.PIN))
+        parametros.Add(ConnectionDB.ArmaParametro("@PUK", SqlDbType.NVarChar, objSIM.PUK))
+        parametros.Add(ConnectionDB.ArmaParametro("@Serie", SqlDbType.NVarChar, objSIM.Serie))
+        parametros.Add(ConnectionDB.ArmaParametro("@ClienteId", SqlDbType.Int, IIf(IsNothing(objSIM.ClienteId), DBNull.Value, objSIM.ClienteId)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estado", SqlDbType.Int, objSIM.Estado))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaActivacion", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaActivacion), DBNull.Value, objSIM.FechaActivacion)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaAsignacion", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaAsignacion), DBNull.Value, objSIM.FechaAsignacion)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaVencimiento", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaVencimiento), DBNull.Value, objSIM.FechaVencimiento)))
+        parametros.Add(ConnectionDB.ArmaParametro("@CreationDate", SqlDbType.DateTime, objSIM.CreationDate))
+        parametros.Add(ConnectionDB.ArmaParametro("@LastDate", SqlDbType.DateTime, IIf(IsNothing(objSIM.LastDate), DBNull.Value, objSIM.LastDate)))
+        parametros.Add(ConnectionDB.ArmaParametro("@MBAsignados", SqlDbType.Int, IIf(IsNothing(objSIM.MBAsignados), DBNull.Value, objSIM.MBAsignados)))
+        parametros.Add(ConnectionDB.ArmaParametro("@MBUsados", SqlDbType.Int, IIf(IsNothing(objSIM.MBUsados), DBNull.Value, objSIM.MBUsados)))
+        parametros.Add(ConnectionDB.ArmaParametro("@MBDisponibles", SqlDbType.Int, IIf(IsNothing(objSIM.MBDisponibles), DBNull.Value, objSIM.MBDisponibles)))
+        parametros.Add(ConnectionDB.ArmaParametro("@MBAdicionales", SqlDbType.Int, IIf(IsNothing(objSIM.MBAdicionales), DBNull.Value, objSIM.MBAdicionales)))
+        parametros.Add(ConnectionDB.ArmaParametro("@OfertaId", SqlDbType.Int, IIf(IsNothing(objSIM.OfertaId), DBNull.Value, objSIM.OfertaId)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Tipo", SqlDbType.Int, objSIM.Tipo))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_SIM]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_SIM]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_SIM]", parametros)
         Else
             Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
         End If
