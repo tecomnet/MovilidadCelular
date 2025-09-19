@@ -32,6 +32,15 @@ Partial Public Class recargasLogin
     Protected WithEvents hfMSISDN As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''Control hfICCID.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents hfICCID As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''Control ErrorMessageDiv.
     '''</summary>
     '''<remarks>
@@ -122,6 +131,24 @@ Partial Public Class recargasLogin
     Protected WithEvents revConfirmPhonenumber As Global.System.Web.UI.WebControls.RegularExpressionValidator
 
     '''<summary>
+    '''Control pnlRecarga.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlRecarga As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control lvOffer.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lvOffer As Global.System.Web.UI.WebControls.ListView
+
+    '''<summary>
     '''Control pnlValidate.
     '''</summary>
     '''<remarks>
@@ -156,4 +183,22 @@ Partial Public Class recargasLogin
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents hlButton As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''Control pnlPago.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlPago As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control iframePago.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents iframePago As Global.System.Web.UI.HtmlControls.HtmlIframe
 End Class
