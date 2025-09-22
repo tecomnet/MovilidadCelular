@@ -25,7 +25,7 @@
         EnProceso = 2
         Cerrado = 3
     End Enum
-    Public Enum TipoOperacion
+    Public Enum TipoSolicitud
         Activacion = 1
         Suspension = 2
         ConsultaSaldo = 3
@@ -50,5 +50,16 @@
         ConsumidorFinal = 1
         Mayorista = 2
         Minorista = 3
+    End Enum
+    Public Enum CanalDeVenta
+        App = 1
+        PaginaWeb = 2
+        PortalCautivo = 3
+    End Enum
+    Public Enum TipoOperacion
+        Compra = 1
+        Recarga = 2
+        Cambio = 3
+        Renovacion = 4
     End Enum
 End Namespace

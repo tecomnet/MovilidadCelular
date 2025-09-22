@@ -16,6 +16,8 @@ Namespace TECOMNET
         Public Property Comision As Double
         Public Property Impuesto As Double
         Public Property DepositoID As Integer?
+        Public Property CanalDeVenta As CanalDeVenta
+        Public Property TipoOperacion As TipoOperacion
         Public Property RequiereFacturaCliente As Boolean
         Public Property FacturaID As Integer?
         Public Sub New()
@@ -31,6 +33,8 @@ Namespace TECOMNET
             Me.EstatusPagoDistribuidorID = 0
             Me.Comision = 0
             Me.Impuesto = 0
+            Me.CanalDeVenta = CanalDeVenta.App
+            Me.TipoOperacion = TipoOperacion.Compra
             Me.RequiereFacturaCliente = False
         End Sub
     End Class
