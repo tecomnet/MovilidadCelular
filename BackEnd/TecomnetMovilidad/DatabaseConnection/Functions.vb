@@ -1,5 +1,6 @@
 ﻿Imports Models.TECOMNET
 Imports Models.TECOMNET.API
+Imports Models.TECOMNET.Enumeraciones
 Imports System.Security.Cryptography
 Imports System.Text
 
@@ -103,6 +104,8 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("AuthCode") Then objSolicitudDePago.AuthCode = dr("AuthCode")
             If dr.Table.Columns.Contains("Reason") Then objSolicitudDePago.Reason = dr("Reason")
             If dr.Table.Columns.Contains("PagoDepositoID") Then objSolicitudDePago.PagoDepositoID = IIf(IsDBNull(dr("PagoDepositoID")), Nothing, dr("PagoDepositoID"))
+            If dr.Table.Columns.Contains("CanalDeVenta") Then objSolicitudDePago.CanalDeVenta = dr("CanalDeVenta")
+            If dr.Table.Columns.Contains("TipoOperacion") Then objSolicitudDePago.TipoOperacion = dr("TipoOperacion")
             If dr.Table.Columns.Contains("UltimaActualizacion") Then objSolicitudDePago.UltimaActualizacion = dr("UltimaActualizacion")
             If dr.Table.Columns.Contains("NumeroReintentos") Then objSolicitudDePago.NumeroReintentos = dr("NumeroReintentos")
             If dr.Table.Columns.Contains("DistribuidorID") Then objSolicitudDePago.NumeroReintentos = dr("DistribuidorID")
@@ -127,6 +130,8 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("Comision") Then objRecarga.Comision = dr("Comision")
             If dr.Table.Columns.Contains("Impuesto") Then objRecarga.Impuesto = dr("Impuesto")
             If dr.Table.Columns.Contains("DepositoID") Then objRecarga.DepositoID = IIf(IsDBNull(dr("DepositoID")), Nothing, dr("DepositoID"))
+            If dr.Table.Columns.Contains("CanalDeVenta") Then objRecarga.CanalDeVenta = dr("CanalDeVenta")
+            If dr.Table.Columns.Contains("TipoOperacion") Then objRecarga.TipoOperacion = dr("TipoOperacion")
             If dr.Table.Columns.Contains("RequiereFacturaCliente") Then objRecarga.RequiereFacturaCliente = dr("RequiereFacturaCliente")
             If dr.Table.Columns.Contains("FacturaID") Then objRecarga.FacturaID = IIf(IsDBNull(dr("FacturaID")), Nothing, dr("FacturaID"))
         Catch ex As Exception
