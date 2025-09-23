@@ -11,158 +11,194 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class _Default
+Partial Public Class AdminDistribuidores
 
     '''<summary>
-    '''Control head.
+    '''Control pnlAdminDistribuidores.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents head As Global.System.Web.UI.WebControls.ContentPlaceHolder
+    Protected WithEvents pnlAdminDistribuidores As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control form1.
+    '''Control btnAgregarDistribuidor.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
+    Protected WithEvents btnAgregarDistribuidor As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''Control hlHome.
+    '''Control pnlTabla.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlHome As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents pnlTabla As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control hlUsuarios.
+    '''Control pnlAgregar.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlUsuarios As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents pnlAgregar As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control hlClientes.
+    '''Control txtRegion.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlClientes As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtRegion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlDistribuidores.
+    '''Control txtNombre.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlDistribuidores As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtNombre As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlOfertas.
+    '''Control txtDireccion.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlOfertas As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtDireccion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlSIMS.
+    '''Control txtNombreContacto.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlSIMS As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtNombreContacto As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlTickets.
+    '''Control txtTelefonoContacto.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlTickets As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtTelefonoContacto As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlFacturacion.
+    '''Control txtEmailContacto.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlFacturacion As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtEmailContacto As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlVentasSim.
+    '''Control txtFechaAlta.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlVentasSim As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtFechaAlta As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlRecargaSaldo.
+    '''Control txtRFC.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlRecargaSaldo As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtRFC As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlReportes.
+    '''Control ddlTipoPersona.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlReportes As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents ddlTipoPersona As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control hlComisiones.
+    '''Control txtDireccionFiscal.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlComisiones As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtDireccionFiscal As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlEstatusDeposito.
+    '''Control txtPorcentajeComision.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlEstatusDeposito As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtPorcentajeComision As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control hlMetodosPago.
+    '''Control txtBanco.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hlMetodosPago As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents txtBanco As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control ContentPlaceHolder1.
+    '''Control txtCuenta.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents ContentPlaceHolder1 As Global.System.Web.UI.WebControls.ContentPlaceHolder
+    Protected WithEvents txtCuenta As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtBeneficiario.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtBeneficiario As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control ddlTipoDistribuidor.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlTipoDistribuidor As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control btnGuardar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnGuardar As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control btnCancelar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnCancelar As Global.System.Web.UI.WebControls.Button
 End Class

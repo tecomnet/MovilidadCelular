@@ -186,6 +186,8 @@ static Future<String?> generarOrderID({
   required String ofertaNuevaId,
   required String monto,
   required String msisdn,
+  required String canalVenta,
+  required String tipoOperacion,
 }) async {
   if (_token == null) {
     print('⚠️ Token no disponible, no se puede registrar la solicitud');
@@ -211,6 +213,8 @@ static Future<String?> generarOrderID({
     "AuthCode": "",
     "Reason": "",
     "PagoDepositoID": "",
+    "CanalDeVenta":canalVenta,
+    "TipoOperacion":tipoOperacion,
     "UltimaActualizacion": "",
     "NumeroReintentos": "",
     "DistribuidorID" : "1"

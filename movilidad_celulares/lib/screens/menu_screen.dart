@@ -8,12 +8,16 @@ class MenuScreen extends StatelessWidget {
   final String ofertaActualId;
   final String iccid;
   final String msisdn;
+  final String tipoOperacion;
+  final String canalVenta;
 
   const MenuScreen({
     super.key,
     required this.ofertaActualId,
     required this.iccid,
     required this.msisdn,
+    required this.tipoOperacion,
+    required this.canalVenta,
   });
 
   @override
@@ -63,6 +67,8 @@ class MenuScreen extends StatelessWidget {
                   ofertaNuevaId: oferta['OfertaID']
                       .toString(), // la nueva oferta
                       msisdn: msisdn,
+                      tipoOperacion: tipoOperacion,
+                      canalVenta: canalVenta
                 );
               },
             );
@@ -81,6 +87,8 @@ class MenuScreen extends StatelessWidget {
     required String iccid,
     required String ofertaNuevaId,
     required String msisdn,
+    required String tipoOperacion,
+    required String canalVenta,
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -144,7 +152,9 @@ class MenuScreen extends StatelessWidget {
                   ofertaActualId: ofertaId,
                   ofertaNuevaId: ofertaNuevaId,
                   monto: precio.toString(),
-                  msisdn: msisdn
+                  msisdn: msisdn,
+                  canalVenta: "1",
+                  tipoOperacion: "2"
                 );
 print('✅✅✅ MSISDN obtenido: $msisdn');
 

@@ -125,6 +125,9 @@
     <Content Include="Scripts\js\bootstrap.js" />
     <Content Include="Scripts\js\bootstrap.min.js" />
     <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\General\AdminDistribuidores.aspx" />
+    <Content Include="Views\General\AdminOfertas.aspx" />
+    <Content Include="Views\General\AdminUsuarios.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +170,27 @@
     <Compile Include="Views\Cliente\CambioContrasena.aspx.designer.vb" />
     <Compile Include="Views\Cliente\CambioContrasena.aspx.vb">
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminDistribuidores.aspx.designer.vb">
+      <DependentUpon>AdminDistribuidores.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminDistribuidores.aspx.vb">
+      <DependentUpon>AdminDistribuidores.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminOfertas.aspx.designer.vb">
+      <DependentUpon>AdminOfertas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminOfertas.aspx.vb">
+      <DependentUpon>AdminOfertas.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminUsuarios.aspx.designer.vb">
+      <DependentUpon>AdminUsuarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminUsuarios.aspx.vb">
+      <DependentUpon>AdminUsuarios.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

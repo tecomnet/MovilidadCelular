@@ -321,6 +321,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ofertaId: oferta['OfertaID']
                                                 .toString(),
                                                 msisdn: oferta['MSISDN'],
+                                                tipoOperacion: oferta['TipoOperacion'],
+                                                canalVenta: oferta['CanalDeVenta'],
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -333,6 +335,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         iccid: oferta['ICCID']
                                                             .toString(),
                                                             msisdn: oferta['MSISDN'].toString(),
+                                                            tipoOperacion: oferta['TipoOperacion'].toString(),
+                                                            canalVenta: oferta['CanalDeVenta'].toString(),
                                                       ),
                                                 ),
                                               );
@@ -396,6 +400,8 @@ class _HomeScreenState extends State<HomeScreen> {
     required String ofertaId,
     required bool esPrepago,
     required String msisdn,
+    required String tipoOperacion,
+    required String canalVenta,
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -437,6 +443,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ofertaNuevaId: ofertaId,
                           monto: precio.toString(),
                           msisdn: msisdn,
+                          tipoOperacion: "4",
+                          canalVenta: "1",
                         );
                         if (orderIdTec == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -523,6 +531,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ofertaActualId: ofertaId.toString(),
                             iccid: iccid.toString(),
                             msisdn: msisdn.toString(),
+                            tipoOperacion: tipoOperacion.toString(),
+                            canalVenta: canalVenta.toString(),
                           ),
                         ),
                       );

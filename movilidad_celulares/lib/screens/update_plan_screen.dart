@@ -26,6 +26,8 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   String iccid = '';
   String ofertaActualId = '';
   String msisdn= '';
+  String canalVenta='1';
+  String tipoOperacion='3';
 
   final Map<String, String> nombresTipos = {
     'prepago': 'Recarga',
@@ -201,6 +203,8 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                                     monto: precio
                                                         .toStringAsFixed(2),
                                                         msisdn: msisdn,
+                                                        canalVenta: canalVenta,
+                                                        tipoOperacion: tipoOperacion,
                                                   );
 
                                               if (orderIdTec == null) return;
