@@ -3,7 +3,7 @@
 Namespace TECOMNET
     Public Class SolicitudAPI
         Public Property Id As Integer
-        Public Property TipoOperacion As TipoOperacion
+        Public Property TipoOperacion As TipoSolicitud
         Public Property JsonRequest As String
         Public Property JsonResponse As String
         Public Property FechaSolicitud As Date

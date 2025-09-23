@@ -1,4 +1,5 @@
-﻿Namespace TECOMNET
+﻿Imports Models.TECOMNET.Enumeraciones
+Namespace TECOMNET
     Public Class SolicitudDePago
         Public Property SolicitudID As Integer
         Public Property OrderID As String
@@ -16,6 +17,8 @@
         Public Property AuthCode As String
         Public Property Reason As String
         Public Property PagoDepositoID As Integer?
+        Public Property CanalDeVenta As CanalDeVenta
+        Public Property TipoOperacion As TipoOperacion
         Public Property UltimaActualizacion As DateTime
         Public Property NumeroReintentos As Integer
         Public Property DistribuidorID As Integer
@@ -36,6 +39,8 @@
             Me.AuthCode = String.Empty
             Me.Reason = String.Empty
             Me.PagoDepositoID = Nothing
+            Me.CanalDeVenta = CanalDeVenta.App
+            Me.TipoOperacion = TipoOperacion.Compra
             Me.UltimaActualizacion = Now
             Me.NumeroReintentos = 0
             Me.DistribuidorID = 0
