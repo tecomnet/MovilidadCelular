@@ -143,11 +143,7 @@
 
             </div>
             <div class="col-md-">
-                <asp:TextBox ID="tbPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvContrasena" runat="server"
-                    ControlToValidate="tbPassword"
-                    ErrorMessage="La contraseña es obligatoria."
-                    ForeColor="Red" Display="Dynamic" />
+                <asp:TextBox ID="tbPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>               
             </div>
             </div>
             <div class="mb-3">

@@ -119,7 +119,7 @@
                 <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/Logo-Altan.jpeg") %>' />
             </div>
             <asp:Panel ID="pnlSalir" runat="server" Visible="False">
-                <a href='<%= ResolveUrl("~/Views/Recargas/Inicio/recargas.aspx") %>' class="text-dark" title="Salir">
+                <a href='<%= ResolveUrl("~/Views/Recargas/recargas.aspx") %>' class="text-dark" title="Salir">
                     <i class="bi bi-box-arrow-right fs-3"></i>
                 </a>
             </asp:Panel>
@@ -187,7 +187,7 @@
                                         <div class="card-body text-center">
                                             <div class="col-md-12">
                                                 <label class="promo-title">Incluye</label>
-                                                <label class="promo-value"><%# String.Format("{0} MB", Eval("Descripcion")) %></label>
+                                                <label class="promo-value"><%# String.Format("{0} MB", Eval("DatosMB")) %></label>
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="promo-title">Costo</label>

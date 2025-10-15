@@ -36,7 +36,19 @@ Public Class AdminUsuarios
         objUsuario.Nombre = txtNombre.Text.Trim()
         objUsuario.Email = txtCorreo.Text.Trim()
         objUsuario.NumeroTelefono = txtTelefono.Text.Trim()
-        objUsuario.PasswordHash = Securyty.Cifrar(tbPassword.Text)
+        If Not String.IsNullOrEmpty(hdnUsuarioID.Value) Then
+            objUsuario.UsuarioID = Convert.ToInt32(hdnUsuarioID.Value)
+
+            If String.IsNullOrWhiteSpace(tbPassword.Text) Then
+                objUsuario.PasswordHash = Nothing
+            Else
+                objUsuario.PasswordHash = Securyty.Cifrar(tbPassword.Text)
+            End If
+        Else
+            objUsuario.UsuarioID = 0
+            objUsuario.PasswordHash = Securyty.Cifrar(tbPassword.Text)
+        End If
+
         objUsuario.TipoUsuario = CType([Enum].Parse(GetType(Enumeraciones.TipoUsuario), ddlTipoPersona.SelectedValue), Enumeraciones.TipoUsuario)
         If Not String.IsNullOrWhiteSpace(txtFechaAlta.Text) Then
             objUsuario.FechaAlta = Date.Parse(txtFechaAlta.Text)
@@ -77,7 +89,7 @@ Public Class AdminUsuarios
                 txtNombreUsuario.Text = usuario.NombreUsuario
                 txtNombre.Text = usuario.Nombre
                 txtCorreo.Text = usuario.Email
-                tbPassword.Text = usuario.PasswordHash
+                tbPassword.Text = String.Empty
                 txtTelefono.Text = usuario.NumeroTelefono
 
                 ddlTipoPersona.SelectedValue = usuario.TipoUsuario.ToString()

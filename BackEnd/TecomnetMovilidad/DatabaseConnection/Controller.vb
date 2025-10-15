@@ -198,6 +198,14 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@MBAdicionales", SqlDbType.Int, IIf(IsNothing(objSIM.MBAdicionales), DBNull.Value, objSIM.MBAdicionales)))
         parametros.Add(ConnectionDB.ArmaParametro("@OfertaId", SqlDbType.Int, IIf(IsNothing(objSIM.OfertaId), DBNull.Value, objSIM.OfertaId)))
         parametros.Add(ConnectionDB.ArmaParametro("@Tipo", SqlDbType.NVarChar, objSIM.Tipo))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaReactivacion", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaReactivacion), DBNull.Value, objSIM.FechaReactivacion)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaBaja), DBNull.Value, objSIM.FechaBaja)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaSuspension", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaSuspension), DBNull.Value, objSIM.FechaSuspension)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaInicioFacturacion", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaInicioFacturacion), DBNull.Value, objSIM.FechaInicioFacturacion)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaPortabilidad", SqlDbType.DateTime, IIf(IsNothing(objSIM.FechaPortabilidad), DBNull.Value, objSIM.FechaPortabilidad)))
+        parametros.Add(ConnectionDB.ArmaParametro("@CompaniaOrigen", SqlDbType.NVarChar, objSIM.CompaniaOrigen))
+        parametros.Add(ConnectionDB.ArmaParametro("@MSISDN_Transcitorio", SqlDbType.NVarChar, objSIM.MSISDN_Transcitorio))
+
         parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
 
         Dim cnx As New ConnectionDB

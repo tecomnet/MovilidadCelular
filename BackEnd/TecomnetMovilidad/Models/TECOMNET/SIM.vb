@@ -25,6 +25,13 @@ Namespace TECOMNET
         Public Property MBAdicionales As Integer?
         Public Property OfertaId As Integer?
         Public Property Tipo As String ' SIM, ESIM
+        Public Property FechaReactivacion As DateTime?
+        Public Property FechaBaja As DateTime?
+        Public Property FechaSuspension As DateTime?
+        Public Property FechaInicioFacturacion As DateTime?
+        Public Property FechaPortabilidad As DateTime?
+        Public Property CompaniaOrigen As String
+        Public Property MSISDN_Transcitorio As String
         Public Sub New()
             Me.SIMID = 0
             Me.BE_ID = String.Empty

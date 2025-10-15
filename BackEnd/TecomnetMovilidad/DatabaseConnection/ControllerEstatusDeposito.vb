@@ -2,23 +2,34 @@
 
 Public Class ControllerEstatusDeposito
 
-
-    Public Function GetEstatusDeposito() As List(Of EstatusDeposito)
+    Public Function ObtenerEstatusDeposito() As List(Of EstatusDeposito)
         Dim controller As New Controller
-        Dim lista As New List(Of EstatusDeposito)
-
+        Dim lstEstatusDeposito As New List(Of EstatusDeposito)
         Try
-            Dim ds As DataSet = controller.TransactionsEstatusDeposito(Of DataSet)(1, New EstatusDeposito)
+            Dim dt As New DataSet
+            dt = controller.TransactionsEstatusDeposito(Of DataSet)(1, New EstatusDeposito)
 
-            If ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 Then
-                For Each row As DataRow In ds.Tables(0).Rows
-                    lista.Add(ConvertObject.EstatusDeposito(row))
+            If dt.Tables(0).Rows.Count = 0 Then
+                Return lstEstatusDeposito
+            Else
+                For Each dr As DataRow In dt.Tables(0).Rows
+                    lstEstatusDeposito.Add(ConvertObject.EstatusDeposito(dr))
                 Next
             End If
         Catch ex As Exception
-
+            Return lstEstatusDeposito
         End Try
+        Return lstEstatusDeposito
+    End Function
 
-        Return lista
+    Public Function AddEstatusDeposito(ByVal objEstatusDeposito As EstatusDeposito) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            exito = controller.TransactionsEstatusDeposito(Of Integer)(3, objEstatusDeposito)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
     End Function
 End Class

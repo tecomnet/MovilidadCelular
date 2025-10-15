@@ -170,7 +170,7 @@
     </Compile>
     <Compile Include="Views\Account\login.aspx.vb">
       <DependentUpon>login.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\Cliente\CambioContrasena.aspx.designer.vb" />
     <Compile Include="Views\Cliente\CambioContrasena.aspx.vb">
@@ -181,49 +181,49 @@
     </Compile>
     <Compile Include="Views\General\AdminCliente.aspx.vb">
       <DependentUpon>AdminCliente.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminDistribuidores.aspx.designer.vb">
       <DependentUpon>AdminDistribuidores.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\General\AdminDistribuidores.aspx.vb">
       <DependentUpon>AdminDistribuidores.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminEstatusDeposito.aspx.designer.vb">
       <DependentUpon>AdminEstatusDeposito.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\General\AdminEstatusDeposito.aspx.vb">
       <DependentUpon>AdminEstatusDeposito.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminMetodoPago.aspx.designer.vb">
       <DependentUpon>AdminMetodoPago.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\General\AdminMetodoPago.aspx.vb">
       <DependentUpon>AdminMetodoPago.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminOfertas.aspx.designer.vb">
       <DependentUpon>AdminOfertas.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\General\AdminOfertas.aspx.vb">
       <DependentUpon>AdminOfertas.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminSIMs.aspx.designer.vb">
       <DependentUpon>AdminSIMs.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\General\AdminSIMs.aspx.vb">
       <DependentUpon>AdminSIMs.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminTickets.aspx.designer.vb">
       <DependentUpon>AdminTickets.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\General\AdminTickets.aspx.vb">
       <DependentUpon>AdminTickets.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\General\AdminUsuarios.aspx.designer.vb">
       <DependentUpon>AdminUsuarios.aspx</DependentUpon>

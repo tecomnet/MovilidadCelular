@@ -248,6 +248,14 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("MBAdicionales") Then objSIM.MBAdicionales = IIf(IsDBNull(dr("MBAdicionales")), Nothing, dr("MBAdicionales"))
             If dr.Table.Columns.Contains("OfertaId") Then objSIM.OfertaId = IIf(IsDBNull(dr("OfertaId")), Nothing, dr("OfertaId"))
             If dr.Table.Columns.Contains("Tipo") Then objSIM.Tipo = dr("Tipo")
+            If dr.Table.Columns.Contains("FechaReactivacion") Then objSIM.FechaReactivacion = IIf(IsDBNull(dr("FechaReactivacion")), Nothing, dr("FechaReactivacion"))
+            If dr.Table.Columns.Contains("FechaBaja") Then objSIM.FechaBaja = IIf(IsDBNull(dr("FechaBaja")), Nothing, dr("FechaBaja"))
+            If dr.Table.Columns.Contains("FechaSuspension") Then objSIM.FechaAsignacion = IIf(IsDBNull(dr("FechaSuspension")), Nothing, dr("FechaSuspension"))
+            If dr.Table.Columns.Contains("FechaInicioFacturacion") Then objSIM.FechaInicioFacturacion = IIf(IsDBNull(dr("FechaInicioFacturacion")), Nothing, dr("FechaInicioFacturacion"))
+            If dr.Table.Columns.Contains("FechaPortabilidad") Then objSIM.FechaPortabilidad = IIf(IsDBNull(dr("FechaPortabilidad")), Nothing, dr("FechaPortabilidad"))
+            If dr.Table.Columns.Contains("CompaniaOrigen") Then objSIM.CompaniaOrigen = dr("CompaniaOrigen")
+            If dr.Table.Columns.Contains("MSISDN_Transcitorio") Then objSIM.MSISDN_Transcitorio = dr("MSISDN_Transcitorio")
+
         Catch ex As Exception
         End Try
         Return objSIM
