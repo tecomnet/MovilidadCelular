@@ -3,6 +3,7 @@ import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:movilidad_celulares/utils/succes.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
+import 'package:movilidad_celulares/utils/enums.dart';
 
 class UpdatePlanScreen extends StatefulWidget {
   final String iccidSeleccionado;
@@ -25,7 +26,7 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   List<Map<String, dynamic>> planesDisponibles = [];
   String iccid = '';
   String ofertaActualId = '';
-  String msisdn= '';
+  String msisdn = '';
 
   final Map<String, String> nombresTipos = {
     'prepago': 'Recarga',
@@ -70,7 +71,6 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
       ofertaActualId = planActual['OfertaID']?.toString() ?? '';
       msisdn = planActual['MSISDN'] ?? '';
     }
-    
 
     List<Map<String, dynamic>> todasOfertas = [];
 
@@ -156,9 +156,7 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(
-                                      12,
-                                    ), 
+                                    padding: const EdgeInsets.all(12),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -190,6 +188,9 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                             onPressed: () async {
                                               final precio =
                                                   obtenerPrecioDelPlan(plan);
+                                              final tipoOp =
+                                                  TipoOperacion.Cambio;
+                                              final canal = CanalDeVenta.App;
                                               final orderIdTec =
                                                   await AuthService.generarOrderID(
                                                     iccid: iccid,
@@ -200,7 +201,15 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                                             .toString(),
                                                     monto: precio
                                                         .toStringAsFixed(2),
-                                                        msisdn: msisdn,
+                                                    msisdn: msisdn,
+                                                    tipoOperacion:
+                                                        tipoOperacionValue(
+                                                          tipoOp,
+                                                        ),
+                                                    canalVenta:
+                                                        canalDeVentaValue(
+                                                          canal,
+                                                        ),
                                                   );
 
                                               if (orderIdTec == null) return;
@@ -215,7 +224,7 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
                                               final precioDouble =
                                                   obtenerPrecioDelPlan(plan);
                                               final precioInt =
-                                                  (precioDouble * 100).toInt();
+                                                  (precioDouble).toInt();
                                               final urlExito =
                                                   generarUrlExito();
                                               final link =

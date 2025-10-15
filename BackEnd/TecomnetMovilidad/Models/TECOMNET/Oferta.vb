@@ -7,8 +7,8 @@ Namespace TECOMNET
         Public Property Oferta As String
         Public Property Descripcion As String
         Public Property PrecioMensual As Decimal
-        Public Property PrecioAnual As Decimal?
-        Public Property PrecioRecurrente As Decimal?
+        Public Property PrecioAnual As Decimal
+        Public Property PrecioRecurrente As Decimal
         Public Property DatosMB As Integer
         Public Property Minutos As Integer
         Public Property Sms As Integer

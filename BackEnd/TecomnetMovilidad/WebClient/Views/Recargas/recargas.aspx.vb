@@ -21,6 +21,7 @@ Public Class recargasLogin
         Page.UnobtrusiveValidationMode = System.Web.UI.UnobtrusiveValidationMode.None
 
         If Not Page.IsPostBack Then
+            pnlSalir.Visible = False
             Dim opr As String = Request.QueryString("opr")
             If opr <> String.Empty Then
                 If Val(Securyty.DecodeBase64ToString(opr)) > 0 Then
@@ -40,6 +41,7 @@ Public Class recargasLogin
             pnlRecarga.Visible = True
             hfMSISDN.Value = sim.MSISDN
             hfICCID.Value = sim.ICCID
+            pnlSalir.Visible = True
         Else
             FailureText.Text = "Número no encontrado"
             ErrorMessageDiv.Visible = True
@@ -95,6 +97,8 @@ Public Class recargasLogin
     .AuthCode = "",
     .Reason = "",
     .PagoDepositoID = "",
+    .CanalDeVenta = "3",
+    .TipoOperacion = "2",
     .UltimaActualizacion = "",
     .NumeroReintentos = "",
     .DistribuidorID = "1"
@@ -124,7 +128,7 @@ Public Class recargasLogin
         .commerceName = "TECOMNET",
         .supportEmail = "recargas@tecomnet.mx",
         .description = "Recarga " & ofertaNueva.Oferta,
-        .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/",
+        .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCautivo/",
         .redirectUrl = urlExito,
         .order_id = objOrderId,
         .origin = "ecommerce",

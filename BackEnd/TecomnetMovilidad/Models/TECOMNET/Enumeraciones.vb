@@ -30,6 +30,11 @@
         Suspension = 2
         ConsultaSaldo = 3
     End Enum
+    Public Enum TipoPersona
+        F = 1
+        M = 2
+
+    End Enum
     Public Enum EstatusCliente
         Activo = 1
         Suspendido = 2

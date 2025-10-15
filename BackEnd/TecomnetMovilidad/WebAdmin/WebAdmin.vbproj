@@ -124,7 +124,15 @@
     <Content Include="Scripts\js\bootstrap.esm.min.js" />
     <Content Include="Scripts\js\bootstrap.js" />
     <Content Include="Scripts\js\bootstrap.min.js" />
-    <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Account\login.aspx" />
+    <Content Include="Views\General\AdminCliente.aspx" />
+    <Content Include="Views\General\AdminDistribuidores.aspx" />
+    <Content Include="Views\General\AdminEstatusDeposito.aspx" />
+    <Content Include="Views\General\AdminMetodoPago.aspx" />
+    <Content Include="Views\General\AdminOfertas.aspx" />
+    <Content Include="Views\General\AdminSIMs.aspx" />
+    <Content Include="Views\General\AdminTickets.aspx" />
+    <Content Include="Views\General\AdminUsuarios.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -157,16 +165,72 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Views\Account\Login.aspx.designer.vb">
-      <DependentUpon>Login.aspx</DependentUpon>
+    <Compile Include="Views\Account\login.aspx.designer.vb">
+      <DependentUpon>login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\Account\Login.aspx.vb">
-      <DependentUpon>Login.aspx</DependentUpon>
+    <Compile Include="Views\Account\login.aspx.vb">
+      <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Views\Cliente\CambioContrasena.aspx.designer.vb" />
     <Compile Include="Views\Cliente\CambioContrasena.aspx.vb">
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminCliente.aspx.designer.vb">
+      <DependentUpon>AdminCliente.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminCliente.aspx.vb">
+      <DependentUpon>AdminCliente.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminDistribuidores.aspx.designer.vb">
+      <DependentUpon>AdminDistribuidores.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminDistribuidores.aspx.vb">
+      <DependentUpon>AdminDistribuidores.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminEstatusDeposito.aspx.designer.vb">
+      <DependentUpon>AdminEstatusDeposito.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminEstatusDeposito.aspx.vb">
+      <DependentUpon>AdminEstatusDeposito.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminMetodoPago.aspx.designer.vb">
+      <DependentUpon>AdminMetodoPago.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminMetodoPago.aspx.vb">
+      <DependentUpon>AdminMetodoPago.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminOfertas.aspx.designer.vb">
+      <DependentUpon>AdminOfertas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminOfertas.aspx.vb">
+      <DependentUpon>AdminOfertas.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminSIMs.aspx.designer.vb">
+      <DependentUpon>AdminSIMs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminSIMs.aspx.vb">
+      <DependentUpon>AdminSIMs.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminTickets.aspx.designer.vb">
+      <DependentUpon>AdminTickets.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminTickets.aspx.vb">
+      <DependentUpon>AdminTickets.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminUsuarios.aspx.designer.vb">
+      <DependentUpon>AdminUsuarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminUsuarios.aspx.vb">
+      <DependentUpon>AdminUsuarios.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +282,17 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DatabaseConnection\DatabaseConnection.vbproj">
+      <Project>{e0993c6b-16e7-4b29-ad63-943c5e596ddc}</Project>
+      <Name>DatabaseConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.vbproj">
+      <Project>{f266912e-909d-4891-8eb9-9c4ee0cfa961}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

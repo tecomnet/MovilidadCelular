@@ -3,6 +3,7 @@ import 'package:movilidad_celulares/utils/succes.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
+import 'package:movilidad_celulares/utils/enums.dart';
 
 class MenuScreen extends StatelessWidget {
   final String ofertaActualId;
@@ -62,7 +63,7 @@ class MenuScreen extends StatelessWidget {
                   iccid: iccid, // tu ICCID
                   ofertaNuevaId: oferta['OfertaID']
                       .toString(), // la nueva oferta
-                      msisdn: msisdn,
+                  msisdn: msisdn,
                 );
               },
             );
@@ -111,7 +112,9 @@ class MenuScreen extends StatelessWidget {
                   Text('Descripción: ${ofertaData["Descripcion"] ?? "-"}'),
                   Text('Minutos: ${ofertaData["Minutos"] ?? "-"}'),
                   Text('SMS: ${ofertaData["Sms"] ?? "-"}'),
-                  Text('Precio recarga: \$${(ofertaData["PrecioRecurrente"] as num).toStringAsFixed(2)} MXN',),
+                  Text(
+                    'Precio recarga: \$${(ofertaData["PrecioRecurrente"] as num).toStringAsFixed(2)} MXN',
+                  ),
                   Text('Datos MB: ${ofertaData["DatosMB"] ?? "-"}'),
                   Text('Validez en días: ${ofertaData["ValidezDias"] ?? "-"}'),
                 ],
@@ -138,15 +141,18 @@ class MenuScreen extends StatelessWidget {
                   );
                   return;
                 }
-
+                final tipoOp = TipoOperacion.Recarga;
+                final canal = CanalDeVenta.App;
                 final orderIdTec = await AuthService.generarOrderID(
                   iccid: iccid,
                   ofertaActualId: ofertaId,
                   ofertaNuevaId: ofertaNuevaId,
                   monto: precio.toString(),
-                  msisdn: msisdn
+                  msisdn: msisdn,
+                  tipoOperacion: tipoOperacionValue(tipoOp),
+                  canalVenta: canalDeVentaValue(canal),
                 );
-print('✅✅✅ MSISDN obtenido: $msisdn');
+                print('✅✅✅ MSISDN obtenido: $msisdn');
 
                 if (orderIdTec == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -170,7 +176,7 @@ print('✅✅✅ MSISDN obtenido: $msisdn');
 
                 final link = await AuthService.obtenerLinkDePago(
                   token: token,
-                  amount: (precio * 100).toInt(),
+                  amount: (precio).toInt(),
                   description: descripcion,
                   orderId: orderIdTec,
                   redirectUrl: urlExito,

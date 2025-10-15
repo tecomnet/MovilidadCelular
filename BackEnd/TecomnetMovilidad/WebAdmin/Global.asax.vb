@@ -30,5 +30,19 @@ Public Class Global_asax
     Sub Application_End(ByVal sender As Object, ByVal e As EventArgs)
         ' Se desencadena cuando finaliza la aplicación
     End Sub
+    Sub Application_PostAcquireRequestState()
+        Dim ctx As HttpContext = HttpContext.Current
+
+        If ctx.Session IsNot Nothing AndAlso ctx.Session("UsuarioID") Is Nothing Then
+            Dim loginPath As String = "/views/account/login.aspx"
+            Dim currentPath As String = ctx.Request.Url.AbsolutePath.ToLower()
+
+            If currentPath <> loginPath Then
+                Server.ClearError()
+                Response.Clear()
+                FormsAuthentication.RedirectToLoginPage()
+            End If
+        End If
+    End Sub
 
 End Class

@@ -12,6 +12,6 @@
             Exit Sub
         End If
 
-        Response.Redirect("~/Views/Planes/ContratarPlan.aspx")
+        Response.Redirect("~/Views/Compras/Views/Planes/ContratarPlan.aspx")
     End Sub
 End Class

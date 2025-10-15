@@ -36,6 +36,54 @@ Public Class ConvertObject
         Return objCliente
 
     End Function
+    Public Shared Function Usuario(ByVal dr As DataRow) As Usuario
+        Dim objUsuario As New Usuario
+        Try
+            If dr.Table.Columns.Contains("UsuarioID") Then objUsuario.UsuarioID = dr("UsuarioID")
+            If dr.Table.Columns.Contains("NombreUsuario") Then objUsuario.NombreUsuario = dr("NombreUsuario")
+            If dr.Table.Columns.Contains("Nombre") Then objUsuario.Nombre = dr("Nombre")
+            If dr.Table.Columns.Contains("Email") Then objUsuario.Email = dr("Email")
+            If dr.Table.Columns.Contains("PasswordHash") Then objUsuario.PasswordHash = dr("PasswordHash")
+            If dr.Table.Columns.Contains("NumeroTelefono") Then objUsuario.NumeroTelefono = dr("NumeroTelefono")
+            If dr.Table.Columns.Contains("fechaBaja") Then objUsuario.fechaBaja = IIf(IsDBNull(dr("fechaBaja")), Nothing, dr("fechaBaja"))
+            If dr.Table.Columns.Contains("TipoUsuario") Then objUsuario.TipoUsuario = IIf(IsDBNull(dr("TipoUsuario")), Nothing, dr("TipoUsuario"))
+            If dr.Table.Columns.Contains("RelacionTipoID") Then objUsuario.RelacionTipoID = dr("RelacionTipoID")
+            If dr.Table.Columns.Contains("UltimoLogin") Then objUsuario.UltimoLogin = IIf(IsDBNull(dr("UltimoLogin")), "", dr("UltimoLogin"))
+            If dr.Table.Columns.Contains("FechaAlta") Then objUsuario.FechaAlta = dr("FechaAlta")
+            If dr.Table.Columns.Contains("FechaUltimaActualizacion") Then objUsuario.FechaUltimaActualizacion = dr("FechaUltimaActualizacion")
+        Catch ex As Exception
+        End Try
+        Return objUsuario
+
+    End Function
+
+    Public Shared Function Distribuidor(ByVal dr As DataRow) As Distribuidor
+        Dim objDistribuidor As New Distribuidor
+        Try
+            If dr.Table.Columns.Contains("DistribuidorID") Then objDistribuidor.DistribuidorID = dr("DistribuidorID")
+            If dr.Table.Columns.Contains("Region") Then objDistribuidor.Region = dr("Region")
+            If dr.Table.Columns.Contains("Nombre") Then objDistribuidor.Nombre = dr("Nombre")
+            If dr.Table.Columns.Contains("Direccion") Then objDistribuidor.Direccion = dr("Direccion")
+            If dr.Table.Columns.Contains("RFC") Then objDistribuidor.RFC = dr("RFC")
+            If dr.Table.Columns.Contains("NombreContacto") Then objDistribuidor.NombreContacto = dr("NombreContacto")
+            If dr.Table.Columns.Contains("TelefonoContacto") Then objDistribuidor.TelefonoContacto = dr("TelefonoContacto")
+            If dr.Table.Columns.Contains("Beneficiario") Then objDistribuidor.Beneficiario = dr("Beneficiario")
+            If dr.Table.Columns.Contains("EmailContacto") Then objDistribuidor.EmailContacto = dr("EmailContacto")
+            If dr.Table.Columns.Contains("DireccionFiscal") Then objDistribuidor.DireccionFiscal = dr("DireccionFiscal")
+            If dr.Table.Columns.Contains("PorcentajeComision") Then objDistribuidor.PorcentajeComision = dr("PorcentajeComision")
+            If dr.Table.Columns.Contains("Banco") Then objDistribuidor.Banco = dr("Banco")
+            If dr.Table.Columns.Contains("Cuenta") Then objDistribuidor.Cuenta = dr("Cuenta")
+            If dr.Table.Columns.Contains("TipoDistribuidor") Then objDistribuidor.TipoDistribuidor = IIf(IsDBNull(dr("TipoDistribuidor")), Nothing, dr("TipoDistribuidor"))
+            If dr.Table.Columns.Contains("FechaAlta") Then objDistribuidor.FechaAlta = dr("FechaAlta")
+            If dr.Table.Columns.Contains("FechaBaja") Then objDistribuidor.FechaBaja = IIf(IsDBNull(dr("FechaBaja")), Nothing, dr("FechaBaja"))
+            If dr.Table.Columns.Contains("TipoPersona") Then objDistribuidor.TipoPersona = IIf(IsDBNull(dr("TipoPersona")), Nothing, dr("TipoPersona"))
+            If dr.Table.Columns.Contains("FechaUltimaActualizacion") Then objDistribuidor.FechaUltimaActualizacion = dr("FechaUltimaActualizacion")
+        Catch ex As Exception
+            ' Manejo opcional de error
+        End Try
+        Return objDistribuidor
+    End Function
+
     Public Shared Function Tablero(ByVal dr As DataRow) As Tablero
         Dim objTablero As New Tablero
         Try
@@ -84,6 +132,16 @@ Public Class ConvertObject
         Catch ex As Exception
         End Try
         Return objOferta
+    End Function
+    Public Shared Function EstatusDeposito(ByVal dr As DataRow) As EstatusDeposito
+        Dim objEstatusDeposito As New EstatusDeposito
+        Try
+            If dr.Table.Columns.Contains("EstatusDepositoID") Then objEstatusDeposito.EstatusDepositoID = dr("EstatusDepositoID")
+            If dr.Table.Columns.Contains("Estatus") Then objEstatusDeposito.Estatus = dr("Estatus")
+            If dr.Table.Columns.Contains("Descripcion") Then objEstatusDeposito.Descripcion = dr("Descripcion")
+        Catch ex As Exception
+        End Try
+        Return objEstatusDeposito
     End Function
     Public Shared Function SolicitudDePago(ByVal dr As DataRow) As SolicitudDePago
         Dim objSolicitudDePago As New SolicitudDePago

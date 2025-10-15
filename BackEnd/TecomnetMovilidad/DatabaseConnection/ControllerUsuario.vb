@@ -7,17 +7,16 @@ Public Class ControllerUsuario
         Dim lstUsuario As New List(Of Usuario)
         Try
             Dim dt As New DataSet
-            'dt = controller.TransactionsUser(Of DataSet)(1, New Usuario)
+            dt = controller.TransactionsUsuario(Of DataSet)(1, New Usuario)
 
             If dt.Tables(0).Rows.Count = 0 Then
                 Return lstUsuario
             Else
                 For Each dr As DataRow In dt.Tables(0).Rows
-                    'lstUser.Add(ConvertObject.Users(dr))
+                    lstUsuario.Add(ConvertObject.Usuario(dr))
                 Next
             End If
         Catch ex As Exception
-            Return lstUsuario
         End Try
         Return lstUsuario
     End Function
@@ -27,10 +26,10 @@ Public Class ControllerUsuario
         objUsuario.UsuarioID = UsuarioID
         Try
             Dim dt As New DataSet
-            'dt = controller.TransactionsUser(Of DataSet)(2, objUsuario)
+            dt = controller.TransactionsUsuario(Of DataSet)(5, objUsuario)
 
             For Each dr As DataRow In dt.Tables(0).Rows
-                'objUsuario = ConvertObject.Users(dr)
+                objUsuario = ConvertObject.Usuario(dr)
             Next
         Catch ex As Exception
             Return objUsuario
@@ -41,7 +40,7 @@ Public Class ControllerUsuario
         Dim exito As Integer
         Dim controller As New Controller
         Try
-            'exito = controller.TransactionsUser(Of Integer)(3, objUsuario)
+            exito = controller.TransactionsUsuario(Of Integer)(3, objUsuario)
         Catch ex As Exception
             Return exito
         End Try
@@ -51,7 +50,7 @@ Public Class ControllerUsuario
         Dim exito As Integer
         Dim controller As New Controller
         Try
-            'exito = controller.TransactionsUser(Of Integer)(4, objUsuario)
+            exito = controller.TransactionsUsuario(Of Integer)(4, objUsuario)
         Catch ex As Exception
             Return exito
         End Try
@@ -64,7 +63,7 @@ Public Class ControllerUsuario
         objUsuario.UsuarioID = UsuarioID
         objUsuario.fechaBaja = Now
         Try
-            'exito = controller.TransactionsUser(Of Integer)(5, objUsuario)
+            exito = controller.TransactionsUsuario(Of Integer)(6, objUsuario)
         Catch ex As Exception
             Return exito
         End Try
@@ -72,18 +71,17 @@ Public Class ControllerUsuario
     End Function
     Public Function LoginUsuario(ByVal email As String, ByVal password As String) As Usuario
         Dim controller As New Controller
-        Dim objUsuario As New Usuario
-        objUsuario.Email = email
-        objUsuario.PasswordHash = password
+        Dim objUsuario As Usuario = Nothing
         Try
             Dim dt As New DataSet
-            'dt = controller.TransactionsUser(Of DataSet)(6, objUsuario)
+            dt = controller.TransactionsUsuario(Of DataSet)(2, New Usuario With {.Email = email, .PasswordHash = password})
 
-            For Each dr As DataRow In dt.Tables(0).Rows
-                '   objUser = ConvertObject.Users(dr)
-            Next
+            If dt.Tables.Count > 0 AndAlso dt.Tables(0).Rows.Count > 0 Then
+                objUsuario = ConvertObject.Usuario(dt.Tables(0).Rows(0))
+            End If
+
         Catch ex As Exception
-            Return objUsuario
+            ' Puedes registrar el error si quieres
         End Try
         Return objUsuario
     End Function

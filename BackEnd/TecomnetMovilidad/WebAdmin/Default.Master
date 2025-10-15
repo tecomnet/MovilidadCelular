@@ -1,20 +1,175 @@
 ﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="Default.master.vb" Inherits="WebAdmin._Default" %>
 
 <!DOCTYPE html>
-
 <html>
 <head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
     <title></title>
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <style>
+        :root {
+            --sidebar-width: 250px;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            height: 100vh;
+            background-color: #111;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+            #sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+        #content {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            position: relative;
+        }
+
+            #content.expanded {
+                margin-left: 0;
+                width: 100%;
+            }
+
+        #toggle-btn {
+            cursor: pointer;
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-            </asp:ContentPlaceHolder>
+<div id="sidebar" class="bg-dark text-white vh-100 position-fixed">
+    <div class="p-3">
+        <h4 class="fw-bold mb-4">TECOMNET</h4>
+        <ul class="nav flex-column">
+
+            <li class="nav-item">
+                <asp:HyperLink ID="hlHome" runat="server" NavigateUrl="~/Views/General/Inicio.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-house-door me-2"></i> Inicio
+                </asp:HyperLink>
+            </li>
+
+            <li class="nav-item">
+                <asp:HyperLink ID="hlUsuarios" runat="server" NavigateUrl="~/Views/General/AdminUsuarios.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-people me-2"></i> Usuarios
+                </asp:HyperLink>
+            </li>
+
+            <li class="nav-item">
+                <asp:HyperLink ID="hlClientes" runat="server" NavigateUrl="~/Views/General/AdminCliente.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-person-vcard me-2"></i> Clientes
+                </asp:HyperLink>
+            </li>
+            <li class="nav-item">
+                <asp:HyperLink ID="hlDistribuidores" runat="server" NavigateUrl="~/Views/General/AdminDistribuidores.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-diagram-3 me-2"></i> Distribuidores
+                </asp:HyperLink>
+            </li>
+            <li class="nav-item">
+                <asp:HyperLink ID="hlOfertas" runat="server" NavigateUrl="~/Views/General/AdminOfertas.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-gift me-2"></i> Ofertas
+                </asp:HyperLink>
+            </li>
+            <li class="nav-item">
+                <asp:HyperLink ID="hlSIMS" runat="server" NavigateUrl="~/Views/General/AdminSIMs.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-sim me-2"></i> SIMS
+                </asp:HyperLink>
+            </li>
+           <%-- <li class="nav-item">
+                <asp:HyperLink ID="hlTickets" runat="server" NavigateUrl="~/Views/General/AdminTickets.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-ticket-perforated me-2"></i> Tickets
+                </asp:HyperLink>
+            </li>--%>
+            <%--<li class="nav-item">
+                <asp:HyperLink ID="hlFacturacion" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-receipt me-2"></i> Facturación
+                </asp:HyperLink>
+            </li>--%>           
+           <%-- <li class="nav-item">
+                <asp:HyperLink ID="hlRecargaSaldo" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-cash-stack me-2"></i> Recarga Saldo
+                </asp:HyperLink>
+            </li>--%>
+            <li class="nav-item">
+                <asp:HyperLink ID="hlReportes" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
+                    <i class="bi bi-bar-chart-line me-2"></i> Reportes
+                </asp:HyperLink>
+            </li>
+            <%--<li class="nav-item">
+                <a class="nav-link text-white fw-bold" data-bs-toggle="collapse" href="#submenuDistribuidores">
+                    <i class="bi bi-diagram-3 me-2"></i> Distribuidores
+                </a>
+                <ul id="submenuDistribuidores" class="collapse nav flex-column ps-4 small">
+                    <li class="nav-item">
+                        <asp:HyperLink ID="hlComisiones" runat="server" NavigateUrl="~/Views/Account/MisRecargas.aspx" CssClass="nav-link text-white">
+                            <i class="bi bi-cash-coin me-2"></i> Comisiones
+                        </asp:HyperLink>
+                    </li>
+                </ul>
+            </li>--%>
+
+            <li class="nav-item">
+                <a class="nav-link text-white fw-bold" data-bs-toggle="collapse" href="#submenuCatalogos">
+                    <i class="bi bi-journal-bookmark me-2"></i> Catálogos
+                </a>
+                <ul id="submenuCatalogos" class="collapse nav flex-column ps-4 small">
+                    <li class="nav-item">
+                        <asp:HyperLink ID="hlEstatusDeposito" runat="server" NavigateUrl="~/Views/General/AdminEstatusDeposito.aspx" CssClass="nav-link text-white">
+                            <i class="bi bi-list-check me-2"></i> Estatus de depósito
+                        </asp:HyperLink>
+                    </li>
+                    <li class="nav-item">
+                        <asp:HyperLink ID="hlMetodosPago" runat="server" NavigateUrl="~/Views/General/AdminMetodoPago.aspx" CssClass="nav-link text-white">
+                            <i class="bi bi-credit-card me-2"></i> Métodos de pago
+                        </asp:HyperLink>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+        <div id="content">
+            <span id="toggle-btn" class="p-2">
+                <i class="bi bi-list fs-3"></i>
+            </span>
+            <div class="p-3">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
+            </div>
         </div>
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggleBtn = document.getElementById('toggle-btn');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+
+        toggleBtn.addEventListener('click', () => {
+            const collapsed = sidebar.classList.toggle('collapsed');
+            if (collapsed) {
+                content.classList.add('expanded');
+            } else {
+                content.classList.remove('expanded');
+            }
+        });
+    </script>
 </body>
 </html>

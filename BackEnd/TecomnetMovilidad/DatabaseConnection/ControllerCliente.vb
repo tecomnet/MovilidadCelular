@@ -2,25 +2,26 @@
 Imports Models.TECOMNET.API
 
 Public Class ControllerCliente
-    'Public Function GetCustomer() As List(Of Customer)
-    '    Dim controller As New Controller
-    '    Dim lstCustomers As New List(Of Customer)
-    '    Try
-    '        Dim dt As New DataSet
-    '        dt = controller.TransactionsCustomer(Of DataSet)(1, New Customer)
 
-    '        If dt.Tables(0).Rows.Count = 0 Then
-    '            Return lstCustomers
-    '        Else
-    '            For Each dr As DataRow In dt.Tables(0).Rows
-    '                lstCustomers.Add(ConvertObject.Customers(dr))
-    '            Next
-    '        End If
-    '    Catch ex As Exception
-    '        Return lstCustomers
-    '    End Try
-    '    Return lstCustomers
-    'End Function
+    Public Function GetClientes() As List(Of Cliente)
+        Dim controller As New Controller
+        Dim lista As New List(Of Cliente)
+
+        Try
+            Dim ds As DataSet = controller.TransactionsCliente(Of DataSet)(1, New Cliente)
+
+            If ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 Then
+                For Each row As DataRow In ds.Tables(0).Rows
+                    lista.Add(ConvertObject.Cliente(row))
+                Next
+            End If
+        Catch ex As Exception
+
+        End Try
+
+        Return lista
+    End Function
+
     Public Function ObtenerClientePorID(ByVal ClienteID As Integer) As Cliente
         Dim controller As New Controller
         Dim objCliente As New Cliente
@@ -37,26 +38,41 @@ Public Class ControllerCliente
         End Try
         Return objCliente
     End Function
-    'Public Function AddCustomer(ByVal objCustomer As Customer) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(3, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
-    'Public Function UpdateCustomer(ByVal objCustomer As Customer) As Integer
-    '    Dim exito As Integer
-    '    Dim controller As New Controller
-    '    Try
-    '        exito = controller.TransactionsCustomer(Of Integer)(4, objCustomer)
-    '    Catch ex As Exception
-    '        Return exito
-    '    End Try
-    '    Return exito
-    'End Function
+    Public Function AddCliente(ByVal objCliente As Cliente) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            exito = controller.TransactionsCliente(Of Integer)(3, objCliente)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+
+    Public Function UpdateCliente(ByVal objCliente As Cliente) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            exito = controller.TransactionsCliente(Of Integer)(4, objCliente)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+
+    Public Function BajaCliente(ByVal clienteId As Integer) As Integer
+        Dim exito As Integer = 0
+        Dim controller As New Controller
+        Try
+            Dim objCliente As New Cliente()
+            objCliente.ClienteId = clienteId
+            exito = controller.TransactionsCliente(Of Integer)(9, objCliente)
+        Catch ex As Exception
+            Return 0
+        End Try
+        Return exito
+    End Function
+
     Public Function LoginCustomer(ByVal email As String, ByVal password As String) As Cliente
         Dim controller As New Controller
         Dim objCliente As New Cliente

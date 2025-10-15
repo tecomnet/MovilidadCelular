@@ -83,4 +83,59 @@ Public Class ControllerSIM
         End Try
         Return objSIM
     End Function
+    '6 Obtiene todas las SIM disponibles (no asignadas)
+    Public Function ObtenerSIMDisponibles() As List(Of SIM)
+        Dim controller As New Controller
+        Dim lstSIM As New List(Of SIM)
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsSIM(Of DataSet)(6, New SIM)
+
+            If dt.Tables(0).Rows.Count > 0 Then
+                For Each dr As DataRow In dt.Tables(0).Rows
+                    lstSIM.Add(ConvertObject.SIM(dr))
+                Next
+            End If
+        Catch ex As Exception
+            Return lstSIM
+        End Try
+        Return lstSIM
+    End Function
+
+    '7 Asigna una SIM a un cliente
+    Public Function AsignarSIM(ByVal SIMID As Integer, ByVal ClienteId As Integer) As Boolean
+        Dim controller As New Controller
+        Dim objSIM As New SIM
+        Try
+            objSIM.SIMID = SIMID
+            objSIM.ClienteId = ClienteId
+            controller.TransactionsSIM(Of Integer)(7, objSIM)
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    '8 Obtiene todas las SIM asignadas a un cliente
+    Public Function ObtenerSIMPorCliente(ByVal ClienteId As Integer) As List(Of SIM)
+        Dim controller As New Controller
+        Dim lstSIM As New List(Of SIM)
+        Dim objSIM As New SIM
+        objSIM.ClienteId = ClienteId
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsSIM(Of DataSet)(8, objSIM)
+
+            If dt.Tables(0).Rows.Count > 0 Then
+                For Each dr As DataRow In dt.Tables(0).Rows
+                    lstSIM.Add(ConvertObject.SIM(dr))
+                Next
+            End If
+        Catch ex As Exception
+            Return lstSIM
+        End Try
+        Return lstSIM
+    End Function
+
+
 End Class

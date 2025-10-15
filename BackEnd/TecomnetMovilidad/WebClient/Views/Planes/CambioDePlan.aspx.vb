@@ -151,6 +151,8 @@ Public Class CambioDePlan
     .AuthCode = "",
     .Reason = "",
     .PagoDepositoID = "",
+    .CanalDeVenta = "2",
+    .TipoOperacion = "3",
     .UltimaActualizacion = "",
     .NumeroReintentos = "",
     .DistribuidorID = "1"
@@ -166,11 +168,12 @@ Public Class CambioDePlan
             objOrderId = jsonDoc.RootElement.GetProperty("OrderID").GetString()
         End If
 
-        Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
-        Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
-        Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
+        'Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
+        'Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
+        'Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
 
-        Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx?token={tokenBase64}"
+        'Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx?token={tokenBase64}"
+        Dim urlExito As String = "https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx"
 
 
         Dim bodyLkl = New With {
@@ -182,7 +185,7 @@ Public Class CambioDePlan
         .commerceName = "TECOMNET",
         .supportEmail = "recargas@tecomnet.mx",
         .description = "Recarga " & ofertaNueva.Oferta,
-        .response_url = "https://tecomnet.net/TECOMNET/webhook/ValidatePay/",
+        .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga",
         .redirectUrl = urlExito,
         .order_id = objOrderId,
         .origin = "ecommerce",
