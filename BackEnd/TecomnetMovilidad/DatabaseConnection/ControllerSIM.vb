@@ -101,7 +101,6 @@ Public Class ControllerSIM
         End Try
         Return lstSIM
     End Function
-
     '7 Asigna una SIM a un cliente
     Public Function AsignarSIM(ByVal SIMID As Integer, ByVal ClienteId As Integer) As Boolean
         Dim controller As New Controller
@@ -115,7 +114,6 @@ Public Class ControllerSIM
             Return False
         End Try
     End Function
-
     '8 Obtiene todas las SIM asignadas a un cliente
     Public Function ObtenerSIMPorCliente(ByVal ClienteId As Integer) As List(Of SIM)
         Dim controller As New Controller
@@ -136,6 +134,15 @@ Public Class ControllerSIM
         End Try
         Return lstSIM
     End Function
-
-
+    '9 Aplica recarga
+    Public Function AplicaRecarga(ByVal objSIM As SIM) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            exito = controller.TransactionsSIM(Of Integer)(9, objSIM)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
 End Class

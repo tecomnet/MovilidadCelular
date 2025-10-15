@@ -44,7 +44,7 @@ Namespace TECOMNET
             Me.PUK = String.Empty
             Me.Serie = String.Empty
             Me.ClienteId = Nothing
-            Me.Estado = "Suspend"
+            Me.Estado = "Idle"
             Me.FechaActivacion = Nothing
             Me.FechaAsignacion = Nothing
             Me.FechaVencimiento = Nothing
@@ -56,6 +56,8 @@ Namespace TECOMNET
             Me.MBAdicionales = Nothing
             Me.OfertaId = Nothing
             Me.Tipo = String.Empty ' SIM, ESIM
+            Me.CompaniaOrigen = String.Empty
+            Me.MSISDN_Transcitorio = String.Empty
         End Sub
 
     End Class
