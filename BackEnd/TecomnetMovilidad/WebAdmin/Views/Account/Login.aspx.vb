@@ -15,7 +15,8 @@ Public Class login
 
     Private Sub IniciarSesion()
         Dim controllerUsuario As New ControllerUsuario
-        Dim usuario As Usuario = controllerUsuario.LoginUsuario(txtEmail.Text.Trim(), txtPassword.Text.Trim())
+        Dim passwordCifrada As String = Securyty.Cifrar(txtPassword.Text.Trim())
+        Dim usuario As Usuario = controllerUsuario.LoginUsuario(txtEmail.Text.Trim(), passwordCifrada)
 
         If usuario IsNot Nothing Then
             Session("UsuarioID") = usuario.UsuarioID
