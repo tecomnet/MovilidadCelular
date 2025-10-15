@@ -21,16 +21,16 @@ Module Module1
     Sub Main()
         ' Configura el prefijo para el servicio (puerto 8080 en este caso)
         'QA                
-        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/CompraRecarga/")
-        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCompraSIM/")
-        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCautivo/")
-        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/RecargaWallet/")
+        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/CompraRecarga/")
+        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCompraSIM/")
+        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCautivo/")
+        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/RecargaWallet/")
 
         'Produccion        
-        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/")
-        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCompraSIM/")
-        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCautivo/")
-        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/RecargaWallet/")
+        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/")
+        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCompraSIM/")
+        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCautivo/")
+        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/RecargaWallet/")
 
         listener.Start()
 
@@ -65,16 +65,20 @@ Module Module1
 
             ' Procesar según la ruta
             Select Case requestPath
-                Case "/movilidad/webhook/ValidatePay/CompraRecarga/", "/movilidad/webhook/ValidatePay/CompraRecarga"
-                    If Await ProcesarNotificacionEpayment(request, response) Then
+                Case "/movilidad/webhook/ValidatePay/CompraRecarga/", "/movilidad/webhook/ValidatePay/CompraRecarga" 'Opcion para Pago con Tarjeta
+                    If Await ProcesaCompraRecarga(request, response) Then
                         response.StatusCode = 200
                     Else
                         response.StatusCode = 500
                     End If
                 Case "/movilidad/webhook/ValidatePay/PortalCompraSIM/"
                     response.StatusCode = 500
-                Case "/movilidad/webhook/ValidatePay/PortalCautivo/"
-                    response.StatusCode = 500
+                Case "/movilidad/webhook/ValidatePay/PortalCautivo/" 'Opcion para Pago con Tarjeta
+                    If Await ProcesarPortalCautivoPagoTarjeta(request, response) Then
+                        response.StatusCode = 200
+                    Else
+                        response.StatusCode = 500
+                    End If
                 Case "/movilidad/webhook/ValidatePay/RecargaWallet/"
                     If Await ProcesarRecargaWallet(request, response) Then
                         response.StatusCode = 200
@@ -91,50 +95,7 @@ Module Module1
         End Try
         response.Close()
     End Function
-    'Public Async Function ProcesarNotificacionAltan(context As HttpListenerContext, request As HttpListenerRequest, response As HttpListenerResponse) As Task(Of Boolean)
-    '    ' Código asíncrono aquí
-    '    Try
-    '        ' Obtén la IP del cliente
-    '        'Dim clientIP As String = context.Request.RemoteEndPoint.Address.ToString()
-
-    '        'If whiteListedIPs.Contains(clientIP) Then
-    '        Console.WriteLine(String.Format("----{0}----", Now.ToString))
-    '        'Console.WriteLine($"Conexión permitida desde {clientIP}")
-
-    '        ' Procesa la notificación recibida (puedes adaptarlo a tus necesidades)
-    '        Dim requestBody As String
-    '        Using reader As New IO.StreamReader(request.InputStream, request.ContentEncoding)
-    '            requestBody = reader.ReadToEnd()
-    '        End Using
-
-    '        Console.WriteLine("Datos recibidos:")
-    '        'Console.WriteLine(requestBody)
-
-    '        Dim notification As NotificationAltan = JsonConvert.DeserializeObject(Of NotificationAltan)(requestBody)
-
-    '        ' Acceso a las propiedades
-    '        Console.WriteLine($"EventType: {notification.EventType}")
-    '        Console.WriteLine($"Callback: {notification.Callback}")
-    '        Console.WriteLine($"Event ID: {notification.Event.Id}")
-    '        Console.WriteLine($"Total Amount: {notification.Event.Detail.TotalAmount}")
-
-    '        ' Responde con 200 OK
-    '        Dim responseString As String = "OK"
-    '        Dim buffer() As Byte = Encoding.UTF8.GetBytes(responseString)
-    '        response.ContentLength64 = buffer.Length
-    '        response.OutputStream.Write(buffer, 0, buffer.Length)
-    '        ' Else
-    '        'Console.WriteLine($"Conexión rechazada desde {clientIP}")
-    '        ' Responde con 403 Forbidden
-    '        'response.StatusCode = 403
-    '        'End If
-    '    Catch ex As Exception
-    '        Console.WriteLine(ex.Message)
-    '        Return False
-    '    End Try
-    '    Return True
-    'End Function
-    Public Async Function ProcesarNotificacionEpayment(request As HttpListenerRequest, response As HttpListenerResponse) As Task(Of Boolean)
+    Public Async Function ProcesaCompraRecarga(request As HttpListenerRequest, response As HttpListenerResponse) As Task(Of Boolean)
         Try
             Console.WriteLine(String.Format("----{0}----", Now.ToString))
             Console.WriteLine(String.Format("----{0}----", "Payment TECOMNET MOVILIDAD"))
@@ -273,6 +234,106 @@ Module Module1
 
                 Return True
                 'Await ActulizaMovimientosTecomnet(order)
+            End If
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+            Return False
+        End Try
+        Return True
+    End Function
+    Public Async Function ProcesarPortalCautivoPagoTarjeta(request As HttpListenerRequest, response As HttpListenerResponse) As Task(Of Boolean)
+        Try
+            Console.WriteLine(String.Format("----{0}----", Now.ToString))
+            Console.WriteLine(String.Format("----{0}----", "Pago Portal Cautivo"))
+
+            ' Procesa la notificación recibida
+            Dim requestBody As String
+            Using reader As New IO.StreamReader(request.InputStream, request.ContentEncoding)
+                requestBody = reader.ReadToEnd()
+            End Using
+
+            Console.WriteLine("Datos recibidos:")
+            Console.WriteLine(requestBody)
+
+            Dim order As PaymentOrder = JsonSerializer.Deserialize(Of PaymentOrder)(requestBody)
+            If order.estatus_pago = "approved" Then
+                'El pago fue exitoso
+                Dim ControllerSolicitudDePago As New ControllerSolicitudDePago
+                Dim ControllerRecarga As New ControllerRecarga
+
+                Dim objSolicitudPago As New SolicitudDePago
+                objSolicitudPago = ControllerSolicitudDePago.ObtenerSolicitud(order.order_id)
+                If objSolicitudPago.SolicitudID = 0 Then
+                    Console.WriteLine("no existe OrderID: " & order.order_id)
+                    Return False
+                Else
+                    Dim objControllerAltanRedes As New ControllerAltanRedes
+                    Dim lstOffering As New List(Of String)
+                    Dim listOfertas As New List(Of Oferta)
+                    Dim controllerOferta As New ControllerOferta
+                    Dim controllerSim As New ControllerSIM
+                    Dim OfertaCompra As New Oferta
+                    Dim objRecarga As New Recarga
+                    Dim objSIM As New SIM
+
+                    listOfertas = controllerOferta.ObtenerOfertas
+                    OfertaCompra = listOfertas.FirstOrDefault(Function(x) x.OfertaID = objSolicitudPago.OfertaIDNueva)
+
+
+                    lstOffering.Add(OfertaCompra.OfferIDAltan)
+                    Dim objRequestPurchaseProduct As New RequestPurchaseProduct(objSolicitudPago.MSISDN, lstOffering)
+
+                    Dim objResult As MessageResult
+                    objResult = objControllerAltanRedes.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
+
+                    If objResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                        Console.WriteLine("Se aplico correctamente la compra en ALTAN.")
+                        objSIM = controllerSim.ObtenerSIMPorMSISDN(objSolicitudPago.MSISDN)
+                        If objSIM.SIMID = 0 Then
+                            Console.WriteLine("No Existe un cliente asociado al SIM.")
+                        Else
+                            'Registramos Recarga
+                            objRecarga.FechaRecarga = Now
+                            objRecarga.ICCID = objSolicitudPago.ICCID
+                            objRecarga.ClienteID = objSIM.ClienteId
+                            objRecarga.OfertaID = objSolicitudPago.OfertaIDNueva
+                            objRecarga.Total = objSolicitudPago.Monto
+                            objRecarga.MetodoPagoID = objSolicitudPago.MetodoPagoID
+                            objRecarga.OrderID = objSolicitudPago.OrderID
+                            objRecarga.DistribuidorID = objSolicitudPago.DistribuidorID
+                            objRecarga.EstatusPagoDistribuidorID = 1
+                            objRecarga.FechaPagoDistribuidor = Nothing
+                            objRecarga.Comision = 0
+                            objRecarga.Impuesto = 0
+                            objRecarga.DepositoID = Nothing
+                            objRecarga.RequiereFacturaCliente = False
+                            objRecarga.FacturaID = Nothing
+
+                            If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
+                                Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
+
+                                'Actualizamos orden de compra
+                                objSolicitudPago.Estatus = order.estatus_pago
+                                objSolicitudPago.IdTransaction = order.id_transaction
+                                objSolicitudPago.AuthNumber = order.auth_number
+                                objSolicitudPago.AuthCode = order.authCode
+                                objSolicitudPago.Reason = order.reason
+                                ControllerSolicitudDePago.ActualizaSolicitudDePago(objSolicitudPago)
+                                Return True
+                            Else
+                                Console.WriteLine("no se aplicó correctamente la compra en TECOMNET.")
+                                Return False
+                            End If
+                        End If
+                    Else
+                        Console.WriteLine("No Se aplico la compra")
+                        Return False
+                    End If
+                    Return False
+                End If
+            Else
+                Console.WriteLine("Pago Fallido")
+                Return False
             End If
         Catch ex As Exception
             Console.WriteLine(ex.Message)

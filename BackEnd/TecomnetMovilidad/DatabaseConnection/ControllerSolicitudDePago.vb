@@ -57,4 +57,15 @@ Public Class ControllerSolicitudDePago
         End Try
         Return objSolicitudDePago
     End Function
+    Public Function ActualizaSolicitudDePago(ByVal objSolicitudDePago As SolicitudDePago) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            exito = controller.TransactionsSolicitudDePago(Of Integer)(4, objSolicitudDePago)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+
 End Class
