@@ -10,7 +10,6 @@ Public Class recargasLogin
         pnlNumero.Visible = False
         pnlRecarga.Visible = False
         pnlValidate.Visible = True
-        ' El pago fue exitoso                
         hlButton.CssClass = "buttonSuccessfull"
         h1Tittle.InnerText = "¡Gracias por tu pago!"
         h1Tittle.Attributes.Add("class", "h1Successfull")

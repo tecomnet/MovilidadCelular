@@ -54,13 +54,22 @@
             padding: 2rem;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
+
+        .action-icon {
+            text-decoration: none !important;
+        }
+
+        a.text-primary, a.text-danger {
+            text-decoration: none !important;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
     <asp:Panel ID="pnlAdminEstatusDeposito" runat="server" CssClass="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Administración Estatus Depósito</h2>
+            <asp:Button ID="BtnAgregarEstatusDeposito" runat="server" CssClass="btn btn-success btn-add"
+                Text="+ Agregar Estatus Deposito" OnClick="BtnAgregarEstatusDeposito_Click" />
         </div>
     </asp:Panel>
     <asp:Panel ID="PnlTabla" runat="server" Visible="True">
@@ -100,18 +109,20 @@
             </div>
         </div>
     </asp:Panel>
-    <asp:Panel ID="PnlEditarEstatusDeposito" runat="server" Visible="False">
+    <asp:Panel ID="PnlAgregarEstatusDeposito" runat="server" Visible="False">
+        <asp:HiddenField ID="hdnEstatusDeposito" runat="server" />
+        <asp:Label ID="lblTitulo" runat="server" CssClass="fs-2 text-dark fw-bold"></asp:Label>
         <div class="card card-shadow p-4 mb-4">
-            <h4>Editar Estatus Deposito</h4>
             <div class="mb-3">
-                <asp:TextBox ID="txtEditarEstatusDeposito" runat="server" CssClass="form-control" />
+                <label class="form-label">Estatus</label>
+                <asp:TextBox ID="txtEstatus" runat="server" CssClass="form-control" />
             </div>
             <div class="mb-3">
                 <label class="form-label">Descripción</label>
-                <asp:TextBox ID="txtEditarDescripcion" runat="server" CssClass="form-control" />
+                <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" />
             </div>
         </div>
-        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" />
+        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
         <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" />
     </asp:Panel>
 </asp:Content>

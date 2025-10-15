@@ -23,6 +23,15 @@ Partial Public Class AdminEstatusDeposito
     Protected WithEvents pnlAdminEstatusDeposito As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''Control BtnAgregarEstatusDeposito.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents BtnAgregarEstatusDeposito As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''Control PnlTabla.
     '''</summary>
     '''<remarks>
@@ -41,31 +50,49 @@ Partial Public Class AdminEstatusDeposito
     Protected WithEvents gvEstatusDeposito As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
-    '''Control PnlEditarEstatusDeposito.
+    '''Control PnlAgregarEstatusDeposito.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents PnlEditarEstatusDeposito As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents PnlAgregarEstatusDeposito As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control txtEditarEstatusDeposito.
+    '''Control hdnEstatusDeposito.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtEditarEstatusDeposito As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents hdnEstatusDeposito As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
-    '''Control txtEditarDescripcion.
+    '''Control lblTitulo.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtEditarDescripcion As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents lblTitulo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control txtEstatus.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtEstatus As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtDescripcion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtDescripcion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control btnGuardar.
