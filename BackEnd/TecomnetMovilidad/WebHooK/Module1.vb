@@ -4,11 +4,14 @@ Imports Models.TECOMNET
 Imports Models.TECOMNET.AltanRedes
 Imports Models.TECOMNET.LinkX
 Imports System.Text.Json
+Imports System.Data.SqlClient
+Imports System.Configuration
 
 Module Module1
     Dim listener As New HttpListener
     Dim whiteListedIPs As List(Of String) = New List(Of String) From {
         "35.190.175.10",
+        "32.245.215.98",
         "35.196.235.221",
         “34.228.25.112”,
         “54.152.205.27”,
@@ -17,11 +20,17 @@ Module Module1
     }
     Sub Main()
         ' Configura el prefijo para el servicio (puerto 8080 en este caso)
-        'QA        
-        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/")
+        'QA                
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/CompraRecarga/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCompraSIM/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCautivo/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/RecargaWallet/")
 
         'Produccion        
-        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCompraSIM/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCautivo/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/RecargaWallet/")
 
         listener.Start()
 
@@ -56,8 +65,18 @@ Module Module1
 
             ' Procesar según la ruta
             Select Case requestPath
-                Case "/movilidad/webhook/ValidatePay/"
+                Case "/movilidad/webhook/ValidatePay/CompraRecarga/", "/movilidad/webhook/ValidatePay/CompraRecarga"
                     If Await ProcesarNotificacionEpayment(request, response) Then
+                        response.StatusCode = 200
+                    Else
+                        response.StatusCode = 500
+                    End If
+                Case "/movilidad/webhook/ValidatePay/PortalCompraSIM/"
+                    response.StatusCode = 500
+                Case "/movilidad/webhook/ValidatePay/PortalCautivo/"
+                    response.StatusCode = 500
+                Case "/movilidad/webhook/ValidatePay/RecargaWallet/"
+                    If Await ProcesarRecargaWallet(request, response) Then
                         response.StatusCode = 200
                     Else
                         response.StatusCode = 500
@@ -130,98 +149,128 @@ Module Module1
             Console.WriteLine(requestBody)
 
             Dim order As PaymentOrder = JsonSerializer.Deserialize(Of PaymentOrder)(requestBody)
-
+            Console.WriteLine(String.Format("----{0}----", "Paso1"))
             If order.estatus_pago = "approved" Then
                 ' El pago fue exitoso
-                Dim ControllerSolicitudDePago As New ControllerSolicitudDePago
-                Dim ControllerRecarga As New ControllerRecarga
+                'Dim ControllerSolicitudDePago As New ControllerSolicitudDePago
+                'Dim ControllerRecarga As New ControllerRecarga
 
-                Dim objSolicitudPago As New SolicitudDePago
-                Dim op As New Operations
-                Dim objRecarga As New Recarga
-                Dim ValidaCambioCompra As Tuple(Of String, String)
+                'Dim objSolicitudPago As New SolicitudDePago
+                'Dim op As New Operations
+                'Dim objRecarga As New Recarga
+                'Dim ValidaCambioCompra As Tuple(Of String, String)
 
-                objSolicitudPago = ControllerSolicitudDePago.ObtenerSolicitud(order.order_id)
-                If objSolicitudPago.SolicitudID = 0 Then
-                    Console.WriteLine("no existe OrderID: " & order.order_id)
-                    Return False
-                Else
-                    ValidaCambioCompra = op.CompraRecarga(objSolicitudPago.OfertaIDActual, objSolicitudPago.OfertaIDNueva)
-                    If ValidaCambioCompra Is Nothing Then
-                        Console.WriteLine("No exiten las opciones de cambio.")
-                        Return False
-                    Else
-                        Dim objControllerAltanRedes As New ControllerAltanRedes
-                        Select Case ValidaCambioCompra.Item2
-                            Case "Compra"
-                                Dim lstOffering As New List(Of String)
-                                lstOffering.Add(ValidaCambioCompra.Item1)
-                                Dim objRequestPurchaseProduct As New RequestPurchaseProduct(objSolicitudPago.MSISDN, lstOffering)
-                                Dim objResult As MessageResult
-                                objResult = objControllerAltanRedes.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
+                'objSolicitudPago = ControllerSolicitudDePago.ObtenerSolicitud(order.order_id)
+                'If objSolicitudPago.SolicitudID = 0 Then
+                '    Console.WriteLine("no existe OrderID: " & order.order_id)
+                '    Return False
+                'Else
+                '    ValidaCambioCompra = op.CompraRecarga(objSolicitudPago.OfertaIDActual, objSolicitudPago.OfertaIDNueva)
+                '    If ValidaCambioCompra Is Nothing Then
+                '        Console.WriteLine("No exiten las opciones de cambio.")
+                '        Return False
+                '    Else
+                '        Dim objControllerAltanRedes As New ControllerAltanRedes
+                '        Select Case ValidaCambioCompra.Item2
+                '            Case "Compra"
+                '                Dim lstOffering As New List(Of String)
+                '                lstOffering.Add(ValidaCambioCompra.Item1)
+                '                Dim objRequestPurchaseProduct As New RequestPurchaseProduct(objSolicitudPago.MSISDN, lstOffering)
+                '                Dim objResult As MessageResult
+                '                objResult = objControllerAltanRedes.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
 
-                                If objResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-                                    Console.WriteLine("Se aplico correctamente la compra en ALTAN.")
-                                    'Registramos Recarga
-                                    objRecarga.FechaRecarga = Now
-                                    objRecarga.ICCID = objSolicitudPago.ICCID
-                                    objRecarga.ClienteID = String.Empty 'Falta
-                                    objRecarga.OfertaID = objSolicitudPago.OfertaIDNueva
-                                    objRecarga.Total = objSolicitudPago.Monto
-                                    objRecarga.MetodoPagoID = objSolicitudPago.MetodoPagoID
-                                    objRecarga.OrderID = objSolicitudPago.OrderID
-                                    objRecarga.DistribuidorID = objSolicitudPago.DistribuidorID
-                                    objRecarga.EstatusPagoDistribuidorID = 1
-                                    objRecarga.FechaPagoDistribuidor = Nothing
-                                    objRecarga.Comision = 0
-                                    objRecarga.Impuesto = 0
-                                    objRecarga.DepositoID = Nothing
-                                    objRecarga.RequiereFacturaCliente = False
-                                    objRecarga.FacturaID = Nothing
+                '                If objResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                '                    Console.WriteLine("Se aplico correctamente la compra en ALTAN.")
+                '                    'Registramos Recarga
+                '                    objRecarga.FechaRecarga = Now
+                '                    objRecarga.ICCID = objSolicitudPago.ICCID
+                '                    objRecarga.ClienteID = String.Empty 'Falta
+                '                    objRecarga.OfertaID = objSolicitudPago.OfertaIDNueva
+                '                    objRecarga.Total = objSolicitudPago.Monto
+                '                    objRecarga.MetodoPagoID = objSolicitudPago.MetodoPagoID
+                '                    objRecarga.OrderID = objSolicitudPago.OrderID
+                '                    objRecarga.DistribuidorID = objSolicitudPago.DistribuidorID
+                '                    objRecarga.EstatusPagoDistribuidorID = 1
+                '                    objRecarga.FechaPagoDistribuidor = Nothing
+                '                    objRecarga.Comision = 0
+                '                    objRecarga.Impuesto = 0
+                '                    objRecarga.DepositoID = Nothing
+                '                    objRecarga.RequiereFacturaCliente = False
+                '                    objRecarga.FacturaID = Nothing
 
-                                    If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
-                                        Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
-                                    Else
-                                        Console.WriteLine("no se aplicó correctamente la compra en TECOMNET.")
-                                    End If
-                                Else
-                                    Console.WriteLine("No Se aplico la compra")
-                                End If
+                '                    If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
+                '                        Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
+                '                    Else
+                '                        Console.WriteLine("no se aplicó correctamente la compra en TECOMNET.")
+                '                    End If
+                '                Else
+                '                    Console.WriteLine("No Se aplico la compra")
+                '                End If
 
-                            Case "Cambio"
-                                Dim objRequestPurchaseProduct As New RequestSubscribers(ValidaCambioCompra.Item1)
-                                Dim objResult As MessageResult
-                                objResult = objControllerAltanRedes.PatchCambioOferta(JsonSerializer.Serialize(objRequestPurchaseProduct), objSolicitudPago.MSISDN)
-                                If objResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-                                    Console.WriteLine("Se aplico correctamente el cambio.")
-                                    'Registramos Recarga
-                                    objRecarga.FechaRecarga = Now
-                                    objRecarga.ICCID = objSolicitudPago.ICCID
-                                    objRecarga.ClienteID = 0
-                                    objRecarga.OfertaID = objSolicitudPago.OfertaIDNueva
-                                    objRecarga.Total = objSolicitudPago.Monto
-                                    objRecarga.MetodoPagoID = objSolicitudPago.MetodoPagoID
-                                    objRecarga.OrderID = objSolicitudPago.OrderID
-                                    objRecarga.DistribuidorID = objSolicitudPago.DistribuidorID
-                                    objRecarga.EstatusPagoDistribuidorID = 1
-                                    objRecarga.FechaPagoDistribuidor = Nothing
-                                    objRecarga.Comision = 0
-                                    objRecarga.Impuesto = 0
-                                    objRecarga.DepositoID = Nothing
-                                    objRecarga.RequiereFacturaCliente = False
-                                    objRecarga.FacturaID = Nothing
-                                    If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
-                                        Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
-                                    Else
-                                        Console.WriteLine("no se aplicó correctamente la compra en TECOMNET.")
-                                    End If
-                                Else
-                                    Console.WriteLine("No se aplico el cambio")
-                                End If
+                '            Case "Cambio"
+                '                Dim objRequestPurchaseProduct As New RequestSubscribers(ValidaCambioCompra.Item1)
+                '                Dim objResult As MessageResult
+                '                objResult = objControllerAltanRedes.PatchCambioOferta(JsonSerializer.Serialize(objRequestPurchaseProduct), objSolicitudPago.MSISDN)
+                '                If objResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                '                    Console.WriteLine("Se aplico correctamente el cambio.")
+                '                    'Registramos Recarga
+                '                    objRecarga.FechaRecarga = Now
+                '                    objRecarga.ICCID = objSolicitudPago.ICCID
+                '                    objRecarga.ClienteID = 0
+                '                    objRecarga.OfertaID = objSolicitudPago.OfertaIDNueva
+                '                    objRecarga.Total = objSolicitudPago.Monto
+                '                    objRecarga.MetodoPagoID = objSolicitudPago.MetodoPagoID
+                '                    objRecarga.OrderID = objSolicitudPago.OrderID
+                '                    objRecarga.DistribuidorID = objSolicitudPago.DistribuidorID
+                '                    objRecarga.EstatusPagoDistribuidorID = 1
+                '                    objRecarga.FechaPagoDistribuidor = Nothing
+                '                    objRecarga.Comision = 0
+                '                    objRecarga.Impuesto = 0
+                '                    objRecarga.DepositoID = Nothing
+                '                    objRecarga.RequiereFacturaCliente = False
+                '                    objRecarga.FacturaID = Nothing
+                '                    If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
+                '                        Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
+                '                    Else
+                '                        Console.WriteLine("no se aplicó correctamente la compra en TECOMNET.")
+                '                    End If
+                '                Else
+                '                    Console.WriteLine("No se aplico el cambio")
+                '                End If
 
-                        End Select
-                    End If
-                End If
+                '        End Select
+                '    End If
+                'End If
+
+                'Eliminar''
+                'Dim objPagoStripe As PagoStripe = JsonSerializer.Deserialize(Of PagoStripe)(requestBody)
+                Console.WriteLine(String.Format("----{0}----", "Paso3"))
+                Dim objController As New ControllerAltanRedes
+                Dim dt As New DataTable
+                dt = BuscaSolicitudDePago(order.order_id)
+                Console.WriteLine(String.Format("----{0}----", "Paso4"))
+
+
+                'Select Case OfertaIDNueva,Monto,s.ICCID,s.MSISDN,ClienteId
+
+
+                Dim lstOffering As New List(Of String)
+                lstOffering.Add(BuscaOferta(dt(0)("OfertaIDNueva")))
+                Console.WriteLine(String.Format("----{0}----", "Paso5"))
+                Dim objRequestPurchaseProduct As New RequestPurchaseProduct(dt(0)("MSISDN"), lstOffering)
+                Console.WriteLine(String.Format("----{0}----", "Paso6"))
+                Dim objControlller As New ControllerAltanRedes
+                Dim objResult As New MessageResult
+
+                Console.WriteLine(String.Format("----{0}----", "Paso7"))
+                objResult = objControlller.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
+                Console.WriteLine(String.Format("----{0}----", "Paso8"))
+
+                RegistraPago(dt(0)("ICCID"), dt(0)("ClienteId"), dt(0)("OfertaIDNueva"), dt(0)("Monto"))
+                Console.WriteLine(String.Format("----{0}----", "Paso9"))
+                Return True
+                'Eliminar''
+
                 Return True
                 'Await ActulizaMovimientosTecomnet(order)
             End If
@@ -302,4 +351,154 @@ Module Module1
     '    End Try
     '    Return True
     'End Function
+
+    Public Async Function ProcesarRecargaWallet(request As HttpListenerRequest, response As HttpListenerResponse) As Task(Of Boolean)
+        'Try
+        '    Console.WriteLine(String.Format("----{0}----", Now.ToString))
+        '    Console.WriteLine(String.Format("----{0}----", "Payment RecargaWallet"))
+
+        '    ' Procesa la notificación recibida (puedes adaptarlo a tus necesidades)
+        '    Dim requestBody As String
+        '    Using reader As New IO.StreamReader(request.InputStream, request.ContentEncoding)
+        '        requestBody = reader.ReadToEnd()
+        '    End Using
+
+        '    Console.WriteLine("Datos recibidos:")
+        '    Console.WriteLine(requestBody)
+
+        '    Dim objPagoStripe As PagoStripe = JsonSerializer.Deserialize(Of PagoStripe)(requestBody)
+        '    Dim objController As New ControllerAltanRedes
+
+
+        '    Dim lstOffering As New List(Of String)
+        '    lstOffering.Add(BuscaOferta(Val(objPagoStripe.OfertaID)))
+        '    Dim objRequestPurchaseProduct As New RequestPurchaseProduct(objPagoStripe.MSISDN, lstOffering)
+        '    Dim objControlller As New ControllerAltanRedes
+        '    Dim objResult As MessageResult
+
+        '    objResult = objControlller.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
+
+        '    RegistraPago(BuscaICCID(objPagoStripe.MSISDN), Val(objPagoStripe.userId), Val(objPagoStripe.OfertaID), objPagoStripe.amount)
+        '    Return True
+        '    'Await ActulizaMovimientosTecomnet(order)
+
+        'Catch ex As Exception
+        '    Console.WriteLine(ex.Message)
+        '    Return False
+        'End Try
+        Return True
+    End Function
+
+    Public Function BuscaOferta(ByVal OfertaID As Integer) As String
+        Try
+            Using connection As New SqlConnection(ConfigurationManager.ConnectionStrings("ConnectionString").ConnectionString)
+                connection.Open()
+
+                Dim query As String = String.Format("select OfferIDAltan from Ofertas where HomologacionID in (select HomologacionID from Ofertas where OfertaID={0}) and TarifaPrimaria=0", OfertaID)
+                Dim valor As String = String.Empty
+
+                Using adapter As New SqlDataAdapter(query, connection)
+                    Dim dt As New DataTable()
+                    adapter.Fill(dt)
+
+                    For Each dr As DataRow In dt.Rows
+                        valor = dr(0).ToString
+                    Next
+                    Return valor
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+    'Public Function BuscaMSISDN(ByVal clienteid As Integer) As String
+    '    Try
+    '        Using connection As New SqlConnection(ConfigurationManager.ConnectionStrings("ConnectionString").ConnectionString)
+    '            connection.Open()
+
+    '            Dim query As String = String.Format("select MSISDN from SIMs where ClienteId={0}", clienteid)
+    '            Dim valor As String = String.Empty
+
+    '            Using adapter As New SqlDataAdapter(query, connection)
+    '                Dim dt As New DataTable()
+    '                adapter.Fill(dt)
+
+    '                For Each dr As DataRow In dt.Rows
+    '                    valor = dr(0).ToString
+    '                Next
+    '                Return valor
+    '            End Using
+    '        End Using
+
+    '    Catch ex As Exception
+    '        Return ""
+    '    End Try
+    'End Function
+    Public Sub RegistraPago(ICCID As String, ClienteID As Integer, OfertaID As Integer, Total As Double)
+        ' Conexión a tu base de datos
+        Using connection As New SqlConnection(ConfigurationManager.ConnectionStrings("ConnectionString").ConnectionString)
+            connection.Open()
+
+            Dim query As String = String.Format("INSERT INTO Recargas
+                  (FechaRecarga, ICCID, ClienteID, OfertaID, Total, MetodoPagoID, OrderID, DistribuidorID, 
+				  EstatusPagoDistribuidorID, FechaPagoDistribuidor, Comision, Impuesto, CanalDeVenta, 
+				  TipoOperacion, RequiereFacturaCliente)
+                  VALUES     (getdate(), @ICCID, @ClienteID, @OfertaID, @Total, 1, 'XXX', 1, 
+				  1, null, 0, 16, 4, 
+				  2, 0)", ICCID, ClienteID, OfertaID, Total)
+
+            Using command As New SqlCommand(query, connection)
+                command.Parameters.AddWithValue("@ICCID", ICCID)
+                command.Parameters.AddWithValue("@ClienteID", ClienteID)
+                command.Parameters.AddWithValue("@OfertaID", OfertaID)
+                command.Parameters.AddWithValue("@Total", Total)
+
+                command.ExecuteNonQuery()
+            End Using
+        End Using
+    End Sub
+    Public Function BuscaICCID(ByVal MSISDN As String) As String
+        Try
+            Using connection As New SqlConnection(ConfigurationManager.ConnectionStrings("ConnectionString").ConnectionString)
+                connection.Open()
+
+                Dim query As String = String.Format("select ICCID from SIMs where MSISDN='{0}'", MSISDN)
+                Dim valor As String = String.Empty
+
+                Using adapter As New SqlDataAdapter(query, connection)
+                    Dim dt As New DataTable()
+                    adapter.Fill(dt)
+
+                    For Each dr As DataRow In dt.Rows
+                        valor = dr(0).ToString
+                    Next
+                    Return valor
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+    Public Function BuscaSolicitudDePago(ByVal OrderID As String) As DataTable
+        Try
+            Using connection As New SqlConnection(ConfigurationManager.ConnectionStrings("ConnectionString").ConnectionString)
+                connection.Open()
+
+                Dim query As String = String.Format("select OfertaIDNueva,Monto,s.ICCID,s.MSISDN,ClienteId from [dbo].[SolicitudDePago] as sp
+				  inner join SIMs as s on sp.ICCID = s.ICCID where OrderID='{0}'", OrderID)
+                Dim valor As String = String.Empty
+
+                Using adapter As New SqlDataAdapter(query, connection)
+                    Dim dt As New DataTable()
+                    adapter.Fill(dt)
+                    Return dt
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Return New DataTable
+        End Try
+    End Function
 End Module
