@@ -312,13 +312,23 @@ Module Module1
                             If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
                                 Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
 
-                                'Actualizamos orden de compra
-                                objSolicitudPago.Estatus = order.estatus_pago
-                                objSolicitudPago.IdTransaction = order.id_transaction
-                                objSolicitudPago.AuthNumber = order.auth_number
-                                objSolicitudPago.AuthCode = order.authCode
-                                objSolicitudPago.Reason = order.reason
-                                ControllerSolicitudDePago.ActualizaSolicitudDePago(objSolicitudPago)
+                                objSIM.OfertaId = objSolicitudPago.OfertaIDNueva
+                                If controllerSim.AplicaRecarga(objSIM) > 0 Then
+                                    'Actualizamos orden de compra
+                                    objSolicitudPago.Estatus = order.estatus_pago
+                                    objSolicitudPago.IdTransaction = order.id_transaction
+                                    objSolicitudPago.AuthNumber = order.auth_number
+                                    objSolicitudPago.AuthCode = order.authCode
+                                    objSolicitudPago.Reason = order.reason
+
+                                    If ControllerSolicitudDePago.ActualizaSolicitudDePago(objSolicitudPago) = 0 Then
+                                        Console.WriteLine("No se pudo actualizar la solicitud de pago.")
+                                    Else
+                                        Console.WriteLine("Se actualizó correctamente la solicitud de pago.")
+                                    End If
+                                Else
+                                    Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
+                                End If
                                 Return True
                             Else
                                 Console.WriteLine("no se aplicó correctamente la compra en TECOMNET.")
