@@ -86,42 +86,6 @@ Partial Public Class _Default
     Protected WithEvents hlSIMS As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
-    '''Control hlTickets.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents hlTickets As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
-    '''Control hlFacturacion.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents hlFacturacion As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
-    '''Control hlVentasSim.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents hlVentasSim As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
-    '''Control hlRecargaSaldo.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents hlRecargaSaldo As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
     '''Control hlReportes.
     '''</summary>
     '''<remarks>
@@ -129,15 +93,6 @@ Partial Public Class _Default
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents hlReportes As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
-    '''Control hlComisiones.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents hlComisiones As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
     '''Control hlEstatusDeposito.

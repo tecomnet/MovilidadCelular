@@ -39,8 +39,8 @@ Public Class Global_asax
                         Case "/movilidad/clientes/Views/Account/ForgotPassword.aspx"
                         Case "/Views/General/ValidaRecarga.aspx"
                         Case "/movilidad/clientes/Views/General/ValidaRecarga.aspx"
-                        Case "/Views/Recargas/Inicio/recargas.aspx"
-                        Case "/movilidad/clientes/Views/Recargas/Inicio/recargas.aspx"
+                        Case "/Views/Recargas/recargas.aspx"
+                        Case "/movilidad/clientes/Views/Recargas/recargas.aspx"
                         Case "/Views/Recargas/Paquetes/Planes.aspx"
                         Case "/movilidad/clientes/Views/Recargas/Paquetes/Planes.aspx"
                         Case "/Views/Compras/Views/Account/Registros.aspx"
@@ -52,10 +52,10 @@ Public Class Global_asax
                         Case "/Views/Compras/Views/Bienvenida/CompraRealizada.aspx"
                         Case "/movilidad/clientes/Views/Compras/Views/Bienvenida/CompraRealizada.aspx"
                         Case "/Views/Compras/Views/Planes/ContratarPlan.aspx"
-                        Case "/movilidad/clientes/Views/Compras/Views/Plan/ContratarPlan.aspx"
+                        Case "/movilidad/clientes/Views/Compras/Views/Planes/ContratarPlan.aspx"
                         Case "/Views/Compras/Views/SIM/CompraSim.aspx"
                         Case "/movilidad/clientes/Views/Compras/Views/SIM/CompraSim.aspx"
-                        Case "/Views/Compras/Views/Planes/ContratarPlan.aspx"
+                        Case "/Views/Compras/Views/SIM/PagoSim.aspx"
                         Case "/movilidad/clientes/Views/Compras/Views/SIM/PagoSim.aspx"
 
                         Case Else

@@ -7,6 +7,7 @@ import 'package:movilidad_celulares/widgets/payment_webview.dart';
 import 'package:movilidad_celulares/screens/menu_screen.dart';
 import 'package:movilidad_celulares/utils/succes.dart';
 import 'package:movilidad_celulares/utils/session_manager.dart';
+import 'package:movilidad_celulares/utils/enums.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -186,10 +187,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () async {
         if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
-          Navigator.of(context).pop(); 
+          Navigator.of(context).pop();
           return false;
         }
-        
+
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -320,9 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             simId: oferta['SIMID'].toString(),
                                             ofertaId: oferta['OfertaID']
                                                 .toString(),
-                                                msisdn: oferta['MSISDN'],
-                                                tipoOperacion: oferta['TipoOperacion'],
-                                                canalVenta: oferta['CanalDeVenta'],
+                                            msisdn: oferta['MSISDN'],
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -334,9 +333,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 .toString(),
                                                         iccid: oferta['ICCID']
                                                             .toString(),
-                                                            msisdn: oferta['MSISDN'].toString(),
-                                                            tipoOperacion: oferta['TipoOperacion'].toString(),
-                                                            canalVenta: oferta['CanalDeVenta'].toString(),
+                                                        msisdn: oferta['MSISDN']
+                                                            .toString(),
                                                       ),
                                                 ),
                                               );
@@ -400,8 +398,6 @@ class _HomeScreenState extends State<HomeScreen> {
     required String ofertaId,
     required bool esPrepago,
     required String msisdn,
-    required String tipoOperacion,
-    required String canalVenta,
   }) {
     return Card(
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -437,14 +433,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       onPressed: () async {
+                        final tipoOp = TipoOperacion.Renovacion;
+                        final canal = CanalDeVenta.App;
+
                         final orderIdTec = await AuthService.generarOrderID(
                           iccid: iccid,
                           ofertaActualId: ofertaId,
                           ofertaNuevaId: ofertaId,
                           monto: precio.toString(),
                           msisdn: msisdn,
-                          tipoOperacion: "4",
-                          canalVenta: "1",
+                          tipoOperacion: tipoOperacionValue(tipoOp),
+                          canalVenta: canalDeVentaValue(canal),
                         );
                         if (orderIdTec == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -472,7 +471,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         final link = await AuthService.obtenerLinkDePago(
                           token: token,
-                          amount: (precio * 100).toInt(),
+                          amount: (precio).toInt(),
                           description: 'Renovación del plan',
                           orderId: orderIdTec,
                           redirectUrl: urlExito,
@@ -531,8 +530,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ofertaActualId: ofertaId.toString(),
                             iccid: iccid.toString(),
                             msisdn: msisdn.toString(),
-                            tipoOperacion: tipoOperacion.toString(),
-                            canalVenta: canalVenta.toString(),
                           ),
                         ),
                       );

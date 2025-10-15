@@ -186,8 +186,8 @@ static Future<String?> generarOrderID({
   required String ofertaNuevaId,
   required String monto,
   required String msisdn,
-  required String canalVenta,
-  required String tipoOperacion,
+  required int tipoOperacion,
+  required int canalVenta,
 }) async {
   if (_token == null) {
     print('⚠️ Token no disponible, no se puede registrar la solicitud');
@@ -213,8 +213,8 @@ static Future<String?> generarOrderID({
     "AuthCode": "",
     "Reason": "",
     "PagoDepositoID": "",
-    "CanalDeVenta":canalVenta,
-    "TipoOperacion":tipoOperacion,
+    "CanalDeVenta": canalVenta,
+    "TipoOperacion": tipoOperacion,
     "UltimaActualizacion": "",
     "NumeroReintentos": "",
     "DistribuidorID" : "1"
@@ -284,14 +284,14 @@ static Future<String?> generarOrderID({
 
     final body = {
       "amount": amount,
-      "displayAmount": amount / 100,
+      "displayAmount": amount,
       "displayCurrency": "MXN",
       "language": "es",
       "email": "h.martinez@tecomnet.mx",
       "commerceName": "TECOMNET",
       "supportEmail": "recargas@tecomnet.mx",
       "description": description,
-      "response_url": "https://tecomnet.net/movilidad/webhook/ValidatePay/",
+      "response_url": "https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/",
       "redirectUrl": redirectUrl,
       "order_id": orderId,
       "origin": "ecommerce",

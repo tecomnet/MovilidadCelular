@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     <style>
         body {
             background-color: #f8f9fa;
@@ -111,10 +112,17 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="m-2">
-            <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/Logo.png") %>' />
-            <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/BYD-Logo.png") %>' />
-            <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/Logo-Altan.jpeg") %>' />
+        <div class="d-flex justify-content-between align-items-center m-2">
+            <div class="d-flex align-items-center gap-2">
+                <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/Logo.png") %>' />
+                <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/BYD-Logo.png") %>' />
+                <img height="40" src='<%= ResolveUrl("~/Resources/Imagenes/Logo-Altan.jpeg") %>' />
+            </div>
+            <asp:Panel ID="pnlSalir" runat="server" Visible="False">
+                <a href='<%= ResolveUrl("~/Views/Recargas/Inicio/recargas.aspx") %>' class="text-dark" title="Salir">
+                    <i class="bi bi-box-arrow-right fs-3"></i>
+                </a>
+            </asp:Panel>
         </div>
         <hr />
 
@@ -211,10 +219,9 @@
         </contenttemplate>
         <footer class="text-center">
             <div class="container">
-                <small>
-                    <p>(c) <%: Now.Year %> por  TECOMNET.</p>
-                </small>
-                <br>
+                <p><small>(c) <%: Now.Year %> por  TECOMNET.</small></p>
+
+                <br />
                 <a href="https://www.tecomnet.mx/avisodeprivacidad/" class="text-white me-3">Términos y condiciones</a>
                 <a href="https://www.tecomnet.mx/tecomnet-s-a-p-i-de-c-v-aviso-de-privacidad/" class="text-white">Aviso de privacidad</a>
             </div>

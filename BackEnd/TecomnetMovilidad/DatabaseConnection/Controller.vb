@@ -216,4 +216,106 @@ Public Class Controller
         cnx = Nothing
         Return DirectCast(result, ReturnType)
     End Function
+
+    Public Function TransactionsUsuario(Of ReturnType)(opcion As Integer, ByVal objUsuario As Usuario) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@UsuarioID", SqlDbType.Int, objUsuario.UsuarioID))
+        parametros.Add(ConnectionDB.ArmaParametro("@NombreUsuario", SqlDbType.NVarChar, objUsuario.NombreUsuario))
+        parametros.Add(ConnectionDB.ArmaParametro("@Nombre", SqlDbType.NVarChar, objUsuario.Nombre))
+        parametros.Add(ConnectionDB.ArmaParametro("@Email", SqlDbType.NVarChar, objUsuario.Email))
+        parametros.Add(ConnectionDB.ArmaParametro("@PasswordHash", SqlDbType.NVarChar, objUsuario.PasswordHash))
+        parametros.Add(ConnectionDB.ArmaParametro("@TipoUsuario", SqlDbType.Int, objUsuario.TipoUsuario))
+        parametros.Add(ConnectionDB.ArmaParametro("@NumeroTelefono", SqlDbType.NVarChar, objUsuario.NumeroTelefono))
+        parametros.Add(ConnectionDB.ArmaParametro("@RelacionTipoID", SqlDbType.Int, objUsuario.RelacionTipoID))
+        parametros.Add(ConnectionDB.ArmaParametro("@UltimoLogin", SqlDbType.DateTime, IIf(IsNothing(objUsuario.UltimoLogin), DBNull.Value, objUsuario.UltimoLogin)))
+        parametros.Add(ConnectionDB.ArmaParametro("@fechaBaja", SqlDbType.DateTime, IIf(IsNothing(objUsuario.fechaBaja), DBNull.Value, objUsuario.fechaBaja)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaAlta", SqlDbType.DateTime, objUsuario.FechaAlta))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaUltimaActualizacion", SqlDbType.DateTime, objUsuario.FechaUltimaActualizacion))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_Usuario]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_Usuario]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_Usuario]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+
+    Public Function TransactionsDistribuidores(Of ReturnType)(opcion As Integer, ByVal objDistribuidor As Distribuidor) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@DistribuidorID", SqlDbType.Int, objDistribuidor.DistribuidorID))
+        parametros.Add(ConnectionDB.ArmaParametro("@Region", SqlDbType.Int, objDistribuidor.Region))
+        parametros.Add(ConnectionDB.ArmaParametro("@Nombre", SqlDbType.NVarChar, objDistribuidor.Nombre))
+        parametros.Add(ConnectionDB.ArmaParametro("@TipoPersona", SqlDbType.Char, objDistribuidor.TipoPersona))
+        parametros.Add(ConnectionDB.ArmaParametro("@TipoDistribuidor", SqlDbType.Int, objDistribuidor.TipoDistribuidor))
+        parametros.Add(ConnectionDB.ArmaParametro("@Direccion", SqlDbType.NVarChar, objDistribuidor.Direccion))
+        parametros.Add(ConnectionDB.ArmaParametro("@RFC", SqlDbType.NVarChar, objDistribuidor.RFC))
+        parametros.Add(ConnectionDB.ArmaParametro("@NombreContacto", SqlDbType.NVarChar, objDistribuidor.NombreContacto))
+        parametros.Add(ConnectionDB.ArmaParametro("@TelefonoContacto", SqlDbType.NVarChar, objDistribuidor.TelefonoContacto))
+        parametros.Add(ConnectionDB.ArmaParametro("@EmailContacto", SqlDbType.NVarChar, objDistribuidor.EmailContacto))
+        parametros.Add(ConnectionDB.ArmaParametro("@DireccionFiscal", SqlDbType.NVarChar, objDistribuidor.DireccionFiscal))
+        parametros.Add(ConnectionDB.ArmaParametro("@PorcentajeComision", SqlDbType.Decimal, objDistribuidor.PorcentajeComision))
+        parametros.Add(ConnectionDB.ArmaParametro("@Banco", SqlDbType.NVarChar, objDistribuidor.Banco))
+        parametros.Add(ConnectionDB.ArmaParametro("@Cuenta", SqlDbType.NVarChar, objDistribuidor.Cuenta))
+        parametros.Add(ConnectionDB.ArmaParametro("@Beneficiario", SqlDbType.NVarChar, objDistribuidor.Beneficiario))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaAlta", SqlDbType.DateTime, IIf(IsNothing(objDistribuidor.FechaAlta), DBNull.Value, objDistribuidor.FechaAlta)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaUltimaActualizacion", SqlDbType.DateTime, IIf(IsNothing(objDistribuidor.FechaUltimaActualizacion), DBNull.Value, objDistribuidor.FechaUltimaActualizacion)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objDistribuidor.FechaBaja), DBNull.Value, objDistribuidor.FechaBaja)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_Distribuidores]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_Distribuidores]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_Distribuidores]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsEstatusDeposito(Of ReturnType)(opcion As Integer, ByVal objEstatusDeposito As EstatusDeposito) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@EstatusDepositoID", SqlDbType.Int, objEstatusDeposito.EstatusDepositoID))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estatus", SqlDbType.NVarChar, objEstatusDeposito.Estatus))
+        parametros.Add(ConnectionDB.ArmaParametro("@Descripcion", SqlDbType.NVarChar, objEstatusDeposito.Descripcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_EstatusDeposito]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_EstatusDeposito]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_EstatusDeposito]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+
 End Class

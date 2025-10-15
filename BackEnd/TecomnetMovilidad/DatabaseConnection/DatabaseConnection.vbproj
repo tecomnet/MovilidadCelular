@@ -97,6 +97,8 @@
     <Compile Include="Controller.vb" />
     <Compile Include="ControllerAltanRedes.vb" />
     <Compile Include="ControllerCliente.vb" />
+    <Compile Include="ControllerDistribuidor.vb" />
+    <Compile Include="ControllerEstatusDeposito.vb" />
     <Compile Include="ControllerOferta.vb" />
     <Compile Include="ControllerRecarga.vb" />
     <Compile Include="ControllerSIM.vb" />

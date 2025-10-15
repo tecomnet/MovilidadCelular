@@ -6,6 +6,6 @@
     End Sub
 
     Protected Sub btnPagar_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/Views/Bienvenida/CompraRealizada.aspx")
+        Response.Redirect("~/Views/Compras/Views/Bienvenida/CompraRealizada.aspx")
     End Sub
 End Class

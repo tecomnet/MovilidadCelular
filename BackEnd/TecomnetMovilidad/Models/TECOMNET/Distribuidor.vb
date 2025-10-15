@@ -5,9 +5,17 @@ Namespace TECOMNET
         ' Propiedades de la clase
         Public Property DistribuidorID As Integer
         Public Property Nombre As String
+        Public Property NombreContacto As String
+        Public Property Region As Integer
+        Public Property RFC As String
         Public Property Direccion As String
+        Public Property TipoPersona As TipoPersona
+        Public Property DireccionFiscal As String
         Public Property TelefonoContacto As String
         Public Property EmailContacto As String
+        Public Property Banco As String
+        Public Property Cuenta As String
+        Public Property Beneficiario As String
         Public Property PorcentajeComision As Decimal
         Public Property FechaAlta As Date
         Public Property FechaBaja As Date?
@@ -15,6 +23,24 @@ Namespace TECOMNET
         Public Property FechaUltimaActualizacion As DateTime
         ' Constructor
         Public Sub New()
+            Me.DistribuidorID = 0
+            Me.Nombre = String.Empty
+            Me.NombreContacto = String.Empty
+            Me.Region = 0
+            Me.RFC = String.Empty
+            Me.Direccion = String.Empty
+            Me.TipoPersona = TipoPersona.F
+            Me.DireccionFiscal = String.Empty
+            Me.TelefonoContacto = String.Empty
+            Me.EmailContacto = String.Empty
+            Me.Banco = String.Empty
+            Me.Cuenta = String.Empty
+            Me.Beneficiario = String.Empty
+            Me.PorcentajeComision = 0
+            Me.FechaAlta = Now
+            Me.FechaBaja = Nothing
+            Me.TipoDistribuidor = TipoDistribuidor.Minorista
+            Me.FechaUltimaActualizacion = Now
         End Sub
         Public Sub New(DistribuidorID As Integer, Nombre As String, Direccion As String, TelefonoContacto As String, EmailContacto As String,
             PorcentajeComision As Decimal, FechaAlta As Date)

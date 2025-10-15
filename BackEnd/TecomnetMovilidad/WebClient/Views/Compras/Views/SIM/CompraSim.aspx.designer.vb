@@ -59,13 +59,13 @@ Partial Public Class CompraSim
     Protected WithEvents lblPlanNombre As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''Control lblPlanDuracion.
+    '''Control lblPlanDescripcion.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents lblPlanDuracion As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblPlanDescripcion As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''Control lblPlanDatos.
@@ -95,6 +95,15 @@ Partial Public Class CompraSim
     Protected WithEvents lblPlanSMS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''Control lblPlanPrecio.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblPlanPrecio As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''Control btnPagar.
     '''</summary>
     '''<remarks>
@@ -102,4 +111,22 @@ Partial Public Class CompraSim
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents btnPagar As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control pnlPago.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlPago As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control iframePago.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents iframePago As Global.System.Web.UI.HtmlControls.HtmlIframe
 End Class

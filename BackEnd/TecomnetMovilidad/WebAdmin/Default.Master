@@ -72,7 +72,7 @@
             </li>
 
             <li class="nav-item">
-                <asp:HyperLink ID="hlClientes" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
+                <asp:HyperLink ID="hlClientes" runat="server" NavigateUrl="~/Views/General/AdminCliente.aspx" CssClass="nav-link text-white">
                     <i class="bi bi-person-vcard me-2"></i> Clientes
                 </asp:HyperLink>
             </li>
@@ -87,37 +87,31 @@
                 </asp:HyperLink>
             </li>
             <li class="nav-item">
-                <asp:HyperLink ID="hlSIMS" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
+                <asp:HyperLink ID="hlSIMS" runat="server" NavigateUrl="~/Views/General/AdminSIMs.aspx" CssClass="nav-link text-white">
                     <i class="bi bi-sim me-2"></i> SIMS
                 </asp:HyperLink>
             </li>
-            <li class="nav-item">
-                <asp:HyperLink ID="hlTickets" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
+           <%-- <li class="nav-item">
+                <asp:HyperLink ID="hlTickets" runat="server" NavigateUrl="~/Views/General/AdminTickets.aspx" CssClass="nav-link text-white">
                     <i class="bi bi-ticket-perforated me-2"></i> Tickets
                 </asp:HyperLink>
-            </li>
-            <li class="nav-item">
+            </li>--%>
+            <%--<li class="nav-item">
                 <asp:HyperLink ID="hlFacturacion" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
                     <i class="bi bi-receipt me-2"></i> Facturación
                 </asp:HyperLink>
-            </li>
-            <li class="nav-item">
-                <asp:HyperLink ID="hlVentasSim" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
-                    <i class="bi bi-cart-check me-2"></i> Ventas de SIM
-                </asp:HyperLink>
-            </li>
-            <li class="nav-item">
+            </li>--%>           
+           <%-- <li class="nav-item">
                 <asp:HyperLink ID="hlRecargaSaldo" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
                     <i class="bi bi-cash-stack me-2"></i> Recarga Saldo
                 </asp:HyperLink>
-            </li>
+            </li>--%>
             <li class="nav-item">
                 <asp:HyperLink ID="hlReportes" runat="server" NavigateUrl="~/Views/General/Clientes.aspx" CssClass="nav-link text-white">
                     <i class="bi bi-bar-chart-line me-2"></i> Reportes
                 </asp:HyperLink>
             </li>
-
-            <li class="nav-item">
+            <%--<li class="nav-item">
                 <a class="nav-link text-white fw-bold" data-bs-toggle="collapse" href="#submenuDistribuidores">
                     <i class="bi bi-diagram-3 me-2"></i> Distribuidores
                 </a>
@@ -128,7 +122,7 @@
                         </asp:HyperLink>
                     </li>
                 </ul>
-            </li>
+            </li>--%>
 
             <li class="nav-item">
                 <a class="nav-link text-white fw-bold" data-bs-toggle="collapse" href="#submenuCatalogos">
@@ -136,12 +130,12 @@
                 </a>
                 <ul id="submenuCatalogos" class="collapse nav flex-column ps-4 small">
                     <li class="nav-item">
-                        <asp:HyperLink ID="hlEstatusDeposito" runat="server" NavigateUrl="~/Views/Account/EstatusDeposito.aspx" CssClass="nav-link text-white">
+                        <asp:HyperLink ID="hlEstatusDeposito" runat="server" NavigateUrl="~/Views/General/AdminEstatusDeposito.aspx" CssClass="nav-link text-white">
                             <i class="bi bi-list-check me-2"></i> Estatus de depósito
                         </asp:HyperLink>
                     </li>
                     <li class="nav-item">
-                        <asp:HyperLink ID="hlMetodosPago" runat="server" NavigateUrl="~/Views/Account/MetodosPago.aspx" CssClass="nav-link text-white">
+                        <asp:HyperLink ID="hlMetodosPago" runat="server" NavigateUrl="~/Views/General/AdminMetodoPago.aspx" CssClass="nav-link text-white">
                             <i class="bi bi-credit-card me-2"></i> Métodos de pago
                         </asp:HyperLink>
                     </li>
