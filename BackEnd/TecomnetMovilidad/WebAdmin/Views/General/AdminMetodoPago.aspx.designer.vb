@@ -23,6 +23,15 @@ Partial Public Class AdminMetodoPago
     Protected WithEvents PnlAdminMetodoPago As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''Control BtnAgregarMetodoPago.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents BtnAgregarMetodoPago As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''Control PnlTabla.
     '''</summary>
     '''<remarks>
@@ -32,40 +41,85 @@ Partial Public Class AdminMetodoPago
     Protected WithEvents PnlTabla As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control lnkEditarPagoTarjeta.
+    '''Control gvMetodoPago.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents lnkEditarPagoTarjeta As Global.System.Web.UI.WebControls.LinkButton
+    Protected WithEvents gvMetodoPago As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
-    '''Control PnlEditarMetodoPago.
+    '''Control PnlAgregarMetodoPago.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents PnlEditarMetodoPago As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents PnlAgregarMetodoPago As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control txtEditarMetodoPago.
+    '''Control hdnMetodoPago.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtEditarMetodoPago As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents hdnMetodoPago As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
-    '''Control txtEditarDescripcion.
+    '''Control lblMensaje.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtEditarDescripcion As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents lblMensaje As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control lblTitulo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblTitulo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control txtNombreMetodo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtNombreMetodo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvNombreMetodo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvNombreMetodo As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''Control txtDescripcion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtDescripcion As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvDescrpcion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvDescrpcion As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control btnGuardar.

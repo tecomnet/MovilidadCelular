@@ -32,6 +32,15 @@ Partial Public Class AdminCliente
     Protected WithEvents btnAgregarCliente As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''Control txtBuscarClientes.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtBuscarClientes As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''Control pnlTabla.
     '''</summary>
     '''<remarks>
@@ -95,6 +104,33 @@ Partial Public Class AdminCliente
     Protected WithEvents btnAsignarSIM As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''Control PnlBotonGuardarCancelar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents PnlBotonGuardarCancelar As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control btnGuardar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnGuardar As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''Control btnCancelar.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnCancelar As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''Control pnlAgregar.
     '''</summary>
     '''<remarks>
@@ -122,15 +158,6 @@ Partial Public Class AdminCliente
     Protected WithEvents hdnClienteId As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
-    '''Control lblMensaje.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents lblMensaje As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''Control lblTitulo.
     '''</summary>
     '''<remarks>
@@ -138,6 +165,15 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents lblTitulo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''Control lblMensaje.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblMensaje As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''Control pnlSeccionGenerales.
@@ -149,6 +185,42 @@ Partial Public Class AdminCliente
     Protected WithEvents pnlSeccionGenerales As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''Control ddlTipoPersona.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlTipoPersona As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control ddlEstatus.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlEstatus As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control rfvEstatus.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvEstatus As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''Control pnlFisica.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlFisica As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''Control txtNombre.
     '''</summary>
     '''<remarks>
@@ -156,15 +228,6 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtNombre As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control rfvNombre.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvNombre As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control txtApellidoPaterno.
@@ -176,15 +239,6 @@ Partial Public Class AdminCliente
     Protected WithEvents txtApellidoPaterno As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control rfvApellidoPaterno.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvApellidoPaterno As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
     '''Control txtApellidoMaterno.
     '''</summary>
     '''<remarks>
@@ -192,42 +246,6 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtApellidoMaterno As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control txtFechaCumpleanios.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtFechaCumpleanios As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control rfvFechaNac.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvFechaNac As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
-    '''Control ddlTipoPersona.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents ddlTipoPersona As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''Control rfvTipoPersona.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvTipoPersona As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control txtCURP.
@@ -239,13 +257,40 @@ Partial Public Class AdminCliente
     Protected WithEvents txtCURP As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control revCURP.
+    '''Control pnlFisicaFecha.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents revCURP As Global.System.Web.UI.WebControls.RegularExpressionValidator
+    Protected WithEvents pnlFisicaFecha As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control txtFechaCumpleanios.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtFechaCumpleanios As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control pnlRFC.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlRFC As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control txtRFC.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtRFC As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control txtTelefono.
@@ -257,13 +302,13 @@ Partial Public Class AdminCliente
     Protected WithEvents txtTelefono As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control revTelefono.
+    '''Control RegularExpressionValidator1.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents revTelefono As Global.System.Web.UI.WebControls.RegularExpressionValidator
+    Protected WithEvents RegularExpressionValidator1 As Global.System.Web.UI.WebControls.RegularExpressionValidator
 
     '''<summary>
     '''Control txtEmail.
@@ -291,42 +336,6 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents revEmail As Global.System.Web.UI.WebControls.RegularExpressionValidator
-
-    '''<summary>
-    '''Control txtFechaAlta.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtFechaAlta As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control rfvFechaAlta.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvFechaAlta As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
-    '''Control ddlEstatus.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents ddlEstatus As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''Control rfvEstatus.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvEstatus As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control pnlPassword.
@@ -365,13 +374,31 @@ Partial Public Class AdminCliente
     Protected WithEvents revPassword As Global.System.Web.UI.WebControls.RegularExpressionValidator
 
     '''<summary>
-    '''Control txtEstado.
+    '''Control txtFechaAlta.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtEstado As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents txtFechaAlta As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control ddlEstado.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlEstado As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control ddlLocalidad.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlLocalidad As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
     '''Control txtColonia.
@@ -381,6 +408,15 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtColonia As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtCalle.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtCalle As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control txtDireccion.
@@ -419,22 +455,31 @@ Partial Public Class AdminCliente
     Protected WithEvents pnlSeccionFiscales As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Control txtRFC.
+    '''Control ddlTipoPersonaRegimen.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtRFC As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents ddlTipoPersonaRegimen As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control txtRfcFacturacion.
+    '''Control RequiredFieldValidator1.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtRfcFacturacion As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents RequiredFieldValidator1 As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''Control ddlRegimenFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlRegimenFiscal As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
     '''Control txtNombreRazonSocial.
@@ -446,22 +491,13 @@ Partial Public Class AdminCliente
     Protected WithEvents txtNombreRazonSocial As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control txtCPFacturacion.
+    '''Control txtRfcFacturacion.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtCPFacturacion As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control txtRegimenFiscal.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtRegimenFiscal As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents txtRfcFacturacion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control txtUsoComprobante.
@@ -473,31 +509,13 @@ Partial Public Class AdminCliente
     Protected WithEvents txtUsoComprobante As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control PnlBotonGuardarCancelar.
+    '''Control txtCPFacturacion.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents PnlBotonGuardarCancelar As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''Control btnGuardar.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents btnGuardar As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''Control btnCancelar.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents btnCancelar As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents txtCPFacturacion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control PnlAsignarSIM.
@@ -570,4 +588,58 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents gvSIMDisponibles As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''Control lblModalICCID.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblModalICCID As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''Control lblModalMSISDN.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblModalMSISDN As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''Control lblModalEstado.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblModalEstado As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''Control lblModalPlan.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblModalPlan As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''Control hdnSIMId.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents hdnSIMId As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''Control gvOfertas.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents gvOfertas As Global.System.Web.UI.WebControls.GridView
 End Class

@@ -46,4 +46,8 @@ Namespace TECOMNET
             Me.DistribuidorID = 0
         End Sub
     End Class
+    Public Class RespuestaSolicitudPago
+        Public Property objSolicitudDePago As SolicitudDePago
+    End Class
+
 End Namespace

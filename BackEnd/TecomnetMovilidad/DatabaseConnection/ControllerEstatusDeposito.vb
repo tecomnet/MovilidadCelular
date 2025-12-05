@@ -26,10 +26,39 @@ Public Class ControllerEstatusDeposito
         Dim exito As Integer
         Dim controller As New Controller
         Try
+            exito = controller.TransactionsEstatusDeposito(Of Integer)(2, objEstatusDeposito)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
+    End Function
+
+    Public Function UpdateEstatusDeposito(ByVal objEstatusDeposito As EstatusDeposito) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
             exito = controller.TransactionsEstatusDeposito(Of Integer)(3, objEstatusDeposito)
         Catch ex As Exception
             Return exito
         End Try
         Return exito
     End Function
+
+    Public Function ObtenerEstatusDepositoPorID(ByVal EstatusDepositoID As Integer) As EstatusDeposito
+        Dim controller As New Controller
+        Dim objEstatusDeposito As New EstatusDeposito
+        objEstatusDeposito.EstatusDepositoID = EstatusDepositoID
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsEstatusDeposito(Of DataSet)(4, objEstatusDeposito)
+
+            For Each dr As DataRow In dt.Tables(0).Rows
+                objEstatusDeposito = ConvertObject.EstatusDeposito(dr)
+            Next
+        Catch ex As Exception
+            Return objEstatusDeposito
+        End Try
+        Return objEstatusDeposito
+    End Function
+
 End Class

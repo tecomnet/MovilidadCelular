@@ -46,7 +46,7 @@ Public Class ControllerUsuario
         End Try
         Return exito
     End Function
-    Public Function AtualizarUsuario(ByVal objUsuario As Usuario) As Integer
+    Public Function ActualizarUsuario(ByVal objUsuario As Usuario) As Integer
         Dim exito As Integer
         Dim controller As New Controller
         Try
@@ -82,6 +82,23 @@ Public Class ControllerUsuario
 
         Catch ex As Exception
             ' Puedes registrar el error si quieres
+        End Try
+        Return objUsuario
+    End Function
+
+    Public Function ObtenerUsuarioPorEmail(ByVal email As String) As Usuario
+        Dim controller As New Controller
+        Dim objUsuario As New Usuario
+        objUsuario.Email = email
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsUsuario(Of DataSet)(8, objUsuario)
+
+            For Each dr As DataRow In dt.Tables(0).Rows
+                objUsuario = ConvertObject.Usuario(dr)
+            Next
+        Catch ex As Exception
+            Return objUsuario
         End Try
         Return objUsuario
     End Function

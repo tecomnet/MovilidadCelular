@@ -1,5 +1,6 @@
 ﻿Imports DatabaseConnection
 Imports Models.TECOMNET
+Imports System.Web.Services
 
 Public Class AdminUsuarios
     Inherits System.Web.UI.Page
@@ -7,6 +8,7 @@ Public Class AdminUsuarios
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
             CargarUsuarios()
+            txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
         End If
     End Sub
 
@@ -20,9 +22,19 @@ Public Class AdminUsuarios
 
     End Sub
 
-    Private Sub CargarUsuarios()
+    Private Sub CargarUsuarios(Optional filtro As String = "")
         Dim controller As New ControllerUsuario
         Dim listaUsuarios As List(Of Usuario) = controller.ObtenerUsuarios()
+
+        If Not String.IsNullOrEmpty(filtro) Then
+            filtro = filtro.ToLower()
+
+            listaUsuarios = listaUsuarios.
+            Where(Function(u) u.NombreUsuario.ToLower().Contains(filtro) _
+                            Or u.Nombre.ToLower().Contains(filtro) _
+                            Or u.Email.ToLower().Contains(filtro)).
+            ToList()
+        End If
 
         gvUsuarios.DataSource = listaUsuarios
         gvUsuarios.DataBind()
@@ -36,11 +48,13 @@ Public Class AdminUsuarios
         objUsuario.Nombre = txtNombre.Text.Trim()
         objUsuario.Email = txtCorreo.Text.Trim()
         objUsuario.NumeroTelefono = txtTelefono.Text.Trim()
+
         If Not String.IsNullOrEmpty(hdnUsuarioID.Value) Then
             objUsuario.UsuarioID = Convert.ToInt32(hdnUsuarioID.Value)
 
             If String.IsNullOrWhiteSpace(tbPassword.Text) Then
-                objUsuario.PasswordHash = Nothing
+                Dim usuarioActual = controllerUsuario.ObtenerUsuario(objUsuario.UsuarioID)
+                objUsuario.PasswordHash = usuarioActual.PasswordHash
             Else
                 objUsuario.PasswordHash = Securyty.Cifrar(tbPassword.Text)
             End If
@@ -56,17 +70,13 @@ Public Class AdminUsuarios
             objUsuario.FechaAlta = Nothing
         End If
 
-        If Not String.IsNullOrEmpty(hdnUsuarioID.Value) Then
-            objUsuario.UsuarioID = Convert.ToInt32(hdnUsuarioID.Value)
-        Else
-            objUsuario.UsuarioID = 0
-        End If
+
 
         If objUsuario.UsuarioID = 0 Then
             Dim nuevoID As Integer = controllerUsuario.AgregarUsuario(objUsuario)
             hdnUsuarioID.Value = nuevoID.ToString()
         Else
-            controllerUsuario.AtualizarUsuario(objUsuario)
+            controllerUsuario.ActualizarUsuario(objUsuario)
         End If
 
 
@@ -134,7 +144,37 @@ Public Class AdminUsuarios
         txtTelefono.Text = ""
         tbPassword.Text = String.Empty
         ddlTipoPersona.SelectedIndex = 0
-        txtFechaAlta.Text = ""
+        txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
     End Sub
 
+    Protected Sub btnCancelar_Click(sender As Object, e As EventArgs)
+        LimpiarFormulario()
+        pnlAgregar.Visible = False
+        pnlTabla.Visible = True
+        pnlAdminUsuarios.Visible = True
+    End Sub
+
+    <WebMethod()>
+    Public Shared Function VerificarCorreoExistente(correo As String, usuarioId As Integer) As Boolean
+
+        If usuarioId < 0 Then usuarioId = 0
+
+        If String.IsNullOrEmpty(correo) OrElse Not correo.Contains("@") Then
+            Return False
+        End If
+
+        Dim controller As New ControllerUsuario()
+        Dim usuario = controller.ObtenerUsuarioPorEmail(correo)
+
+        If usuario IsNot Nothing AndAlso usuario.UsuarioID <> usuarioId Then
+            Return True
+        End If
+
+        Return False
+    End Function
+
+    Protected Sub txtBuscarUsuarios_TextChanged(sender As Object, e As EventArgs) Handles txtBuscarUsuarios.TextChanged
+        Dim texto As String = txtBuscarUsuarios.Text.Trim()
+        CargarUsuarios(texto)
+    End Sub
 End Class

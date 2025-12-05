@@ -39,6 +39,8 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <asp:Label ID="lblMensaje" runat="server"></asp:Label>
+        <asp:Label ID="lblDatos" runat="server"></asp:Label>
         <div class="centered" style="height: auto; padding-top: 40px;">
             <div class="welcome-text">
                 GRACIAS POR TU  COMPRA 😊 

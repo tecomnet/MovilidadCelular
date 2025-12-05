@@ -72,4 +72,21 @@ Public Class ControllerDistribuidor
         End Try
         Return objDistribuidor
     End Function
+    Public Function ObtenerDistribuidorPorEmail(ByVal email As String) As Distribuidor
+        Dim controller As New Controller
+        Dim objDistribuidor As New Distribuidor
+        objDistribuidor.EmailContacto = email
+        Try
+            Dim dt As New DataSet
+            dt = controller.TransactionsDistribuidores(Of DataSet)(6, objDistribuidor)
+
+            For Each dr As DataRow In dt.Tables(0).Rows
+                objDistribuidor = ConvertObject.Distribuidor(dr)
+            Next
+        Catch ex As Exception
+            Return objDistribuidor
+        End Try
+        Return objDistribuidor
+    End Function
+
 End Class

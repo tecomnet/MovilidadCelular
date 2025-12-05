@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="vb" UnobtrusiveValidationMode="None" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminUsuarios.aspx.vb" Inherits="WebAdmin.AdminUsuarios" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     <style>
@@ -57,49 +58,58 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" />
 
-    <asp:Panel ID="pnlAdminUsuarios" runat="server" CssClass="container mt-5">
+    <asp:Panel ID="pnlAdminUsuarios" runat="server" CssClass="container mt-3">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Administración de Usuarios</h2>
             <asp:Button ID="btnAgregarUsuario" runat="server" CssClass="btn btn-success btn-add"
                 Text="+ Agregar Usuario" OnClick="btnAgregarUsuario_Click" />
         </div>
-
+        <div class="mb-4">
+        <asp:TextBox ID="txtBuscarUsuarios" runat="server" CssClass="form-control"
+            placeholder="🔍 Buscar usuarios..." AutoPostBack="true"
+            OnTextChanged="txtBuscarUsuarios_TextChanged"
+            onkeyup="iniciarBusqueda();">
+        </asp:TextBox>
+            </div>
     </asp:Panel>
 
     <asp:Panel ID="pnlTabla" runat="server" Visible="True">
-        <div style="overflow-x: auto; width: 100%;">
-            <asp:GridView ID="gvUsuarios" runat="server" CssClass="table table-hover align-middle"
-                AutoGenerateColumns="False" DataKeyNames="UsuarioID">
-                <Columns>
-                    <asp:BoundField DataField="UsuarioID" HeaderText="ID" />
-                    <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
-                    <asp:BoundField DataField="Email" HeaderText="Correo" />
-                    <asp:BoundField DataField="NumeroTelefono" HeaderText="Número de Teléfono" />
-                    <asp:BoundField DataField="TipoUsuario" HeaderText="Tipo Usuario" />
-                    <asp:BoundField DataField="FechaAlta" HeaderText="Fecha Alta" DataFormatString="{0:dd/MM/yyyy}" />
-                    <asp:BoundField DataField="UltimoLogin" HeaderText="Último inicio de sesión" DataFormatString="{0:dd/MM/yyyy}" />
-                    <asp:BoundField DataField="FechaUltimaActualizacion" HeaderText="Fecha última actualización" DataFormatString="{0:dd/MM/yyyy}" />
-                    <asp:BoundField DataField="fechaBaja" HeaderText="Fecha Baja" DataFormatString="{0:dd/MM/yyyy}" />
-                    <asp:TemplateField HeaderText="Acciones">
-                        <ItemTemplate>
-                            <asp:LinkButton ID="btnEditarUsuario" runat="server"
-                                CssClass="bi bi-pencil action-icon edit"
-                                CommandName="EditarUsuario"
-                                CommandArgument='<%# Eval("UsuarioID") %>'
-                                ToolTip="Editar Usuario" />
-                            <asp:LinkButton ID="btnBajaUsuario" runat="server"
-                                CssClass="bi bi-person-x-fill action-icon delete"
-                                CommandName="BajaUsuario"
-                                CommandArgument='<%# Eval("UsuarioID") %>'
-                                OnClientClick="return confirm('¿Seguro que deseas dar de baja este cliente?');"
-                                ToolTip="Dar de baja usuario" />
+        <div class="card card-shadow p-4 mb-4">
+            <div style="overflow-x: auto; width: 100%;">
+                <asp:GridView ID="gvUsuarios" runat="server" CssClass="table table-hover align-middle"
+                    HeaderStyle-CssClass="table-dark"
+                    AutoGenerateColumns="False" DataKeyNames="UsuarioID">
+                    <Columns>
+                        <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
+                        <asp:BoundField DataField="Email" HeaderText="Correo" />
+                        <asp:BoundField DataField="NumeroTelefono" HeaderText="Número de Teléfono" />
+                        <asp:BoundField DataField="TipoUsuario" HeaderText="Tipo Usuario" />
+                        <asp:BoundField DataField="FechaAlta" HeaderText="Fecha Alta" DataFormatString="{0:dd/MM/yyyy}" />
+                        <asp:BoundField DataField="UltimoLogin" HeaderText="Último inicio de sesión" DataFormatString="{0:dd/MM/yyyy}" />
+                        <asp:BoundField DataField="FechaUltimaActualizacion" HeaderText="Fecha última actualización" DataFormatString="{0:dd/MM/yyyy}" />
+                        <asp:BoundField DataField="fechaBaja" HeaderText="Fecha Baja" DataFormatString="{0:dd/MM/yyyy}" />
+                        <asp:TemplateField HeaderText="Acciones">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="btnEditarUsuario" runat="server"
+                                    CssClass="bi bi-pencil action-icon edit"
+                                    CommandName="EditarUsuario"
+                                    CommandArgument='<%# Eval("UsuarioID") %>'
+                                    ToolTip="Editar Usuario" />
+                                <asp:LinkButton ID="btnBajaUsuario" runat="server"
+                                    CssClass="bi bi-person-x-fill action-icon delete"
+                                    CommandName="BajaUsuario"
+                                    CommandArgument='<%# Eval("UsuarioID") %>'
+                                    OnClientClick="return confirm('¿Seguro que deseas dar de baja este cliente?');"
+                                    ToolTip="Dar de baja usuario" />
 
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+            </div>
         </div>
     </asp:Panel>
 
@@ -128,23 +138,23 @@
                 <label class="form-label">Correo</label>
                 <asp:TextBox ID="txtCorreo" runat="server" TextMode="Email" CssClass="form-control" />
                 <asp:RequiredFieldValidator ID="rfvCorreo" runat="server"
-                    ControlToValidate="txtCorreo"
-                    ErrorMessage="El Correo es obligatorio."
-                    ForeColor="Red" Display="Dynamic" />
+                    ControlToValidate="txtCorreo" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
+
                 <asp:RegularExpressionValidator ID="revCorreo" runat="server"
                     ControlToValidate="txtCorreo"
-                    ErrorMessage="Ingrese un correo válido."
-                    ValidationExpression="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
-                    ForeColor="Red" Display="Dynamic" />
-           <div class="row mb-3">
-                </div>
-            <div class="col-md-2">
-                Contraseña:
+                    ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                    ErrorMessage="Formato inválido" CssClass="text-danger" Display="Dynamic" />
 
-            </div>
-            <div class="col-md-">
-                <asp:TextBox ID="tbPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>               
-            </div>
+                <span id="spanCorreoExistente"></span>
+                <div class="row mb-3">
+                </div>
+                <div class="col-md-2">
+                    Contraseña:
+
+                </div>
+                <div class="col-md-">
+                    <asp:TextBox ID="tbPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Número de Télefono</label>
@@ -168,17 +178,59 @@
                     ErrorMessage="Debe seleccionar una opción."
                     ForeColor="Red" Display="Dynamic" />
             </div>
-            <div class="mb-3">
+            <div class="col-lg-12 mb-3">
                 <label class="form-label">Fecha de Alta</label>
-                <asp:TextBox ID="txtFechaAlta" runat="server" TextMode="Date" CssClass="form-control" />
-                <asp:RequiredFieldValidator ID="rfvFecchaAlta" runat="server"
-                    ControlToValidate="txtFechaAlta"
-                    ErrorMessage="La fecha es obligatoria."
-                    ForeColor="Red" Display="Dynamic" />
+                <asp:TextBox ID="txtFechaAlta" runat="server" CssClass="form-control" TextMode="SingleLine" ReadOnly="True" />
             </div>
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
-            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" />
+            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" CausesValidation="false" OnClick="btnCancelar_Click" />
         </div>
     </asp:Panel>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#<%= txtCorreo.ClientID %>").on('keyup blur', function () {
+
+                var email = $(this).val();
+                var usuarioId = parseInt($("#<%= hdnUsuarioID.ClientID %>").val()) || 0;
+
+                if (email.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "AdminUsuarios.aspx/VerificarCorreoExistente",
+                        data: JSON.stringify({ correo: email, usuarioId: usuarioId }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.d) {
+                                $("#spanCorreoExistente").text("❌ Este correo ya está registrado. Intenta con otro.")
+                                    .removeClass("text-success")
+                                    .addClass("text-danger");
+                            } else {
+                                $("#spanCorreoExistente").text("✅ Correo disponible.")
+                                    .removeClass("text-danger")
+                                    .addClass("text-success");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log("Error al validar el email: " + error);
+                        }
+                    });
+                } else {
+                    $("#spanCorreoExistente").text("");
+                }
+            });
+        });
+    </script>
+    <script>
+        let typingTimer;
+        const delay = 700;
+
+        function iniciarBusqueda() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function () {
+                __doPostBack('<%= txtBuscarUsuarios.UniqueID %>', '');
+            }, delay);
+        }
+    </script>
 
 </asp:Content>

@@ -3,65 +3,82 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="../../Css/bootstrap.css" />
     <script src="../../Scripts/js/bootstrap.js"></script>
-    <style>
-        .container-change {
-            padding: 24px;
-            max-width: 500px;
-            margin: auto;
-        }
+<style>
+    .container-change {
+        padding: 24px;
+        max-width: 500px;
+        margin: auto;
+    }
 
-        .card-form {
-            border-radius: 16px;
-            padding: 20px;
-            background-color: #1a3b6d;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+    .card-form {
+        border-radius: 16px;
+        padding: 20px;
+        background-color: #1a3b6d;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 
-        .card-header {
-            background-color: #1976d2;
-            color: white;
-            font-weight: 600;
-            font-size: 18px;
-            text-align: center;
-            border-radius: 12px 12px 0 0;
-            padding: 12px;
-        }
+    .card-header {
+        background-color: #1976d2;
+        color: white;
+        font-weight: 600;
+        font-size: 18px;
+        text-align: center;
+        border-radius: 12px 12px 0 0;
+        padding: 12px;
+    }
 
-        .form-label {
-            font-weight: 600;
-            margin-top: 12px;
-            color: white;
-        }
+    .form-label {
+        font-weight: 600;
+        margin-top: 12px;
+        color: white;
+        display: block; 
+        margin-top: 12px;
+    }
 
-        .form-control {
-            border-radius: 12px;
-            padding: 10px;
-            background-color: #ffffff;
-        }
+    .form-control {
+        border-radius: 12px;
+        padding: 10px;
+        background-color: #ffffff;
+    }
 
-        .btn-submit {
-            background-color: #1976d2;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            padding: 12px;
-            margin-top: 16px;
-            border-radius: 12px;
-            border: none;
-        }
+    .btn-submit {
+        background-color: #1976d2;
+        color: white;
+        font-weight: bold;
+        width: 100%;
+        padding: 12px;
+        margin-top: 16px;
+        border-radius: 12px;
+        border: none;
+    }
 
-        .footer-text {
-            text-align: center;
-            margin-top: 20px;
-            color: white;
-            font-weight: bold;
-        }
+    .footer-text {
+        text-align: center;
+        margin-top: 20px;
+        color: white;
+        font-weight: bold;
+    }
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(to bottom, #145991, #0a3472);
-        }
-    </style>
+    body {
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #145991, #0a3472);
+    }
+
+    .validator {
+        display: block;
+        margin-top: 4px;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .position-relative .form-control {
+        padding-right: 2.5rem;
+    }
+
+    .position-relative span {
+        right: 0.75rem;
+    }
+</style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -73,7 +90,6 @@
             <asp:TextBox ID="txtContrasenaActual" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
             <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"
                 onclick="togglePassword('txtContrasenaActual','eyeIconActual')">
-                <i id="eyeIconActual" class="bi bi-eye"></i>
             </span>
             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtContrasenaActual" ErrorMessage="La contraseña es obligatoria" Display="Dynamic" ForeColor="Red" />
             <asp:RegularExpressionValidator ID="revContrasena" runat="server" ControlToValidate="txtContrasenaActual" ValidationExpression="^.{6,}$" ErrorMessage="La contraseña debe de tener al menos  6 caracteres" Display="Dynamic" ForeColor="Red" />
@@ -82,7 +98,6 @@
             <asp:TextBox ID="txtNuevaContrasena" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
             <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"
                 onclick="togglePassword('txtContrasenaActual','eyeIconActual')">
-                <i id="eyeIconActual" class="bi bi-eye"></i>
             </span>
             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtNuevaContrasena" ErrorMessage="La contraseña es obligatoria" Display="Dynamic" ForeColor="Red" />
             <asp:RegularExpressionValidator ID="revNuevaContrasena" runat="server" ControlToValidate="txtNuevaContrasena" ValidationExpression="^.{6,}$" ErrorMessage="La contraseña debe de tener al menos  6 caracteres" Display="Dynamic" ForeColor="Red" />
@@ -91,7 +106,6 @@
             <asp:TextBox ID="txtConfirmarContrasena" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
             <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"
                 onclick="togglePassword('txtContrasenaActual','eyeIconActual')">
-                <i id="eyeIconActual" class="bi bi-eye"></i>
             </span>
             <asp:RequiredFieldValidator runat="server" ControlToValidate="txtConfirmarContrasena" ErrorMessage="La contraseña es obligatoria" Display="Dynamic" ForeColor="Red" />
             <asp:RegularExpressionValidator ID="revConfirmarContrasena" runat="server" ControlToValidate="txtConfirmarContrasena" ValidationExpression="^.{6,}$" ErrorMessage="La contraseña debe de tener al menos  6 caracteres" Display="Dynamic" ForeColor="Red" />
@@ -114,5 +128,6 @@
                     Visible="False" />
 
             </div>
+        </div>
         </div>
 </asp:Content>

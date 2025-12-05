@@ -25,6 +25,14 @@ Namespace TECOMNET
         Public Property RegimenFiscal As String
         Public Property UsoDeComprobante As String
         Public Property FechaBaja As DateTime?
+        Public Property Calle As String
+        Public Property NumeroInterior As String
+        Public Property NumeroExterior As String
+        Public Property Localidad As String
+        Public Property CodigoPais As String
+        Public Property CodigoEstado As String
+        Public Property CodigoCiudad As String
+        Public Property SiigoID As String
 
         Public Sub New()
             Me.ClienteId = 0
@@ -50,6 +58,14 @@ Namespace TECOMNET
             Me.RegimenFiscal = String.Empty
             Me.UsoDeComprobante = String.Empty
             Me.FechaBaja = Nothing
+            Me.Calle = String.Empty
+            Me.NumeroInterior = String.Empty
+            Me.NumeroExterior = String.Empty
+            Me.Localidad = String.Empty
+            Me.CodigoPais = String.Empty
+            Me.CodigoEstado = String.Empty
+            Me.CodigoCiudad = String.Empty
+            Me.SiigoID = String.Empty
         End Sub
     End Class
 End Namespace

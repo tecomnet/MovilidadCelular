@@ -13,7 +13,7 @@ Namespace TECOMNET
         Public Property PUK As String
         Public Property Serie As String
         Public Property ClienteId As Integer?
-        Public Property Estado As String ' Activa, Suspendida, Retirada, Idle
+        Public Property Estado As String ' Activa, Suspendida, Retirada, Idle, Suspender/Tráfico, Cancelada
         Public Property FechaActivacion As DateTime?
         Public Property FechaAsignacion As DateTime?
         Public Property FechaVencimiento As DateTime?

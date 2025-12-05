@@ -22,7 +22,7 @@ Public Class login
             Session("UsuarioID") = usuario.UsuarioID
             Session("Nombre") = usuario.Nombre
             Session("Email") = usuario.Email
-            Response.Redirect("~/Views/General/AdminUsuarios.aspx")
+            Response.Redirect("~/Views/General/Inicio.aspx")
         Else
             lblMensaje.Text = "Correo o contraseña incorrectos."
             lblMensaje.CssClass = "alert alert-danger"

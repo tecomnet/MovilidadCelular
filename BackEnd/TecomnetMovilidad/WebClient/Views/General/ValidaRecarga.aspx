@@ -88,7 +88,7 @@
             <div class="success-title">Error al procesar la recarga</div>
         </asp:Panel>
 
-       <%-- <script>
+        <script>
             var countdownEl = document.getElementById('countdown');
             if (countdownEl) {
                 var time = 60;
@@ -103,7 +103,7 @@
             setTimeout(function () {
                 location.reload();
             }, 65000);
-        </script>--%>
+        </script>
     </form>
 </body>
 </html>

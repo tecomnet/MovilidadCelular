@@ -145,4 +145,19 @@ Public Class ControllerSIM
         End Try
         Return exito
     End Function
+
+    Public Function AsignarOferta(simId As Integer, ofertaId As Integer) As Boolean
+        Dim controller As New Controller
+        Dim objSIM As New SIM
+
+        Try
+            objSIM.SIMID = simId
+            objSIM.OfertaId = ofertaId
+
+            controller.TransactionsSIM(Of Integer)(10, objSIM)
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
 End Class

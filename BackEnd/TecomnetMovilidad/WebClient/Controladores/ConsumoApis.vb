@@ -21,6 +21,7 @@ Public Class ConsumoApis
     Public Const urlPostSolicitudCambioContraseña As String = "https://tecomnet.net/movilidad/WebApi/api/Cliente/SolicitudCambioPassword"
     Public Const urlGetRecargaCliente As String = "https://tecomnet.net/movilidad/WebApi/api/Recargas/Cliente/$clienteId"
     Public Const urlGetOfertaID As String = "https://tecomnet.net/movilidad/WebApi/api/Ofertas/$ofertaId"
+    Public Const urlGetResponseObtenerSolicitudPago As String = "https://tecomnet.net/movilidad/WebApi/api/ObtenerSolicitudDePago/"
 
 #Region "POST"
     Public Function GetToken() As MessageResult
@@ -287,7 +288,6 @@ Public Class ConsumoApis
                     client.DefaultRequestHeaders.Add("Authorization", objToken.JSON.Replace("""", ""))
                     Try
                         Dim response As HttpResponseMessage = client.PostAsync(urlPostResponseSolicitudPago, content).Result
-
                         If response.IsSuccessStatusCode Then
                             objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito
                             objectMessageResult.JSON = response.Content.ReadAsStringAsync().Result
@@ -328,6 +328,49 @@ Public Class ConsumoApis
         objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Errors
         objectMessageResult.JSON = "Error desconocido"
         Return objectMessageResult
+    End Function
+    Public Function ObtenerSolicitudPago(orderId As String) As MessageResult
+        Dim objectMessageResult As New MessageResult
+        Try
+            Dim objToken As New MessageResult
+            objToken = GetToken()
+            If objToken.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
+                Using client As New HttpClient()
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("MiAplicacion/1.0 (VB.NET)")
+                    client.DefaultRequestHeaders.Add("Authorization", objToken.JSON.Replace("""", ""))
+
+                    Dim orderIdEncoded As String = Uri.EscapeDataString(orderId)
+                    Dim urlConParametro As String = $"{urlGetResponseObtenerSolicitudPago}{orderIdEncoded}"
+
+                    Try
+                        Dim response As HttpResponseMessage = client.GetAsync(urlConParametro).Result
+
+                        If response.IsSuccessStatusCode Then
+                            objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Exito
+                            objectMessageResult.JSON = response.Content.ReadAsStringAsync().Result
+                            Return objectMessageResult
+                        Else
+                            objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Errors
+                            objectMessageResult.JSON = response.Content.ReadAsStringAsync().Result
+                            Return objectMessageResult
+                        End If
+
+                    Catch ex As Exception
+                        objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Errors
+                        objectMessageResult.JSON = ex.Message
+                        Return objectMessageResult
+                    End Try
+                End Using
+            Else
+                objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Errors
+                objectMessageResult.JSON = "No se generó el token"
+                Return objectMessageResult
+            End If
+        Catch ex As Exception
+            objectMessageResult.ErrorID = Enumeraciones.TipoErroresAPI.Errors
+            objectMessageResult.JSON = ex.Message
+            Return objectMessageResult
+        End Try
     End Function
     Public Function Pago(body As String) As MessageResult
         Dim objectMessageResult As New MessageResult

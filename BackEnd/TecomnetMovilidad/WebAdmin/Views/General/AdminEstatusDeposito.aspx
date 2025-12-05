@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminEstatusDeposito.aspx.vb" Inherits="WebAdmin.AdminEstatusDeposito" %>
+﻿<%@ Page Title="" Language="vb" UnobtrusiveValidationMode="None" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminEstatusDeposito.aspx.vb" Inherits="WebAdmin.AdminEstatusDeposito" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -51,7 +51,7 @@
         .panel-form {
             background-color: #ffffff;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1rem 1.5rem;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
 
@@ -65,7 +65,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <asp:Panel ID="pnlAdminEstatusDeposito" runat="server" CssClass="container mt-5">
+    <asp:Panel ID="pnlAdminEstatusDeposito" runat="server" CssClass="container mt-3">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Administración Estatus Depósito</h2>
             <asp:Button ID="BtnAgregarEstatusDeposito" runat="server" CssClass="btn btn-success btn-add"
@@ -83,23 +83,16 @@
                     OnRowCommand="gvEstatusDeposito_RowCommand">
 
                     <Columns>
-                        <asp:BoundField DataField="EstatusDepositoID" HeaderText="ID" />
                         <asp:BoundField DataField="Estatus" HeaderText="Estatus" />
                         <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
-                        <asp:TemplateField HeaderText="Acciones">
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-CssClass="text-center">
                             <ItemTemplate>
                                 <asp:LinkButton ID="lnkEditar" runat="server"
                                     CommandName="Editar"
                                     CommandArgument='<%# Eval("EstatusDepositoID") %>'
-                                    CssClass="text-primary" ToolTip="Editar">
-                                <i class="bi bi-pencil action-icon edit"></i>
-                                </asp:LinkButton>
-
-                                <asp:LinkButton ID="lnkBaja" runat="server"
-                                    CommandName="DarBaja"
-                                    CommandArgument='<%# Eval("EstatusDepositoID") %>'
-                                    CssClass="text-danger" OnClientClick="return confirm('¿Seguro que deseas dar de baja este estatus?');">
-                                <i class="bi bi-person-x-fill action-icon delete"></i>
+                                    CssClass="btn btn-link p-0 m-0"
+                                    ToolTip="Editar">
+            <i class="bi bi-pencil fs-5 text-primary"></i>
                                 </asp:LinkButton>
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -111,18 +104,23 @@
     </asp:Panel>
     <asp:Panel ID="PnlAgregarEstatusDeposito" runat="server" Visible="False">
         <asp:HiddenField ID="hdnEstatusDeposito" runat="server" />
+        <asp:Label ID="lblMensaje" runat="server" Visible="false" CssClass="alert" />
         <asp:Label ID="lblTitulo" runat="server" CssClass="fs-2 text-dark fw-bold"></asp:Label>
         <div class="card card-shadow p-4 mb-4">
             <div class="mb-3">
                 <label class="form-label">Estatus</label>
                 <asp:TextBox ID="txtEstatus" runat="server" CssClass="form-control" />
+                <asp:RequiredFieldValidator ID="rfvEstatus" runat="server"
+                    ControlToValidate="txtEstatus" ErrorMessage="El campo es requerido" CssClass="text-danger" Display="Dynamic" />
             </div>
             <div class="mb-3">
                 <label class="form-label">Descripción</label>
                 <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" />
+                <asp:RequiredFieldValidator ID="rfvDescrpcion" runat="server"
+                    ControlToValidate="txtDescripcion" ErrorMessage="El campo es requerido" CssClass="text-danger" Display="Dynamic" />
             </div>
         </div>
         <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
-        <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" />
+        <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" CausesValidation="false" OnClick="btnCancelar_Click" />
     </asp:Panel>
 </asp:Content>

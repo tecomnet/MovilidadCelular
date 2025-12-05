@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="MisRecargas.aspx.vb" Inherits="WebClient.MisRecargas" culture="es-MX" %>
+﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="MisRecargas.aspx.vb" Inherits="WebClient.MisRecargas" Culture="es-MX" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="../../Css/bootstrap.css" />
@@ -8,9 +8,11 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(to bottom, #145991, #0a3472);
         }
+
         .container-recargas {
             padding: 20px;
         }
+
         .card-custom {
             background-color: rgba(255,255,255,0.95);
             border-radius: 16px;
@@ -19,6 +21,7 @@
             max-width: 1000px;
             box-shadow: 0 8px 15px rgba(0,0,0,0.3);
         }
+
         .header-card {
             background-color: #145991;
             color: white;
@@ -28,10 +31,12 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+
         .grid-card {
             max-height: 400px;
             overflow: auto;
         }
+
         .footer-text {
             text-align: center;
             font-size: 14px;
@@ -46,9 +51,9 @@
     <div class="container-recargas">
         <div class="card card-custom">
             <div class="header-card">Consulta tus recargas</div>
-            <asp:Panel ID="pnlRecargas" runat="server">
-                <asp:Label ID="lblNoRecargas" runat="server" CssClass="text-center d-block mb-3" 
-                           Text="Aún no hay recargas disponibles" Visible="False"></asp:Label>
+            <asp:Panel ID="pnlRecargas" runat="server">                
+                <asp:Label ID="lblNoRecargas" runat="server" CssClass="text-center d-block mb-3"
+                    Text="Aún no hay recargas disponibles" Visible="False"></asp:Label>
                 <div class="grid-card table-responsive">
                     <asp:GridView ID="gvRecargas" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered table-striped"
                         EmptyDataText="No hay recargas disponibles">
@@ -62,6 +67,6 @@
                     </asp:GridView>
                 </div>
             </asp:Panel>
-            </div>
+        </div>
     </div>
 </asp:Content>
