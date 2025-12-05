@@ -23,13 +23,18 @@ Public Class MisRecargas
 
     Private Sub CargarRecargas(clienteId As Integer)
         Dim api As New ConsumoApis
-        Dim resultado As New MessageResult
-        Dim recargas As New List(Of VisRecarga)
+        Dim resultado As MessageResult
 
         resultado = api.GetRecargasCliente(clienteId)
 
         If resultado.ErrorID = Enumeraciones.TipoErroresAPI.Exito Then
-            recargas = JsonSerializer.Deserialize(Of List(Of VisRecarga))(resultado.JSON)
+
+            If String.IsNullOrWhiteSpace(resultado.JSON) OrElse resultado.JSON = "[]" Then
+                lblNoRecargas.Visible = True
+                Exit Sub
+            End If
+
+            Dim recargas As List(Of VisRecarga) = JsonSerializer.Deserialize(Of List(Of VisRecarga))(resultado.JSON)
             gvRecargas.DataSource = recargas
             gvRecargas.DataBind()
         End If

@@ -41,6 +41,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents btnAgregarDistribuidor As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''Control txtBuscarDistribuidores.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtBuscarDistribuidores As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''Control pnlTabla.
     '''</summary>
     '''<remarks>
@@ -113,6 +122,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents txtRegion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control rfvRegion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvRegion As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control txtNombre.
     '''</summary>
     '''<remarks>
@@ -120,6 +138,15 @@ Partial Public Class AdminDistribuidores
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtNombre As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvNombre.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvNombre As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control txtDireccion.
@@ -149,6 +176,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents txtTelefonoContacto As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control rfvTelefonoContacto.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvTelefonoContacto As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control txtEmailContacto.
     '''</summary>
     '''<remarks>
@@ -156,6 +192,24 @@ Partial Public Class AdminDistribuidores
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtEmailContacto As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvEmail.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvEmail As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''Control revEmail.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents revEmail As Global.System.Web.UI.WebControls.RegularExpressionValidator
 
     '''<summary>
     '''Control txtFechaAlta.
@@ -185,6 +239,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents ddlTipoPersona As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''Control rfvTipoPersona.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvTipoPersona As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control txtDireccionFiscal.
     '''</summary>
     '''<remarks>
@@ -192,6 +255,15 @@ Partial Public Class AdminDistribuidores
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtDireccionFiscal As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvDireccionFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvDireccionFiscal As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control txtPorcentajeComision.
@@ -203,6 +275,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents txtPorcentajeComision As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control rfvPorcentaje.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvPorcentaje As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control txtBanco.
     '''</summary>
     '''<remarks>
@@ -210,6 +291,15 @@ Partial Public Class AdminDistribuidores
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtBanco As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvBanco.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvBanco As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control txtCuenta.
@@ -221,6 +311,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents txtCuenta As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control rfvCuenta.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvCuenta As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control txtBeneficiario.
     '''</summary>
     '''<remarks>
@@ -230,6 +329,15 @@ Partial Public Class AdminDistribuidores
     Protected WithEvents txtBeneficiario As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control rfvBeneficiario.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvBeneficiario As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control ddlTipoDistribuidor.
     '''</summary>
     '''<remarks>
@@ -237,6 +345,15 @@ Partial Public Class AdminDistribuidores
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents ddlTipoDistribuidor As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control rfvTipoDistribuidor.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvTipoDistribuidor As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control btnGuardar.

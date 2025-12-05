@@ -68,6 +68,15 @@ Partial Public Class AdminEstatusDeposito
     Protected WithEvents hdnEstatusDeposito As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''Control lblMensaje.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents lblMensaje As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''Control lblTitulo.
     '''</summary>
     '''<remarks>
@@ -86,6 +95,15 @@ Partial Public Class AdminEstatusDeposito
     Protected WithEvents txtEstatus As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control rfvEstatus.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvEstatus As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''Control txtDescripcion.
     '''</summary>
     '''<remarks>
@@ -93,6 +111,15 @@ Partial Public Class AdminEstatusDeposito
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtDescripcion As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control rfvDescrpcion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents rfvDescrpcion As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control btnGuardar.

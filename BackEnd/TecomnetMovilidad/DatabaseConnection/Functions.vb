@@ -1,4 +1,5 @@
-﻿Imports Models.TECOMNET
+﻿Imports Models
+Imports Models.TECOMNET
 Imports Models.TECOMNET.API
 Imports Models.TECOMNET.Enumeraciones
 Imports System.Security.Cryptography
@@ -31,6 +32,14 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("RegimenFiscal") Then objCliente.RegimenFiscal = IIf(IsDBNull(dr("RegimenFiscal")), "", dr("RegimenFiscal"))
             If dr.Table.Columns.Contains("UsoDeComprobante") Then objCliente.UsoDeComprobante = IIf(IsDBNull(dr("UsoDeComprobante")), "", dr("UsoDeComprobante"))
             If dr.Table.Columns.Contains("FechaBaja") Then objCliente.FechaBaja = IIf(IsDBNull(dr("FechaBaja")), Nothing, dr("FechaBaja"))
+            If dr.Table.Columns.Contains("Calle") Then objCliente.Calle = dr("Calle")
+            If dr.Table.Columns.Contains("NumeroInterior") Then objCliente.NumeroInterior = dr("NumeroInterior")
+            If dr.Table.Columns.Contains("NumeroExterior") Then objCliente.NumeroExterior = dr("NumeroExterior")
+            If dr.Table.Columns.Contains("Localidad") Then objCliente.Localidad = dr("Localidad")
+            If dr.Table.Columns.Contains("CodigoPais") Then objCliente.CodigoPais = dr("CodigoPais")
+            If dr.Table.Columns.Contains("CodigoEstado") Then objCliente.CodigoEstado = dr("CodigoEstado")
+            If dr.Table.Columns.Contains("CodigoCiudad") Then objCliente.CodigoCiudad = dr("CodigoCiudad")
+            If dr.Table.Columns.Contains("SiigoID") Then objCliente.SiigoID = dr("SiigoID")
         Catch ex As Exception
         End Try
         Return objCliente
@@ -142,6 +151,34 @@ Public Class ConvertObject
         Catch ex As Exception
         End Try
         Return objEstatusDeposito
+    End Function
+    Public Shared Function MetodoPago(ByVal dr As DataRow) As MetodoPago
+        Dim objMetodoPago As New MetodoPago
+        Try
+            If dr.Table.Columns.Contains("MetodoPagoID") Then objMetodoPago.MetodoPagoID = dr("MetodoPagoID")
+            If dr.Table.Columns.Contains("NombreMetodo") Then objMetodoPago.NombreMetodo = dr("NombreMetodo")
+            If dr.Table.Columns.Contains("Descripcion") Then objMetodoPago.Descripcion = dr("Descripcion")
+        Catch ex As Exception
+        End Try
+        Return objMetodoPago
+    End Function
+    Public Shared Function Portabilidad(ByVal dr As DataRow) As Portabilidad
+        Dim objPortabilidad As New Portabilidad
+        Try
+            If dr.Table.Columns.Contains("PortabilidadID") Then objPortabilidad.PortabilidadID = dr("PortabilidadID")
+            If dr.Table.Columns.Contains("MSISDN_Transitorio") Then objPortabilidad.MSISDN_Transitorio = dr("MSISDN_Transitorio")
+            If dr.Table.Columns.Contains("MSISDN") Then objPortabilidad.MSISDN = dr("MSISDN")
+            If dr.Table.Columns.Contains("CompaniaOrigen") Then objPortabilidad.CompaniaOrigen = dr("CompaniaOrigen")
+            If dr.Table.Columns.Contains("Estatus") Then objPortabilidad.Estatus = dr("Estatus")
+            If dr.Table.Columns.Contains("FechaRegistro") Then objPortabilidad.FechaRegistro = IIf(IsDBNull(dr("FechaRegistro")), Nothing, dr("FechaRegistro"))
+            If dr.Table.Columns.Contains("FechaTermino") Then objPortabilidad.FechaTermino = IIf(IsDBNull(dr("FechaTermino")), Nothing, dr("FechaTermino"))
+            If dr.Table.Columns.Contains("FechaCancelacion") Then objPortabilidad.FechaCancelacion = IIf(IsDBNull(dr("FechaCancelacion")), Nothing, dr("FechaCancelacion"))
+            If dr.Table.Columns.Contains("FechaRechazo") Then objPortabilidad.FechaRechazo = IIf(IsDBNull(dr("FechaRechazo")), Nothing, dr("FechaRechazo"))
+            If dr.Table.Columns.Contains("TipoPortabilidad") Then objPortabilidad.TipoPortabilidad = dr("TipoPortabilidad")
+            If dr.Table.Columns.Contains("Response") Then objPortabilidad.Response = dr("Response")
+        Catch ex As Exception
+        End Try
+        Return objPortabilidad
     End Function
     Public Shared Function SolicitudDePago(ByVal dr As DataRow) As SolicitudDePago
         Dim objSolicitudDePago As New SolicitudDePago

@@ -51,7 +51,8 @@
             </div>         
 
             <div class="d-flex gap-2 justify-content-center mt-3">
-                <asp:Button ID="btnPagar" runat="server" Text="Pagar" CssClass="btn btn-primary" OnClick="btnPagar_Click" />
+                <asp:Button ID="btnPagar" runat="server" Text="Pagar" CssClass="btn btn-primary" OnClick="btnPagar_Click" />            
+                <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-danger" OnClick="btnCancelar_Click" />
             </div>
         </div>
 
@@ -61,7 +62,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalPagoLabel">Pago Seguro</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="cerrarYVolver();" ></button>
                         </div>
                         <div class="modal-body">
                             <iframe id="iframePago" runat="server" style="width: 100%; height: 400px; border: none;"></iframe>
@@ -71,12 +72,19 @@
             </div>
         </asp:Panel>
 
-        <script type="text/javascript">
-            function abrirModal() {
-                var myModal = new bootstrap.Modal(document.getElementById('modalPago'));
-                myModal.show();
-            }
-        </script>
+       <script type="text/javascript">
+           function abrirModal() {
+               var myModal = new bootstrap.Modal(document.getElementById('modalPago'));
+               myModal.show();
+           }
+
+           function cerrarYVolver() {
+               var myModalEl = document.getElementById('modalPago');
+               var modal = bootstrap.Modal.getInstance(myModalEl);
+               modal.hide();
+               window.location.href = '<%= ResolveUrl("~/Views/Compras/Views/Planes/ContratarPlan.aspx") %>';
+           }
+       </script>
     </form>
 </body>
 </html>

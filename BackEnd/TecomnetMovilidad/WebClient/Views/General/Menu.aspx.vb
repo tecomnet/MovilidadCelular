@@ -80,12 +80,12 @@ Public Class Menu
             objOrderId = resultado.JSON
         End If
 
-        'Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
-        'Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
-        'Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
+        Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
+        Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
+        Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
 
-        'Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx?token={tokenBase64}"
-        Dim urlExito As String = "https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx"
+        Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx?token={tokenBase64}"
+        'Dim urlExito As String = "https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx"
 
         Dim bodyLkl = New With {
         .amount = precio,
@@ -96,7 +96,7 @@ Public Class Menu
         .commerceName = "TECOMNET",
         .supportEmail = "recargas@tecomnet.mx",
         .description = "Recarga " & ofertaNueva.Oferta,
-        .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga",
+        .response_url = "https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/",
         .redirectUrl = urlExito,
         .order_id = objOrderId,
         .origin = "ecommerce",

@@ -536,7 +536,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
 
                     child: const Text(
-                      'Recargar Saldo',
+                      'Recargar',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

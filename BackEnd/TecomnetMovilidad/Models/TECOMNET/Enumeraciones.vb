@@ -67,4 +67,9 @@
         Cambio = 3
         Renovacion = 4
     End Enum
+    Public Enum TipoPortabilidad
+        Api = 1
+        Manual = 2
+        Batch = 3
+    End Enum
 End Namespace

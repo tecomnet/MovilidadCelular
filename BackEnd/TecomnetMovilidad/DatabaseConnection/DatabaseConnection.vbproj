@@ -99,7 +99,9 @@
     <Compile Include="ControllerCliente.vb" />
     <Compile Include="ControllerDistribuidor.vb" />
     <Compile Include="ControllerEstatusDeposito.vb" />
+    <Compile Include="ControllerMetodoPago.vb" />
     <Compile Include="ControllerOferta.vb" />
+    <Compile Include="ControllerPortabilidad.vb" />
     <Compile Include="ControllerRecarga.vb" />
     <Compile Include="ControllerSIM.vb" />
     <Compile Include="ControllerSolicitudDePago.vb" />

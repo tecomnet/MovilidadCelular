@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Web.Services
 Imports DatabaseConnection
 Imports Models.TECOMNET
 Imports Models.TECOMNET.Enumeraciones
@@ -9,6 +10,7 @@ Public Class AdminDistribuidores
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
             CargarDistribuidores()
+            txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
         End If
     End Sub
 
@@ -16,11 +18,20 @@ Public Class AdminDistribuidores
         pnlTabla.Visible = False
         pnlAgregar.Visible = True
         pnlAdminDistribuidores.Visible = False
+        LimpiarFormulario()
     End Sub
 
-    Private Sub CargarDistribuidores()
+    Private Sub CargarDistribuidores(Optional filtro As String = "")
         Dim controller As New ControllerDistribuidor
         Dim listaDistribuidores As List(Of Distribuidor) = controller.GetDistribuidor()
+        If Not String.IsNullOrEmpty(filtro) Then
+            filtro = filtro.ToLower()
+
+            listaDistribuidores = listaDistribuidores.
+            Where(Function(u) u.Nombre.ToLower().Contains(filtro) _
+                            Or u.NombreContacto.ToLower().Contains(filtro)).
+            ToList()
+        End If
         gvDistribuidores.DataSource = listaDistribuidores
         gvDistribuidores.DataBind()
     End Sub
@@ -30,18 +41,26 @@ Public Class AdminDistribuidores
         Dim objDistribuidor As New Distribuidor
 
         objDistribuidor.DistribuidorID = If(String.IsNullOrEmpty(hdnDistribuidorID.Value), 0, Convert.ToInt32(hdnDistribuidorID.Value))
-        objDistribuidor.Region = txtRegion.Text
+        objDistribuidor.Region = If(String.IsNullOrEmpty(txtRegion.Text), 0, Convert.ToInt32(txtRegion.Text))
         objDistribuidor.Nombre = txtNombre.Text
         objDistribuidor.Direccion = txtDireccion.Text
         objDistribuidor.NombreContacto = txtNombreContacto.Text
         objDistribuidor.TelefonoContacto = txtTelefonoContacto.Text
         objDistribuidor.EmailContacto = txtEmailContacto.Text
-        objDistribuidor.FechaAlta = txtFechaAlta.Text
+        If Not String.IsNullOrWhiteSpace(txtFechaAlta.Text) Then
+            objDistribuidor.FechaAlta = Date.Parse(txtFechaAlta.Text)
+        Else
+            objDistribuidor.FechaAlta = DateTime.Now
+        End If
 
         objDistribuidor.RFC = txtRFC.Text
         objDistribuidor.TipoPersona = CType(Convert.ToInt32(ddlTipoPersona.SelectedValue), TipoPersona)
         objDistribuidor.DireccionFiscal = txtDireccionFiscal.Text
-        objDistribuidor.PorcentajeComision = txtPorcentajeComision.Text
+        If Not String.IsNullOrWhiteSpace(txtPorcentajeComision.Text) Then
+            objDistribuidor.PorcentajeComision = Convert.ToDecimal(txtPorcentajeComision.Text)
+        Else
+            objDistribuidor.PorcentajeComision = 0D
+        End If
         objDistribuidor.Banco = txtBanco.Text
         objDistribuidor.Cuenta = txtCuenta.Text
         objDistribuidor.Beneficiario = txtBeneficiario.Text
@@ -64,6 +83,7 @@ Public Class AdminDistribuidores
         End If
 
         pnlAgregar.Visible = False
+        pnlTabla.Visible = True
     End Sub
 
     Private Sub gvDistribuidores_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvDistribuidores.RowCommand
@@ -126,5 +146,57 @@ Public Class AdminDistribuidores
             lblMensaje.CssClass = "alert alert-danger"
             lblMensaje.Visible = True
         End Try
+    End Sub
+
+    Protected Sub btnCancelar_Click(sender As Object, e As EventArgs)
+        pnlAgregar.Visible = False
+        pnlTabla.Visible = True
+        pnlAdminDistribuidores.Visible = True
+        LimpiarFormulario()
+    End Sub
+
+    Private Sub LimpiarFormulario()
+        hdnDistribuidorID.Value = ""
+        txtRegion.Text = ""
+        txtNombre.Text = ""
+        txtDireccion.Text = ""
+        txtNombreContacto.Text = ""
+        txtTelefonoContacto.Text = ""
+        txtEmailContacto.Text = ""
+        txtRFC.Text = ""
+        txtDireccionFiscal.Text = ""
+        txtPorcentajeComision.Text = ""
+        txtBanco.Text = ""
+        txtCuenta.Text = ""
+        txtBeneficiario.Text = ""
+        txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
+
+        If ddlTipoPersona.Items.Count > 0 Then
+            ddlTipoPersona.SelectedIndex = 0
+        End If
+        If ddlTipoDistribuidor.Items.Count > 0 Then
+            ddlTipoDistribuidor.SelectedIndex = 0
+        End If
+
+        lblError.Text = ""
+        lblMensaje.Text = ""
+        lblMensaje.Visible = False
+    End Sub
+
+    <WebMethod()>
+    Public Shared Function VerificarCorreoExistente(correo As String, distribuidorId As Integer) As Boolean
+        Dim controller As New ControllerDistribuidor()
+        Dim distribuidor = controller.ObtenerDistribuidorPorEmail(correo)
+
+        If distribuidor IsNot Nothing AndAlso distribuidor.DistribuidorID <> distribuidorId Then
+            Return True
+        End If
+
+        Return False
+    End Function
+
+    Protected Sub txtBuscarDistribuidores_TextChanged(sender As Object, e As EventArgs) Handles txtBuscarDistribuidores.TextChanged
+        Dim texto As String = txtBuscarDistribuidores.Text.Trim()
+        CargarDistribuidores(texto)
     End Sub
 End Class

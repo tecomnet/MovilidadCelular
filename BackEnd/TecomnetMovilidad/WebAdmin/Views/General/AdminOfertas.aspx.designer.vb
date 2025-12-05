@@ -32,6 +32,15 @@ Partial Public Class AdminOfertas
     Protected WithEvents btnAgregarOfertas As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''Control txtBuscarOfertas.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtBuscarOfertas As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''Control ddlFiltroTipoOferta.
     '''</summary>
     '''<remarks>
@@ -275,15 +284,6 @@ Partial Public Class AdminOfertas
     Protected WithEvents txtDescripcion As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control rfvDescripcion.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvDescripcion As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
     '''Control txtDatosMB.
     '''</summary>
     '''<remarks>
@@ -453,15 +453,6 @@ Partial Public Class AdminOfertas
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtFechaAlta As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control rfvFechaAlta.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvFechaAlta As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''Control btnGuardar.

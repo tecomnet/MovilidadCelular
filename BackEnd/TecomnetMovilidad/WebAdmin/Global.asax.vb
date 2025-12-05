@@ -34,15 +34,14 @@ Public Class Global_asax
         Dim ctx As HttpContext = HttpContext.Current
 
         If ctx.Session IsNot Nothing AndAlso ctx.Session("UsuarioID") Is Nothing Then
-            Dim loginPath As String = "/views/account/login.aspx"
             Dim currentPath As String = ctx.Request.Url.AbsolutePath.ToLower()
 
-            If currentPath <> loginPath Then
-                Server.ClearError()
-                Response.Clear()
-                FormsAuthentication.RedirectToLoginPage()
+            ' Evitar redirección si ya estás en login.aspx o si se trata de recursos estáticos
+            If Not currentPath.Contains("/login.aspx") AndAlso Not currentPath.Contains(".axd") AndAlso Not currentPath.Contains(".css") AndAlso Not currentPath.Contains(".js") Then
+                ctx.Response.Redirect("~/Views/Account/Login.aspx?ReturnUrl=" & HttpUtility.UrlEncode(ctx.Request.RawUrl))
             End If
         End If
     End Sub
+
 
 End Class

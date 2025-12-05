@@ -130,9 +130,12 @@
     <Content Include="Views\General\AdminEstatusDeposito.aspx" />
     <Content Include="Views\General\AdminMetodoPago.aspx" />
     <Content Include="Views\General\AdminOfertas.aspx" />
+    <Content Include="Views\General\AdminPortabilidad.aspx" />
+    <Content Include="Views\General\AdminReportes.aspx" />
     <Content Include="Views\General\AdminSIMs.aspx" />
     <Content Include="Views\General\AdminTickets.aspx" />
     <Content Include="Views\General\AdminUsuarios.aspx" />
+    <Content Include="Views\General\Inicio.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +214,20 @@
       <DependentUpon>AdminOfertas.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Views\General\AdminPortabilidad.aspx.designer.vb">
+      <DependentUpon>AdminPortabilidad.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminPortabilidad.aspx.vb">
+      <DependentUpon>AdminPortabilidad.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\AdminReportes.aspx.designer.vb">
+      <DependentUpon>AdminReportes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\AdminReportes.aspx.vb">
+      <DependentUpon>AdminReportes.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Views\General\AdminSIMs.aspx.designer.vb">
       <DependentUpon>AdminSIMs.aspx</DependentUpon>
     </Compile>
@@ -230,6 +247,13 @@
     </Compile>
     <Compile Include="Views\General\AdminUsuarios.aspx.vb">
       <DependentUpon>AdminUsuarios.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Views\General\Inicio.aspx.designer.vb">
+      <DependentUpon>Inicio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\Inicio.aspx.vb">
+      <DependentUpon>Inicio.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>

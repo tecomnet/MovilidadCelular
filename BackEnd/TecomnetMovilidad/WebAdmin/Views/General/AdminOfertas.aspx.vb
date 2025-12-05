@@ -11,38 +11,30 @@ Public Class AdminOfertas
             pnlAdminOfertas.Visible = True
             pnlTabla.Visible = True
             pnlAgregar.Visible = False
+            txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
         End If
     End Sub
 
     Protected Sub btnAgregarOfertas_Click(sender As Object, e As EventArgs)
-        hdnOfertaId.Value = ""
-        txtOferta.Text = ""
-        txtDescripcion.Text = ""
-        txtOfertaIdAltan.Text = ""
-        txtHomologacioId.Text = ""
-        ddlTipoOferta.SelectedIndex = 0
-        ddlTipoOferta_SelectedIndexChanged(Nothing, Nothing)
-        txtPrecioRecarga.Text = ""
-        txtPrecioAnual.Text = ""
-        txtPrecioMensual.Text = ""
-        txtDatosMB.Text = ""
-        txtMinutos.Text = ""
-        txtSms.Text = ""
-        txtValidezDias.Text = ""
-        ddlAplicaRoaming.SelectedIndex = 0
-        ddlTarifaPrimaria.SelectedIndex = 0
-        ddlRedesSociales.SelectedIndex = 0
-        txtFechaAlta.Text = ""
-
         pnlTabla.Visible = False
         pnlAgregar.Visible = True
         pnlAdminOfertas.Visible = False
+        LimpiarFormulario()
     End Sub
 
 
-    Private Sub CargarOfertas()
+    Private Sub CargarOfertas(Optional filtro As String = "")
         Dim controller As New ControllerOferta
         Dim listaOferta As List(Of Oferta) = controller.ObtenerOfertas()
+
+        If Not String.IsNullOrEmpty(filtro) Then
+            filtro = filtro.ToLower()
+
+            listaOferta = listaOferta.
+            Where(Function(u) u.Oferta.ToLower().Contains(filtro) _
+                            Or u.OfferIDAltan.ToLower().Contains(filtro)).
+            ToList()
+        End If
 
         Dim tipoSeleccionado As Integer = Convert.ToInt32(ddlFiltroTipoOferta.SelectedValue)
 
@@ -171,5 +163,40 @@ Public Class AdminOfertas
             End If
             lblMensaje.Visible = True
         End If
+    End Sub
+
+    Protected Sub btnCancelar_Click(sender As Object, e As EventArgs)
+        pnlAgregar.Visible = False
+        pnlTabla.Visible = True
+        pnlAdminOfertas.Visible = True
+        LimpiarFormulario()
+    End Sub
+    Private Sub LimpiarFormulario()
+        hdnOfertaId.Value = ""
+        txtOferta.Text = ""
+        txtDescripcion.Text = ""
+        txtOfertaIdAltan.Text = ""
+        txtHomologacioId.Text = ""
+        ddlTipoOferta.SelectedIndex = 0
+        ddlTipoOferta_SelectedIndexChanged(Nothing, Nothing)
+        txtPrecioRecarga.Text = ""
+        txtPrecioAnual.Text = ""
+        txtPrecioMensual.Text = ""
+        txtDatosMB.Text = ""
+        txtMinutos.Text = ""
+        txtSms.Text = ""
+        txtValidezDias.Text = ""
+        ddlAplicaRoaming.SelectedIndex = 0
+        ddlTarifaPrimaria.SelectedIndex = 0
+        ddlRedesSociales.SelectedIndex = 0
+        txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
+
+        lblMensaje.Text = ""
+        lblMensaje.Visible = False
+    End Sub
+
+    Protected Sub txtBuscarOfertas_TextChanged(sender As Object, e As EventArgs) Handles txtBuscarOfertas.TextChanged
+        Dim texto As String = txtBuscarOfertas.Text.Trim()
+        CargarOfertas(texto)
     End Sub
 End Class

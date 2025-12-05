@@ -95,6 +95,15 @@ Partial Public Class _Default
     Protected WithEvents hlReportes As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
+    '''Control hlPortabilidad.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents hlPortabilidad As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
     '''Control hlEstatusDeposito.
     '''</summary>
     '''<remarks>
@@ -111,6 +120,15 @@ Partial Public Class _Default
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents hlMetodosPago As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''Control hlLogout.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents hlLogout As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
     '''Control ContentPlaceHolder1.

@@ -28,6 +28,13 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@RegimenFiscal", SqlDbType.NVarChar, objCliente.RegimenFiscal))
         parametros.Add(ConnectionDB.ArmaParametro("@UsoDeComprobante", SqlDbType.NVarChar, objCliente.UsoDeComprobante))
         parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objCliente.FechaBaja), DBNull.Value, objCliente.FechaBaja)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Calle", SqlDbType.NVarChar, objCliente.Calle))
+        parametros.Add(ConnectionDB.ArmaParametro("@NumeroInterior", SqlDbType.NVarChar, objCliente.NumeroInterior))
+        parametros.Add(ConnectionDB.ArmaParametro("@NumeroExterior", SqlDbType.NVarChar, objCliente.NumeroExterior))
+        parametros.Add(ConnectionDB.ArmaParametro("@Localidad", SqlDbType.NVarChar, objCliente.Localidad))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoPais", SqlDbType.NVarChar, objCliente.CodigoPais))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoEstado", SqlDbType.NVarChar, objCliente.CodigoEstado))
+        parametros.Add(ConnectionDB.ArmaParametro("@SiigoID", SqlDbType.NVarChar, objCliente.SiigoID))
         parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
 
         Dim cnx As New ConnectionDB
@@ -318,6 +325,64 @@ Public Class Controller
             result = cnx.ejecutasp_consulta("[sp_EstatusDeposito]", parametros)
         ElseIf GetType(ReturnType) Is GetType(Boolean) Then
             result = cnx.ejecutasp("[sp_EstatusDeposito]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsMetodoPago(Of ReturnType)(opcion As Integer, ByVal objMetodoPago As MetodoPago) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@MetodoPagoID", SqlDbType.Int, objMetodoPago.MetodoPagoID))
+        parametros.Add(ConnectionDB.ArmaParametro("@NombreMetodo", SqlDbType.NVarChar, objMetodoPago.NombreMetodo))
+        parametros.Add(ConnectionDB.ArmaParametro("@Descripcion", SqlDbType.NVarChar, objMetodoPago.Descripcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_MetodoPago]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_MetodoPago]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_MetodoPago]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsPortabilidad(Of ReturnType)(opcion As Integer, ByVal objPortabilidad As Portabilidad) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@PortabilidadID", SqlDbType.Int, objPortabilidad.PortabilidadID))
+        parametros.Add(ConnectionDB.ArmaParametro("@MSISDN_Transitorio", SqlDbType.NVarChar, objPortabilidad.MSISDN_Transitorio))
+        parametros.Add(ConnectionDB.ArmaParametro("@MSISDN", SqlDbType.NVarChar, objPortabilidad.MSISDN))
+        parametros.Add(ConnectionDB.ArmaParametro("@CompaniaOrigen", SqlDbType.NVarChar, objPortabilidad.CompaniaOrigen))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estatus", SqlDbType.NVarChar, objPortabilidad.Estatus))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaRegistro", SqlDbType.DateTime, IIf(IsNothing(objPortabilidad.FechaRegistro), DBNull.Value, objPortabilidad.FechaRegistro)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaTermino", SqlDbType.DateTime, IIf(IsNothing(objPortabilidad.FechaTermino), DBNull.Value, objPortabilidad.FechaTermino)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaCancelacion", SqlDbType.DateTime, IIf(IsNothing(objPortabilidad.FechaCancelacion), DBNull.Value, objPortabilidad.FechaCancelacion)))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaRechazo", SqlDbType.DateTime, IIf(IsNothing(objPortabilidad.FechaRechazo), DBNull.Value, objPortabilidad.FechaRechazo)))
+        parametros.Add(ConnectionDB.ArmaParametro("@TipoPortabilidad", SqlDbType.Int, objPortabilidad.TipoPortabilidad))
+        parametros.Add(ConnectionDB.ArmaParametro("@Response", SqlDbType.NVarChar, objPortabilidad.Response))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_Portabilidad]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_Portabilidad]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_Portabilidad]", parametros)
         Else
             Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
         End If

@@ -104,15 +104,6 @@ Partial Public Class _Default
     Protected WithEvents imgMenu As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''Control hlTelefono.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents hlTelefono As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
     '''Control hlWhatsApp.
     '''</summary>
     '''<remarks>

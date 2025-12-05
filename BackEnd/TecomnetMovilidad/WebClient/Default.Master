@@ -48,8 +48,8 @@
         }
 
         .btn-primary {
-            background-color: #3f7dc0 !important; 
-            border-color: #3f7dc0 !important; 
+            background-color: #3f7dc0 !important;
+            border-color: #3f7dc0 !important;
         }
 
             .btn-primary:hover {
@@ -147,7 +147,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <asp:LinkButton ID="lbCerrarSesion" runat="server" CssClass="btn btn-primary" OnClick="lbCerrarSesion_Click">
+                                                <asp:LinkButton ID="lbCerrarSesion" runat="server" CssClass="btn btn-primary" OnClick="lbCerrarSesion_Click" CausesValidation="False">
                                                 Cerrar sesión
                                                 </asp:LinkButton>
                                             </div>
@@ -166,13 +166,9 @@
                         <label class="h1 text-white">TECOMNET</label>
                         <ul class="nav">
                             <li class="p-2">
-                                <asp:HyperLink ID="hlTelefono" runat="server" CssClass="link-light">
-                            <i class="bi bi-telephone" style="width: 32px; height: 32px"></i>
-                                </asp:HyperLink>
-                            </li>
-                            <li class="p-2">
-                                <asp:HyperLink ID="hlWhatsApp" runat="server" CssClass="link-light" Target="_blank">
-                            <i class="bi bi-whatsapp" style="width: 32px; height: 32px"></i>
+                                <asp:HyperLink ID="hlWhatsApp" runat="server" CssClass="link-light" Target="_blank"
+                                    NavigateUrl="https://wa.me/5524941739">
+    <i class="bi bi-whatsapp" style="width: 32px; height: 32px"></i>
                                 </asp:HyperLink>
                             </li>
                         </ul>

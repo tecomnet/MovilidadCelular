@@ -73,11 +73,7 @@ Public Class CompraSim
             objOrderId = resultado.JSON
         End If
 
-        Dim tokenString As String = DateTime.Now.ToString("o") ' ISO 8601
-        Dim tokenBytes As Byte() = Encoding.UTF8.GetBytes(tokenString)
-        Dim tokenBase64 As String = Convert.ToBase64String(tokenBytes)
-
-        Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/General/ValidaRecarga.aspx?token={tokenBase64}"
+        Dim urlExito As String = $"https://tecomnet.net/movilidad/clientes/Views/Compras/Views/Bienvenida/CompraRealizada.aspx?orderId={objOrderId}"
 
         Dim bodyLkl = New With {
         .amount = precio,
@@ -118,6 +114,7 @@ Public Class CompraSim
             Return String.Empty
         End If
     End Function
+
     Protected Sub btnPagar_Click(sender As Object, e As EventArgs)
         Dim ofertaId As Integer = Convert.ToInt32(Session("OfertaID"))
         Dim api As New ConsumoApis
@@ -128,5 +125,9 @@ Public Class CompraSim
 
         iframePago.Attributes("src") = linkPago
         ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModal", "document.getElementById('pnlPago').style.display='block'; abrirModal();", True)
+    End Sub
+
+    Protected Sub btnCancelar_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/Views/Compras/Views/Account/ValidarDatos.aspx")
     End Sub
 End Class

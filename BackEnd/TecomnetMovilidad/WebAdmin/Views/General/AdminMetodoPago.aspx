@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminMetodoPago.aspx.vb" Inherits="WebAdmin.AdminMetodoPago" %>
+﻿<%@ Page Title="" Language="vb" UnobtrusiveValidationMode="None" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminMetodoPago.aspx.vb" Inherits="WebAdmin.AdminMetodoPago" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -51,58 +51,68 @@
         .panel-form {
             background-color: #ffffff;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1rem 1.5rem;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <asp:Panel ID="PnlAdminMetodoPago" runat="server" CssClass="container mt-5">
+    <asp:Panel ID="PnlAdminMetodoPago" runat="server" CssClass="container mt-3">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Administración Método De Pago</h2>
+            <asp:Button ID="BtnAgregarMetodoPago" runat="server" CssClass="btn btn-success btn-add"
+                Text="+ Agregar Método de Pago" OnClick="BtnAgregarMetodoPago_Click" />
         </div>
     </asp:Panel>
-    <asp:Panel ID="PnlTabla" runat="server" Visible="true">
+    <asp:Panel ID="PnlTabla" runat="server" Visible="True">
         <div class="card card-shadow p-4 mb-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nombre de Método</th>
-                            <th>Descripción</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Pago con tarjeta</td>
-                            <td>Pago con tarjeta</td>
-                            <td>
-                                <asp:LinkButton ID="lnkEditarPagoTarjeta" runat="server" CssClass="action-icon edit" OnClick="lnkEditarPagoTarjeta_Click" ToolTip="Editar método de pago">
-            <i class="bi bi-pencil"></i>
+                <asp:GridView ID="gvMetodoPago" runat="server"
+                    CssClass="table table-hover align-middle"
+                    AutoGenerateColumns="False"
+                    HeaderStyle-CssClass="table-dark"
+                    ShowHeaderWhenEmpty="True"
+                    OnRowCommand="gvMetodoPago_RowCommand">
+
+                    <Columns>
+                        <asp:BoundField DataField="NombreMetodo" HeaderText="Nombre de Método" />
+                        <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-CssClass="text-center">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="lnkEditar" runat="server"
+                                    CommandName="Editar"
+                                    CommandArgument='<%# Eval("MetodoPagoID") %>'
+                                    CssClass="btn btn-link p-0 m-0"
+                                    ToolTip="Editar">
+         <i class="bi bi-pencil fs-5 text-primary"></i>
                                 </asp:LinkButton>
-                                <i class="bi bi-person-x-fill action-icon delete" title="Dar de baja usuario"></i>
-                            </td>
-                        </tr>
-                </table>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+
+                </asp:GridView>
             </div>
         </div>
     </asp:Panel>
-    <asp:Panel ID="PnlEditarMetodoPago" runat="server" Visible="False">
+    <asp:Panel ID="PnlAgregarMetodoPago" runat="server" Visible="False">
+        <asp:HiddenField ID="hdnMetodoPago" runat="server" />
+        <asp:Label ID="lblMensaje" runat="server" Visible="false" CssClass="alert" />
+        <asp:Label ID="lblTitulo" runat="server" CssClass="fs-2 text-dark fw-bold"></asp:Label>
         <div class="card card-shadow p-4 mb-4">
-        <h4 class="mb-3">Editar Método de Pago</h4>
-        <div class="mb-3">
-            <label class="form-label">Método de Pago</label>
-            <asp:TextBox ID="txtEditarMetodoPago" runat="server" CssClass="form-control" />
+            <div class="mb-3">
+                <label class="form-label">Nombre de Metodo</label>
+                <asp:TextBox ID="txtNombreMetodo" runat="server" CssClass="form-control" />
+                <asp:RequiredFieldValidator ID="rfvNombreMetodo" runat="server"
+                    ControlToValidate="txtNombreMetodo" ErrorMessage="El campo es requerido" CssClass="text-danger" Display="Dynamic" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" />
+                <asp:RequiredFieldValidator ID="rfvDescrpcion" runat="server"
+                    ControlToValidate="txtDescripcion" ErrorMessage="El campo es requerido" CssClass="text-danger" Display="Dynamic" />
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <asp:TextBox ID="txtEditarDescripcion" runat="server" CssClass="form-control" />
-        </div>
-    </div>
-        <div class="d-flex justify-content-end">
-            <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary me-2" />
-            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary" />
-        </div>
+        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
+        <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" CausesValidation="false" OnClick="btnCancelar_Click" />
     </asp:Panel>
 </asp:Content>

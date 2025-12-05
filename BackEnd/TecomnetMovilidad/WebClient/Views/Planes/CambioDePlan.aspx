@@ -148,6 +148,10 @@
                                 <h5 class="card-title"><%# Eval("Oferta") %></h5>
                                 <p class="plan-description"><%# Eval("Descripcion") %></p>
                                 <p class="plan-price"><%# If(Eval("Tipo") IsNot Nothing, [Enum].GetName(GetType(Models.TECOMNET.Enumeraciones.TipoServicio), CInt(Eval("Tipo"))), "N/A") %></p>
+                                <p class="plan-description">Minutos: <%# Eval("Minutos") %></p>
+                                <p class="plan-description">SMS: <%# Eval("Sms") %></p>
+                                <p class="plan-description">Datos MB<%# Eval("DatosMB") %></p>
+
                                 <asp:Button ID="btnLoQuiero" runat="server" CssClass="btn btn-success mt-2" Text="Lo quiero" CommandArgument='<%# Eval("OfertaID") %>' OnClick="btnLoQuiero_Click" />
                             </div>
                         </div>

@@ -1,6 +1,7 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminDistribuidores.aspx.vb" Inherits="WebAdmin.AdminDistribuidores" %>
+﻿<%@ Page Title="" Language="vb" UnobtrusiveValidationMode="None" AutoEventWireup="false" MasterPageFile="~/Default.Master" CodeBehind="AdminDistribuidores.aspx.vb" Inherits="WebAdmin.AdminDistribuidores" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     <style>
@@ -65,14 +66,20 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Label ID="lblError" runat="server" ForeColor="Red" Visible="False"></asp:Label>
-    <asp:Panel ID="pnlAdminDistribuidores" runat="server" CssClass="container mt-5">
+    <asp:Panel ID="pnlAdminDistribuidores" runat="server" CssClass="container mt-3">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Administración de Distribuidores</h2>
             <asp:Button ID="btnAgregarDistribuidor" runat="server" CssClass="btn btn-success btn-add"
                 Text="+ Agregar Distribuidor" OnClick="btnAgregarDistribuidor_Click" />
         </div>
-
+        <div class="mb-4">
+            <asp:TextBox ID="txtBuscarDistribuidores" runat="server" CssClass="form-control"
+                placeholder="🔍 Buscar distribuidores..." AutoPostBack="true"
+                OnTextChanged="txtBuscarDistribuidores_TextChanged"
+                onkeyup="iniciarBusqueda();">
+            </asp:TextBox>
+        </div>
     </asp:Panel>
 
     <asp:Panel ID="pnlTabla" runat="server" Visible="True">
@@ -84,7 +91,6 @@
                     HeaderStyle-CssClass="table-dark"
                     ShowHeaderWhenEmpty="True" DataKeyNames="DistribuidorID">
                     <Columns>
-                        <asp:BoundField DataField="DistribuidorID" HeaderText="ID" />
                         <asp:BoundField DataField="Region" HeaderText="Región" />
                         <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
                         <asp:BoundField DataField="Direccion" HeaderText="Dirección" />
@@ -131,12 +137,16 @@
 
                 <div class="mb-3">
                     <label class="form-label">Región</label>
-                    <asp:TextBox ID="txtRegion" runat="server" CssClass="form-control" />
+                    <asp:TextBox ID="txtRegion" runat="server" TextMode="Number" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvRegion" runat="server"
+                        ControlToValidate="txtRegion" ErrorMessage="Campo Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Nombre</label>
                     <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvNombre" runat="server"
+                        ControlToValidate="txtNombre" ErrorMessage="Campo Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
@@ -152,16 +162,25 @@
                 <div class="mb-3">
                     <label class="form-label">Teléfono Contacto</label>
                     <asp:TextBox ID="txtTelefonoContacto" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvTelefonoContacto" runat="server"
+                        ControlToValidate="txtTelefonoContacto" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Correo</label>
                     <asp:TextBox ID="txtEmailContacto" runat="server" TextMode="Email" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvEmail" runat="server"
+                        ControlToValidate="txtEmailContacto" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
+                    <asp:RegularExpressionValidator ID="revEmail" runat="server"
+                        ControlToValidate="txtEmailContacto"
+                        ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                        ErrorMessage="Formato de email no válido" CssClass="text-danger" Display="Dynamic" />
+                    <span id="spanCorreoExistente" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Fecha de Alta</label>
-                    <asp:TextBox ID="txtFechaAlta" runat="server" TextMode="Date" CssClass="form-control" />
+                    <asp:TextBox ID="txtFechaAlta" runat="server" CssClass="form-control" ReadOnly="True" />
                 </div>
             </div>
         </div>
@@ -178,51 +197,116 @@
                 <div class="mb-3">
                     <label class="form-label">Tipo de Persona</label>
                     <asp:DropDownList ID="ddlTipoPersona" runat="server" CssClass="form-select">
+                        <asp:ListItem Text="-- Selecciona --" Value=""></asp:ListItem>
                         <asp:ListItem Text="Física" Value="1"></asp:ListItem>
                         <asp:ListItem Text="Moral" Value="2"></asp:ListItem>
                     </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvTipoPersona" runat="server"
+                        ControlToValidate="ddlTipoPersona" InitialValue="" ErrorMessage="Selecciona un estatus" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Dirección Fiscal</label>
                     <asp:TextBox ID="txtDireccionFiscal" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvDireccionFiscal" runat="server"
+                        ControlToValidate="txtDireccionFiscal" InitialValue="" ErrorMessage="Campo Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Porcentaje Comisión</label>
                     <asp:TextBox ID="txtPorcentajeComision" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvPorcentaje" runat="server"
+                        ControlToValidate="txtPorcentajeComision" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Banco</label>
                     <asp:TextBox ID="txtBanco" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvBanco" runat="server"
+                        ControlToValidate="txtBanco" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Cuenta</label>
                     <asp:TextBox ID="txtCuenta" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvCuenta" runat="server"
+                        ControlToValidate="txtCuenta" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Beneficiario</label>
                     <asp:TextBox ID="txtBeneficiario" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvBeneficiario" runat="server"
+                        ControlToValidate="txtBeneficiario" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Tipo Distribuidor</label>
                     <asp:DropDownList ID="ddlTipoDistribuidor" runat="server" CssClass="form-select">
+                        <asp:ListItem Text="-- Selecciona --" Value=""></asp:ListItem>
                         <asp:ListItem Text="Consumidor Final" Value="1"></asp:ListItem>
                         <asp:ListItem Text="Mayorista" Value="2"></asp:ListItem>
                         <asp:ListItem Text="Minorista" Value="3"></asp:ListItem>
                     </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvTipoDistribuidor" runat="server"
+                        ControlToValidate="ddlTipoDistribuidor" InitialValue="" ErrorMessage="Selecciona un estatus" CssClass="text-danger" Display="Dynamic" />
                 </div>
             </div>
         </div>
 
         <div class="mt-3">
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
-            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" />
+            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary ms-2" OnClick="btnCancelar_Click" CausesValidation="False" />
         </div>
 
     </asp:Panel>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#<%= txtEmailContacto.ClientID %>").on('keyup blur', function () {
+
+                var correo = $(this).val();
+                var distribuidorId = parseInt($("#<%= hdnDistribuidorID.ClientID %>").val()) || 0;
+
+                if (correo.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "AdminDistribuidores.aspx/VerificarCorreoExistente",
+                        data: JSON.stringify({ correo: correo, distribuidorId: distribuidorId }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.d) {
+                                $("#spanCorreoExistente").text("❌ Este correo ya está registrado. Intenta con otro.")
+                                    .removeClass("text-success")
+                                    .addClass("text-danger");
+                                $("#<%= btnGuardar.ClientID %>").prop("disabled", true);
+                            } else {
+                                $("#spanCorreoExistente").text("✅ Correo disponible.")
+                                    .removeClass("text-danger")
+                                    .addClass("text-success");
+                                $("#<%= btnGuardar.ClientID %>").prop("disabled", false);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log("Error al validar el correo: " + error);
+                        }
+                    });
+                } else {
+                    $("#spanCorreoExistente").text("");
+                    $("#<%= btnGuardar.ClientID %>").prop("disabled", false);
+                }
+            });
+        });
+    </script>
+    <script>
+        let typingTimer;
+        const delay = 700;
+
+        function iniciarBusqueda() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function () {
+                __doPostBack('<%= txtBuscarDistribuidores.UniqueID %>', '');
+            }, delay);
+        }
+    </script>
 </asp:Content>
