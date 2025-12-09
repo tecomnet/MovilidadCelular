@@ -248,6 +248,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.vb" />
     <Compile Include="Controllers\AccountController.vb" />
     <Compile Include="Controllers\Cliente\ClienteController.vb" />
+    <Compile Include="Controllers\Compra\CompraController.vb" />
     <Compile Include="Controllers\Oferta\OfertaController.vb" />
     <Compile Include="Controllers\Recargas\RecargasController.vb" />
     <Compile Include="Controllers\SolicitudPago\SolicitudPagoController.vb" />

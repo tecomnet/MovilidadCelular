@@ -96,5 +96,41 @@ Namespace Controllers.SolicitudPago
                         Key .Description = "Ocurrió un error al generar la solicitud."
                         })
         End Function
+        <HttpGet>
+        <Route("api/ObtenerSolicitudDePago/{OrderID}")>
+        Public Function ObtenerSolicitudDePago(OrderID As String) As HttpResponseMessage
+            Try
+                If String.IsNullOrEmpty(OrderID) Then
+                    Return Request.CreateResponse(HttpStatusCode.InternalServerError, New With {
+                        Key .CodeError = "1",
+                        Key .ErrorMessage = "Valor obligatorio.",
+                        Key .Description = "La variable OrderID es obligatoria."
+                        })
+
+                Else
+                    Dim controllerSolicitudDePago As New ControllerSolicitudDePago
+                    Dim objSolicitudDePago As New SolicitudDePago
+                    objSolicitudDePago = controllerSolicitudDePago.ObtenerSolicitud(OrderID)
+                    Return Request.CreateResponse(HttpStatusCode.OK, New With {
+                        objSolicitudDePago
+                        })
+                End If
+
+            Catch ex As Exception
+                ' Manejo de errores: devuelve un mensaje JSON con el error
+                Dim errorResponse As HttpResponseMessage = Request.CreateResponse(HttpStatusCode.InternalServerError, New With {
+                        Key .CodeError = "2",
+                        Key .ErrorMessage = "Ocurrió un error al generar la solicitud.",
+                        Key .Description = ex.Message
+                        })
+                Return errorResponse
+            End Try
+
+            Return Request.CreateResponse(HttpStatusCode.InternalServerError, New With {
+                        Key .CodeError = "4",
+                        Key .ErrorMessage = "Ocurrió un error al generar la solicitud.",
+                        Key .Description = "Ocurrió un error al generar la solicitud."
+                        })
+        End Function
     End Class
 End Namespace

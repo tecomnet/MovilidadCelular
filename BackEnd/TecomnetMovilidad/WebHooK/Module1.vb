@@ -311,9 +311,9 @@ Module Module1
 
                             If ControllerRecarga.AgregarRecarga(objRecarga) > 0 Then
                                 Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
-
                                 objSIM.OfertaId = objSolicitudPago.OfertaIDNueva
                                 If controllerSim.AplicaRecarga(objSIM) > 0 Then
+                                    Console.WriteLine("Actualizó correctamente el paquete al SIM.")
                                     'Actualizamos orden de compra
                                     objSolicitudPago.Estatus = order.estatus_pago
                                     objSolicitudPago.IdTransaction = order.id_transaction
@@ -327,7 +327,8 @@ Module Module1
                                         Console.WriteLine("Se actualizó correctamente la solicitud de pago.")
                                     End If
                                 Else
-                                    Console.WriteLine("Se aplico correctamente la compra en TECOMNET.")
+                                    EmailSender.NotificacionDeRecarga(objCustomer.CustomerName, objProducto.ProductName, objCustomer.Email, TypeMessageMail.Recharge)
+                                    Console.WriteLine("no se actualizó correctamente el paquete al SIM.")
                                 End If
                                 Return True
                             Else
