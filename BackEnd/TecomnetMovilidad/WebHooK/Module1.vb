@@ -21,16 +21,16 @@ Module Module1
     Sub Main()
         ' Configura el prefijo para el servicio (puerto 8080 en este caso)
         'QA                
-        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/CompraRecarga/")
-        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCompraSIM/")
-        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCautivo/")
-        listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/RecargaWallet/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/CompraRecarga/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCompraSIM/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/PortalCautivo/")
+        'listener.Prefixes.Add("http://localhost:80/movilidad/webhook/ValidatePay/RecargaWallet/")
 
         'Produccion        
-        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/")
-        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCompraSIM/")
-        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCautivo/")
-        'listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/RecargaWallet/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCompraSIM/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/PortalCautivo/")
+        listener.Prefixes.Add("https://tecomnet.net/movilidad/webhook/ValidatePay/RecargaWallet/")
 
         listener.Start()
 
@@ -327,7 +327,7 @@ Module Module1
                                         Console.WriteLine("Se actualizó correctamente la solicitud de pago.")
                                     End If
                                 Else
-                                    EmailSender.NotificacionDeRecarga(objCustomer.CustomerName, objProducto.ProductName, objCustomer.Email, TypeMessageMail.Recharge)
+                                    'EmailSender.NotificacionDeRecarga(objCustomer.CustomerName, objProducto.ProductName, objCustomer.Email, TypeMessageMail.Recharge)
                                     Console.WriteLine("no se actualizó correctamente el paquete al SIM.")
                                 End If
                                 Return True
@@ -425,39 +425,39 @@ Module Module1
     'End Function
 
     Public Async Function ProcesarRecargaWallet(request As HttpListenerRequest, response As HttpListenerResponse) As Task(Of Boolean)
-        'Try
-        '    Console.WriteLine(String.Format("----{0}----", Now.ToString))
-        '    Console.WriteLine(String.Format("----{0}----", "Payment RecargaWallet"))
+        Try
+            Console.WriteLine(String.Format("----{0}----", Now.ToString))
+            Console.WriteLine(String.Format("----{0}----", "Payment RecargaWallet"))
 
-        '    ' Procesa la notificación recibida (puedes adaptarlo a tus necesidades)
-        '    Dim requestBody As String
-        '    Using reader As New IO.StreamReader(request.InputStream, request.ContentEncoding)
-        '        requestBody = reader.ReadToEnd()
-        '    End Using
+            ' Procesa la notificación recibida (puedes adaptarlo a tus necesidades)
+            Dim requestBody As String
+            Using reader As New IO.StreamReader(request.InputStream, request.ContentEncoding)
+                requestBody = reader.ReadToEnd()
+            End Using
 
-        '    Console.WriteLine("Datos recibidos:")
-        '    Console.WriteLine(requestBody)
+            Console.WriteLine("Datos recibidos:")
+            Console.WriteLine(requestBody)
 
-        '    Dim objPagoStripe As PagoStripe = JsonSerializer.Deserialize(Of PagoStripe)(requestBody)
-        '    Dim objController As New ControllerAltanRedes
+            '    Dim objPagoStripe As PagoStripe = JsonSerializer.Deserialize(Of PagoStripe)(requestBody)
+            '    Dim objController As New ControllerAltanRedes
 
 
-        '    Dim lstOffering As New List(Of String)
-        '    lstOffering.Add(BuscaOferta(Val(objPagoStripe.OfertaID)))
-        '    Dim objRequestPurchaseProduct As New RequestPurchaseProduct(objPagoStripe.MSISDN, lstOffering)
-        '    Dim objControlller As New ControllerAltanRedes
-        '    Dim objResult As MessageResult
+            '    Dim lstOffering As New List(Of String)
+            '    lstOffering.Add(BuscaOferta(Val(objPagoStripe.OfertaID)))
+            '    Dim objRequestPurchaseProduct As New RequestPurchaseProduct(objPagoStripe.MSISDN, lstOffering)
+            '    Dim objControlller As New ControllerAltanRedes
+            '    Dim objResult As MessageResult
 
-        '    objResult = objControlller.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
+            '    objResult = objControlller.PostCompraProducto(JsonSerializer.Serialize(objRequestPurchaseProduct))
 
-        '    RegistraPago(BuscaICCID(objPagoStripe.MSISDN), Val(objPagoStripe.userId), Val(objPagoStripe.OfertaID), objPagoStripe.amount)
-        '    Return True
-        '    'Await ActulizaMovimientosTecomnet(order)
+            '    RegistraPago(BuscaICCID(objPagoStripe.MSISDN), Val(objPagoStripe.userId), Val(objPagoStripe.OfertaID), objPagoStripe.amount)
+            '    Return True
+            '    'Await ActulizaMovimientosTecomnet(order)
 
-        'Catch ex As Exception
-        '    Console.WriteLine(ex.Message)
-        '    Return False
-        'End Try
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+            Return False
+        End Try
         Return True
     End Function
 
