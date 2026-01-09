@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #f5f6fa;
@@ -71,6 +72,18 @@
         .hidden {
             display: none !important;
         }
+        .gvPager a {
+            padding: .375rem .75rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+            .gvPager a:hover {
+                background-color: #e9ecef;
+            }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -97,12 +110,15 @@
                             CssClass="table table-hover align-middle"
                             AutoGenerateColumns="False"
                             HeaderStyle-CssClass="table-dark"
-                            ShowHeaderWhenEmpty="True">
-
+                            ShowHeaderWhenEmpty="True"
+                            AllowPaging="True"
+                            PageSize="10"
+                            OnPageIndexChanging="gvClientes_PageIndexChanging">
+                            <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
                             <Columns>
                                 <asp:TemplateField HeaderText="Nombre Completo">
                                     <ItemTemplate>
-                                        <%# Eval("Nombre") & " " & Eval("ApellidoPaterno") & " " & Eval("ApellidoMaterno") %>
+                                        <%# ObtenerNombreCompleto(Eval("TipoPersona"), Eval("Nombre"), Eval("ApellidoPaterno"), Eval("ApellidoMaterno"), Eval("NombreRazonSocial")) %>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
@@ -212,6 +228,10 @@
                     </div>
                 </asp:Panel>
                 <div class="row">
+                    <div class="col-lg-6 mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <asp:TextBox ID="txtNombreRazonSocial" runat="server" CssClass="form-control" />
+                    </div>
                     <asp:Panel ID="pnlFisicaFecha" runat="server" CssClass="col-lg-6 mb-3">
                         <label class="form-label">Fecha de Nacimiento</label>
                         <asp:TextBox ID="txtFechaCumpleanios" runat="server" TextMode="Date" CssClass="form-control" />
@@ -228,66 +248,32 @@
                             ValidationExpression="^[0-9]{10}$"
                             ErrorMessage="Ingresa 10 dígitos" CssClass="text-danger" Display="Dynamic" />
                     </div>
-                        <div class="col-lg-6 mb-3">
-                            <label class="form-label">Email</label>
-                            <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" CssClass="form-control" />
-                            <asp:RequiredFieldValidator ID="rfvEmail" runat="server"
-                                ControlToValidate="txtEmail" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
-                            <asp:RegularExpressionValidator ID="revEmail" runat="server"
-                                ControlToValidate="txtEmail"
-                                ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
-                                ErrorMessage="Formato de email no válido" CssClass="text-danger" Display="Dynamic" />
-                            <span id="spanEmailExistente" class="text-danger"></span>
-                        </div>
-                        <asp:Panel ID="pnlPassword" runat="server" class="col-lg-6 mb-3">
+                    <div class="col-lg-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvEmail" runat="server"
+                            ControlToValidate="txtEmail" ErrorMessage="Requerido" CssClass="text-danger" Display="Dynamic" />
+                        <asp:RegularExpressionValidator ID="revEmail" runat="server"
+                            ControlToValidate="txtEmail"
+                            ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                            ErrorMessage="Formato de email no válido" CssClass="text-danger" Display="Dynamic" />
+                        <span id="spanEmailExistente" class="text-danger"></span>
+                    </div>
+                    <asp:Panel ID="pnlPassword" runat="server" class="col-lg-6 mb-3">
 
-                                <label class="form-label">Contraseña</label>
-                                <asp:TextBox ID="tbPassword" runat="server" Width="100%" TextMode="Password" CssClass="form-control"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="rfvPassword" runat="server"
-                                    ControlToValidate="tbPassword" ErrorMessage="Requerida" CssClass="text-danger" Display="Dynamic" />
-                                <asp:RegularExpressionValidator ID="revPassword" runat="server"
-                                    ControlToValidate="tbPassword"
-                                    ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"
-                                    ErrorMessage="* Mínimo 6 caracteres (letras y números)" CssClass="text-danger" Display="Dynamic" />
+                        <label class="form-label">Contraseña</label>
+                        <asp:TextBox ID="tbPassword" runat="server" Width="100%" TextMode="Password" CssClass="form-control"></asp:TextBox>
+                        <asp:RegularExpressionValidator ID="revPassword" runat="server"
+                            ControlToValidate="tbPassword"
+                            ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"
+                            ErrorMessage="* Mínimo 8 caracteres (letras y números)" CssClass="text-danger" Display="Dynamic" />
 
-                        </asp:Panel>
-                            <div class="col-lg-6 mb-3">
-                                <label class="form-label">Fecha de Alta</label>
-                                <asp:TextBox ID="txtFechaAlta" runat="server" CssClass="form-control" TextMode="Date" ReadOnly="True" />
-                            </div>
-                        <div class="col-lg-6 mb-3">
-                            <label class="form-label">Estado</label>
-                            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
-                                <asp:ListItem Text="Puebla" Value="1"></asp:ListItem>
-                                <asp:ListItem Text="Estado México" Value="2"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
+                    </asp:Panel>
                     <div class="col-lg-6 mb-3">
-                        <label class="form-label">Localidad</label>
-                        <asp:DropDownList ID="ddlLocalidad" runat="server" CssClass="form-select">
-                            <asp:ListItem Text="Xicotepec" Value="2"></asp:ListItem>
-                        </asp:DropDownList>
+                        <label class="form-label">Fecha de Alta</label>
+                        <asp:TextBox ID="txtFechaAlta" runat="server" CssClass="form-control" TextMode="Date" ReadOnly="True" />
                     </div>
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Colonia</label>
-                        <asp:TextBox ID="txtColonia" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Calle</label>
-                        <asp:TextBox ID="txtCalle" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Dirección</label>
-                        <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Código Postal</label>
-                        <asp:TextBox ID="txtCP" runat="server" CssClass="form-control" />
-                        <asp:RegularExpressionValidator ID="revCP" runat="server"
-                            ControlToValidate="txtCP" ValidationExpression="^[0-9]{5}$"
-                            ErrorMessage="Ingresa un CP válido" CssClass="text-danger" Display="Dynamic" />
-                    </div>
-                </div>                
+                </div>
             </div>
         </asp:Panel>
 
@@ -298,12 +284,11 @@
                     <div class="row">
                         <div class="col-lg-6 mb-3">
                             <label class="form-label">Tipo de Persona</label>
-                            <asp:DropDownList ID="ddlTipoPersonaRegimen" runat="server" CssClass="form-select" AutoPostBack="true">
+                            <asp:DropDownList ID="ddlTipoPersonaRegimen" runat="server" CssClass="form-select" AutoPostBack="true"
+                                OnSelectedIndexChanged="ddlTipoPersonaRegimen_SelectedIndexChanged1">
                                 <asp:ListItem Text="Física" Value="F"></asp:ListItem>
                                 <asp:ListItem Text="Moral" Value="M"></asp:ListItem>
                             </asp:DropDownList>
-                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
-                                ControlToValidate="ddlTipoPersonaRegimen" InitialValue="" ErrorMessage="Selecciona un tipo" CssClass="text-danger" Display="Dynamic" />
                         </div>
 
                         <div class="col-lg-6 mb-3">
@@ -313,34 +298,79 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-lg-6 mb-3">
-                            <label class="form-label">Razón Social</label>
-                            <asp:TextBox ID="txtNombreRazonSocial" runat="server" CssClass="form-control" />
+                    <asp:Panel ID="pnlFiscaFiscales" runat="server">
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Nombre</label>
+                                <asp:TextBox ID="txtNombreFiscal" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Apellido Paterno</label>
+                                <asp:TextBox ID="txtApellidoPaternoFiscal" runat="server" CssClass="form-control" />
+                            </div>
+                        </div>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlDatosMoralFiscales" runat="server">
+                        <div class="row">
+                            <asp:Panel ID="pnlApellidoPaternoFiscal" runat="server" CssClass="col-lg-6 mb-3">
+                                <label class="form-label">Apellido Materno</label>
+                                <asp:TextBox ID="txtApellidoMaternoFiscal" runat="server" CssClass="form-control" />
+                            </asp:Panel>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Razón Social</label>
+                                <asp:TextBox ID="txtRazonSocialFiscal" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">RFC Facturación</label>
+                                <asp:TextBox ID="txtRfcFacturacion" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Uso De Comprobante</label>
+                                <asp:TextBox ID="txtUsoComprobante" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">CP Facturación</label>
+                                <asp:TextBox ID="txtCPFacturacion" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Pais</label>
+                                <asp:DropDownList ID="ddlPaisFiscal" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPaisFiscal_SelectedIndexChanged"></asp:DropDownList>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Estado</label>
+                                <asp:DropDownList ID="ddlEstadoFiscal" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlEstadoFiscal_SelectedIndexChanged"></asp:DropDownList>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Ciudad</label>
+                                <asp:DropDownList ID="ddlCiudadFiscal" runat="server" CssClass="form-select" AutoPostBack="true"></asp:DropDownList>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Calle</label>
+                                <asp:TextBox ID="txtCalleFiscal" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Colonia</label>
+                                <asp:TextBox ID="txtColoniaFiscal" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Número Interior</label>
+                                <asp:TextBox ID="txtNumeroInterior" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Número Exterior</label>
+                                <asp:TextBox ID="txtNumeroExterior" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Localidad</label>
+                                <asp:TextBox ID="txtLocalidad" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Codigo Postal</label>
+                                <asp:TextBox ID="txtCodigoPostalFiscal" runat="server" CssClass="form-control" />
+                            </div>
                         </div>
 
-                        <div class="col-lg-6 mb-3">
-                            <label class="form-label">RFC Facturación</label>
-                            <asp:TextBox ID="txtRfcFacturacion" runat="server" CssClass="form-control" />
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-lg-6 mb-3">
-                            <label class="form-label">Uso De Contratante</label>
-                            <asp:TextBox ID="txtUsoComprobante" runat="server" CssClass="form-control" />
-                        </div>
-
-                        <div class="col-lg-6 mb-3">
-                            <label class="form-label">CP Facturación</label>
-                            <asp:TextBox ID="txtCPFacturacion" runat="server" CssClass="form-control" />
-                        </div>
-
-                    </div>
-                    <div class="row">
-                    </div>
+                    </asp:Panel>
                 </div>
             </div>
         </asp:Panel>
@@ -495,7 +525,6 @@
                                     <asp:Label ID="lblAnticipado" runat="server"
                                         Text='<%# String.Format("{0:C}", Eval("PrecioAnual")) & " / anticipado" %>'
                                         Visible='<%# Convert.ToInt32(Eval("Tipo")) = 2 %>'></asp:Label>
-
                                     <asp:Label ID="lblMensual" runat="server"
                                         Text='<%# String.Format("{0:C}", Eval("PrecioMensual")) & " / mensual" %>'
                                         Visible='<%# Convert.ToInt32(Eval("Tipo")) = 3 %>'></asp:Label>

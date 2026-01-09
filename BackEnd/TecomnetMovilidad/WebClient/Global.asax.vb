@@ -57,6 +57,8 @@ Public Class Global_asax
                         Case "/movilidad/clientes/Views/Compras/Views/SIM/CompraSim.aspx"
                         Case "/Views/Compras/Views/SIM/PagoSim.aspx"
                         Case "/movilidad/clientes/Views/Compras/Views/SIM/PagoSim.aspx"
+                        Case "/Views/Vinculacion/VinculacionCurp.aspx"
+                        Case "/movilidad/clientes/Views/Vinculacion/VinculacionCurp.aspx"
 
                         Case Else
                             Server.ClearError()

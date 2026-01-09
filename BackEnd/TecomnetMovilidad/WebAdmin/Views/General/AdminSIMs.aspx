@@ -30,6 +30,19 @@
         a.text-primary, a.text-danger, a.text-warning, a.text-success {
             text-decoration: none !important;
         }
+
+        .gvPager a {
+            padding: .375rem .75rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+            .gvPager a:hover {
+                background-color: #e9ecef;
+            }
     </style>
 
 </asp:Content>
@@ -51,7 +64,11 @@
                             CssClass="table table-hover align-middle"
                             AutoGenerateColumns="False"
                             HeaderStyle-CssClass="table-dark"
-                            ShowHeaderWhenEmpty="True">
+                            ShowHeaderWhenEmpty="True"
+                            AllowPaging="True"
+                            PageSize="10"
+                            OnPageIndexChanging="gvSims_PageIndexChanging">
+                            <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
                             <Columns>
                                 <asp:BoundField DataField="ICCID" HeaderText="ICCID" />
                                 <asp:BoundField DataField="MSISDN" HeaderText="MSISDN" />
@@ -65,11 +82,12 @@
                                          <i class="bi bi-eye-fill"></i>
                                         </asp:LinkButton>
                                         <asp:LinkButton ID="btnToggle" runat="server" CssClass="text-warning"
-                                            OnClick="btnToggle_Click" ToolTip="Suspender SIM">
+                                            CommandArgument='<%# Eval("SIMID") %>'
+                                            OnClick="btnToggle_Click" ToolTip="Suspender Tráfico Saliente">
                                             <i id="iconToggle" runat="server" class="bi bi-pause-circle-fill"></i>
                                         </asp:LinkButton>
+
                                         <asp:LinkButton ID="btnToggleTrafico" runat="server"
-                                            CommandName="ToggleTrafico"
                                             CommandArgument='<%# Eval("SIMID") %>'
                                             CssClass="text-danger"
                                             ToolTip="Suspender tráfico (Entrada/Salida)"
@@ -78,7 +96,7 @@
                                         </asp:LinkButton>
                                         <asp:LinkButton ID="btnCancelar" runat="server"
                                             CommandName="Cancelar"
-                                            CommandArgument='<%# Eval("SIMID") %>'
+                                            CommandArgument='<%# Eval("SIMID") %>' OnClientClick="return confirm('¿Está seguro de cancelar?');"
                                             CssClass="text-danger"
                                             ToolTip="Cancelar SIM">
                                             <i class="bi bi-x-circle-fill"></i>
@@ -147,7 +165,7 @@
             clearTimeout(typingTimer);
             typingTimer = setTimeout(function () {
                 __doPostBack('<%= txtBuscarSIM.UniqueID %>', '');
-        }, delay);
+            }, delay);
         }
     </script>
 </asp:Content>

@@ -161,11 +161,62 @@ Public Class AdminPortabilidad
             }
 
             Dim controller As New ControllerPortabilidad
-            controller.UpdatePortabilidad(obj)            
+            controller.UpdatePortabilidad(obj)
 
             CargarDatos()
 
         End If
+
+        If e.CommandName = "Rechazar" Then
+            Dim portabilidadID As Integer = Convert.ToInt32(e.CommandArgument)
+
+            Dim obj As New Portabilidad With {
+        .PortabilidadID = portabilidadID,
+        .Estatus = "Rechazada",
+        .FechaRechazo = DateTime.Now
+    }
+
+            Dim controller As New ControllerPortabilidad()
+            controller.UpdatePortabilidad(obj)
+
+            CargarDatos()
+        End If
+
+        If e.CommandName = "Cancelar" Then
+            Dim portabilidadID As Integer = Convert.ToInt32(e.CommandArgument)
+
+            Dim obj As New Portabilidad With {
+        .PortabilidadID = portabilidadID,
+        .Estatus = "Cancelada",
+        .FechaCancelacion = DateTime.Now
+    }
+
+            Dim controller As New ControllerPortabilidad()
+            controller.UpdatePortabilidad(obj)
+
+            CargarDatos()
+        End If
+
+        If e.CommandName = "Descargar" Then
+            Dim portabilidadID As Integer = Convert.ToInt32(e.CommandArgument)
+
+            Dim controller As New ControllerPortabilidad
+            Dim lista As List(Of Portabilidad) = controller.GetPortabilidad
+            Dim registro As Portabilidad = lista.FirstOrDefault(Function(p) p.PortabilidadID = portabilidadID)
+
+            If registro IsNot Nothing Then
+                Dim sb As New Text.StringBuilder()
+                sb.AppendLine($"{registro.MSISDN_Transitorio}||{registro.MSISDN}||||||Y|")
+
+                Response.Clear()
+                Response.ContentType = "text/csv"
+                Response.AddHeader("Content-Disposition", $"attachment; filename=portabilidad_{portabilidadID}.csv")
+                Response.Write(sb.ToString())
+                Response.End()
+
+            End If
+        End If
+
     End Sub
 
     Protected Sub btnCancelar_Click(sender As Object, e As EventArgs)
@@ -198,5 +249,14 @@ Public Class AdminPortabilidad
     Protected Sub txtBuscarPortabilidad_TextChanged(sender As Object, e As EventArgs) Handles txtBuscarPortabilidad.TextChanged
         Dim texto As String = txtBuscarPortabilidad.Text.Trim()
         CargarDatos(texto)
+    End Sub
+
+    Protected Sub gvDatosPortabilidad_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        Dim controller As New ControllerPortabilidad
+        Dim listaPortabilidad As List(Of Portabilidad) = controller.GetPortabilidad
+
+        gvDatosPortabilidad.PageIndex = e.NewPageIndex
+        gvDatosPortabilidad.DataSource = listaPortabilidad
+        gvDatosPortabilidad.DataBind()
     End Sub
 End Class

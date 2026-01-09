@@ -21,30 +21,52 @@ Public Class ConvertObject
             If dr.Table.Columns.Contains("FechaAlta") Then objCliente.FechaAlta = dr("FechaAlta")
             If dr.Table.Columns.Contains("Estatus") Then objCliente.Estatus = dr("Estatus")
             If dr.Table.Columns.Contains("ContrasenaHash") Then objCliente.ContrasenaHash = dr("ContrasenaHash")
-            If dr.Table.Columns.Contains("Estado") Then objCliente.Estado = dr("Estado")
-            If dr.Table.Columns.Contains("Colonia") Then objCliente.Colonia = dr("Colonia")
-            If dr.Table.Columns.Contains("Direccion") Then objCliente.Direccion = dr("Direccion")
-            If dr.Table.Columns.Contains("CP") Then objCliente.CP = dr("CP")
             If dr.Table.Columns.Contains("RFC") Then objCliente.RFC = IIf(IsDBNull(dr("RFC")), "", dr("RFC"))
-            If dr.Table.Columns.Contains("RFCFacturacion") Then objCliente.RFCFacturacion = IIf(IsDBNull(dr("RFCFacturacion")), "", dr("RFCFacturacion"))
             If dr.Table.Columns.Contains("NombreRazonSocial") Then objCliente.NombreRazonSocial = IIf(IsDBNull(dr("NombreRazonSocial")), "", dr("NombreRazonSocial"))
-            If dr.Table.Columns.Contains("CPFacturacion") Then objCliente.CPFacturacion = IIf(IsDBNull(dr("CPFacturacion")), "", dr("CPFacturacion"))
-            If dr.Table.Columns.Contains("RegimenFiscal") Then objCliente.RegimenFiscal = IIf(IsDBNull(dr("RegimenFiscal")), "", dr("RegimenFiscal"))
-            If dr.Table.Columns.Contains("UsoDeComprobante") Then objCliente.UsoDeComprobante = IIf(IsDBNull(dr("UsoDeComprobante")), "", dr("UsoDeComprobante"))
             If dr.Table.Columns.Contains("FechaBaja") Then objCliente.FechaBaja = IIf(IsDBNull(dr("FechaBaja")), Nothing, dr("FechaBaja"))
-            If dr.Table.Columns.Contains("Calle") Then objCliente.Calle = dr("Calle")
-            If dr.Table.Columns.Contains("NumeroInterior") Then objCliente.NumeroInterior = dr("NumeroInterior")
-            If dr.Table.Columns.Contains("NumeroExterior") Then objCliente.NumeroExterior = dr("NumeroExterior")
-            If dr.Table.Columns.Contains("Localidad") Then objCliente.Localidad = dr("Localidad")
-            If dr.Table.Columns.Contains("CodigoPais") Then objCliente.CodigoPais = dr("CodigoPais")
-            If dr.Table.Columns.Contains("CodigoEstado") Then objCliente.CodigoEstado = dr("CodigoEstado")
-            If dr.Table.Columns.Contains("CodigoCiudad") Then objCliente.CodigoCiudad = dr("CodigoCiudad")
+            If dr.Table.Columns.Contains("Colonia") Then objCliente.Colonia = IIf(IsDBNull(dr("Colonia")), "", dr("Colonia"))
+            If dr.Table.Columns.Contains("Estado") Then objCliente.Estado = IIf(IsDBNull(dr("Estado")), "", dr("Estado"))
+            If dr.Table.Columns.Contains("Direccion") Then objCliente.Direccion = IIf(IsDBNull(dr("Direccion")), "", dr("Direccion"))
+            If dr.Table.Columns.Contains("CP") Then objCliente.CP = IIf(IsDBNull(dr("CP")), "", dr("CP"))
+            If dr.Table.Columns.Contains("CPFacturacion") Then objCliente.CPFacturacion = IIf(IsDBNull(dr("CPFacturacion")), "", dr("CPFacturacion"))
+            If dr.Table.Columns.Contains("RFCFacturacion") Then objCliente.RFCFacturacion = IIf(IsDBNull(dr("RFCFacturacion")), "", dr("RFCFacturacion"))
+            If dr.Table.Columns.Contains("RegimenFiscal") Then objCliente.RegimenFiscal = IIf(IsDBNull(dr("RegimenFiscal")), "", dr("RegimenFiscal"))
             If dr.Table.Columns.Contains("SiigoID") Then objCliente.SiigoID = dr("SiigoID")
         Catch ex As Exception
         End Try
         Return objCliente
 
     End Function
+
+    Public Shared Function DatosFiscales(ByVal dr As DataRow) As DatosFiscales
+        Dim objDatosFiscales As New DatosFiscales
+        Try
+            If dr.Table.Columns.Contains("DatosFiscalesID") Then objDatosFiscales.DatosFiscalesID = dr("DatosFiscalesID")
+            If dr.Table.Columns.Contains("ClienteId") Then objDatosFiscales.ClienteId = dr("ClienteId")
+            If dr.Table.Columns.Contains("Nombre") Then objDatosFiscales.Nombre = dr("Nombre")
+            If dr.Table.Columns.Contains("ApellidoPaterno") Then objDatosFiscales.ApellidoPaterno = dr("ApellidoPaterno")
+            If dr.Table.Columns.Contains("ApellidoMaterno") Then objDatosFiscales.ApellidoMaterno = dr("ApellidoMaterno")
+            If dr.Table.Columns.Contains("TipoPersona") Then objDatosFiscales.TipoPersona = dr("TipoPersona")
+            If dr.Table.Columns.Contains("RegimenFiscal") Then objDatosFiscales.RegimenFiscal = dr("RegimenFiscal")
+            If dr.Table.Columns.Contains("RazonSocial") Then objDatosFiscales.RazonSocial = dr("RazonSocial")
+            If dr.Table.Columns.Contains("RFCFacturacion") Then objDatosFiscales.RFCFacturacion = dr("RFCFacturacion")
+            If dr.Table.Columns.Contains("UsoDeComprobante") Then objDatosFiscales.UsoDeComprobante = dr("UsoDeComprobante")
+            If dr.Table.Columns.Contains("CPFacturacion") Then objDatosFiscales.CPFacturacion = dr("CPFacturacion")
+            If dr.Table.Columns.Contains("Calle") Then objDatosFiscales.Calle = dr("Calle")
+            If dr.Table.Columns.Contains("NumeroInterior") Then objDatosFiscales.NumeroInterior = dr("NumeroInterior")
+            If dr.Table.Columns.Contains("NumeroExterior") Then objDatosFiscales.NumeroExterior = dr("NumeroExterior")
+            If dr.Table.Columns.Contains("Colonia") Then objDatosFiscales.Colonia = dr("Colonia")
+            If dr.Table.Columns.Contains("Localidad") Then objDatosFiscales.Localidad = dr("Localidad")
+            If dr.Table.Columns.Contains("CodigoPais") Then objDatosFiscales.CodigoPais = dr("CodigoPais")
+            If dr.Table.Columns.Contains("CodigoEstado") Then objDatosFiscales.CodigoEstado = dr("CodigoEstado")
+            If dr.Table.Columns.Contains("CodigoMunicipio") Then objDatosFiscales.CodigoMunicipio = dr("CodigoMunicipio")
+            If dr.Table.Columns.Contains("CodigoPostal") Then objDatosFiscales.CodigoPostal = dr("CodigoPostal")
+        Catch ex As Exception
+        End Try
+
+        Return objDatosFiscales
+    End Function
+
     Public Shared Function Usuario(ByVal dr As DataRow) As Usuario
         Dim objUsuario As New Usuario
         Try
@@ -151,6 +173,20 @@ Public Class ConvertObject
         Catch ex As Exception
         End Try
         Return objEstatusDeposito
+    End Function
+    Public Shared Function PaisesEstados(ByVal dr As DataRow) As PaisesEstados
+        Dim objPaisesEstados As New PaisesEstados
+        Try
+            If dr.Table.Columns.Contains("PaisID") Then objPaisesEstados.PaisID = dr("PaisID")
+            If dr.Table.Columns.Contains("Pais") Then objPaisesEstados.Pais = dr("Pais")
+            If dr.Table.Columns.Contains("Estado") Then objPaisesEstados.Estado = dr("Estado")
+            If dr.Table.Columns.Contains("Municipio") Then objPaisesEstados.Municipio = dr("Municipio")
+            If dr.Table.Columns.Contains("CodigoPais") Then objPaisesEstados.CodigoPais = dr("CodigoPais")
+            If dr.Table.Columns.Contains("CodigoEstado") Then objPaisesEstados.CodigoEstado = dr("CodigoEstado")
+            If dr.Table.Columns.Contains("CodigoMunicipio") Then objPaisesEstados.CodigoMunicipio = dr("CodigoMunicipio")
+        Catch ex As Exception
+        End Try
+        Return objPaisesEstados
     End Function
     Public Shared Function MetodoPago(ByVal dr As DataRow) As MetodoPago
         Dim objMetodoPago As New MetodoPago

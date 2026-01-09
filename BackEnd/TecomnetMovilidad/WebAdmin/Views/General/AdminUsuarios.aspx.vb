@@ -177,4 +177,12 @@ Public Class AdminUsuarios
         Dim texto As String = txtBuscarUsuarios.Text.Trim()
         CargarUsuarios(texto)
     End Sub
+
+    Protected Sub gvUsuarios_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        Dim controller As New ControllerUsuario
+        Dim listaUsuarios As List(Of Usuario) = controller.ObtenerUsuarios()
+        gvUsuarios.PageIndex = e.NewPageIndex
+        gvUsuarios.DataSource = listaUsuarios
+        gvUsuarios.DataBind()
+    End Sub
 End Class

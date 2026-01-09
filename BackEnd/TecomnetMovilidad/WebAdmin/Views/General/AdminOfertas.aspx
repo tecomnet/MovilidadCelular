@@ -61,6 +61,19 @@
         a.text-primary, a.text-danger {
             text-decoration: none !important;
         }
+
+        .gvPager a {
+            padding: .375rem .75rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+            .gvPager a:hover {
+                background-color: #e9ecef;
+            }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -102,7 +115,11 @@
                         AutoGenerateColumns="False"
                         HeaderStyle-CssClass="table-dark"
                         ShowHeaderWhenEmpty="True"
-                        OnRowCommand="gvOfertas_RowCommand">
+                        OnRowCommand="gvOfertas_RowCommand"
+                        AllowPaging="True"
+                        PageSize="10"
+                        OnPageIndexChanging="gvOfertas_PageIndexChanging">
+                        <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
 
                         <Columns>
                             <asp:BoundField DataField="OfferIDAltan" HeaderText="ID" />
@@ -363,7 +380,7 @@
             clearTimeout(typingTimer);
             typingTimer = setTimeout(function () {
                 __doPostBack('<%= txtBuscarOfertas.UniqueID %>', '');
-        }, delay);
+            }, delay);
         }
     </script>
 </asp:Content>

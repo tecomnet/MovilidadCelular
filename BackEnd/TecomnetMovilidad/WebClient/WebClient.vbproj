@@ -167,6 +167,7 @@
     <Content Include="Views\General\ValidaRecarga.aspx" />
     <Content Include="Views\Planes\CambioDePlan.aspx" />
     <Content Include="Views\Recargas\recargas.aspx" />
+    <Content Include="Views\Vinculacion\VinculacionCurp.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +322,13 @@
     <Compile Include="Views\Recargas\recargas.aspx.vb">
       <DependentUpon>recargas.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Vinculacion\VinculacionCurp.aspx.designer.vb">
+      <DependentUpon>VinculacionCurp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Vinculacion\VinculacionCurp.aspx.vb">
+      <DependentUpon>VinculacionCurp.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

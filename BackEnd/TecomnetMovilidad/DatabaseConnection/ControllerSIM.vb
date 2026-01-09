@@ -1,4 +1,5 @@
-﻿Imports Models.TECOMNET
+﻿Imports Models
+Imports Models.TECOMNET
 
 Public Class ControllerSIM
     '1 Obtiene todas las SIMS
@@ -159,5 +160,16 @@ Public Class ControllerSIM
         Catch ex As Exception
             Return False
         End Try
+    End Function
+
+    Public Function UpdateSIM(ByVal objSIM As SIM) As Integer
+        Dim exito As Integer
+        Dim controller As New Controller
+        Try
+            exito = controller.TransactionsSIM(Of Integer)(11, objSIM)
+        Catch ex As Exception
+            Return exito
+        End Try
+        Return exito
     End Function
 End Class

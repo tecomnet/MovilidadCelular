@@ -54,6 +54,19 @@
             padding: 2rem;
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
+
+        .gvPager a {
+            padding: .375rem .75rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+            .gvPager a:hover {
+                background-color: #e9ecef;
+            }
     </style>
 </asp:Content>
 
@@ -68,12 +81,12 @@
                 Text="+ Agregar Usuario" OnClick="btnAgregarUsuario_Click" />
         </div>
         <div class="mb-4">
-        <asp:TextBox ID="txtBuscarUsuarios" runat="server" CssClass="form-control"
-            placeholder="🔍 Buscar usuarios..." AutoPostBack="true"
-            OnTextChanged="txtBuscarUsuarios_TextChanged"
-            onkeyup="iniciarBusqueda();">
-        </asp:TextBox>
-            </div>
+            <asp:TextBox ID="txtBuscarUsuarios" runat="server" CssClass="form-control"
+                placeholder="🔍 Buscar usuarios..." AutoPostBack="true"
+                OnTextChanged="txtBuscarUsuarios_TextChanged"
+                onkeyup="iniciarBusqueda();">
+            </asp:TextBox>
+        </div>
     </asp:Panel>
 
     <asp:Panel ID="pnlTabla" runat="server" Visible="True">
@@ -81,7 +94,10 @@
             <div style="overflow-x: auto; width: 100%;">
                 <asp:GridView ID="gvUsuarios" runat="server" CssClass="table table-hover align-middle"
                     HeaderStyle-CssClass="table-dark"
-                    AutoGenerateColumns="False" DataKeyNames="UsuarioID">
+                    AutoGenerateColumns="False" DataKeyNames="UsuarioID" AllowPaging="True"
+                    PageSize="10"
+                    OnPageIndexChanging="gvUsuarios_PageIndexChanging">
+                    <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
                     <Columns>
                         <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
                         <asp:BoundField DataField="Email" HeaderText="Correo" />
