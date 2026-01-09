@@ -257,6 +257,15 @@ Partial Public Class AdminCliente
     Protected WithEvents txtCURP As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''Control txtNombreRazonSocial.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtNombreRazonSocial As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''Control pnlFisicaFecha.
     '''</summary>
     '''<remarks>
@@ -356,15 +365,6 @@ Partial Public Class AdminCliente
     Protected WithEvents tbPassword As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control rfvPassword.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvPassword As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
     '''Control revPassword.
     '''</summary>
     '''<remarks>
@@ -381,69 +381,6 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtFechaAlta As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control ddlEstado.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents ddlEstado As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''Control ddlLocalidad.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents ddlLocalidad As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''Control txtColonia.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtColonia As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control txtCalle.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtCalle As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control txtDireccion.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtDireccion As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control txtCP.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtCP As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control revCP.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents revCP As Global.System.Web.UI.WebControls.RegularExpressionValidator
 
     '''<summary>
     '''Control pnlSeccionFiscales.
@@ -464,15 +401,6 @@ Partial Public Class AdminCliente
     Protected WithEvents ddlTipoPersonaRegimen As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control RequiredFieldValidator1.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents RequiredFieldValidator1 As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
     '''Control ddlRegimenFiscal.
     '''</summary>
     '''<remarks>
@@ -482,13 +410,67 @@ Partial Public Class AdminCliente
     Protected WithEvents ddlRegimenFiscal As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control txtNombreRazonSocial.
+    '''Control pnlFiscaFiscales.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtNombreRazonSocial As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents pnlFiscaFiscales As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control txtNombreFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtNombreFiscal As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtApellidoPaternoFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtApellidoPaternoFiscal As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control pnlDatosMoralFiscales.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlDatosMoralFiscales As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control pnlApellidoPaternoFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents pnlApellidoPaternoFiscal As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''Control txtApellidoMaternoFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtApellidoMaternoFiscal As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtRazonSocialFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtRazonSocialFiscal As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control txtRfcFacturacion.
@@ -516,6 +498,87 @@ Partial Public Class AdminCliente
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
     Protected WithEvents txtCPFacturacion As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control ddlPaisFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlPaisFiscal As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control ddlEstadoFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlEstadoFiscal As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control ddlCiudadFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents ddlCiudadFiscal As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''Control txtCalleFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtCalleFiscal As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtColoniaFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtColoniaFiscal As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtNumeroInterior.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtNumeroInterior As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtNumeroExterior.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtNumeroExterior As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtLocalidad.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtLocalidad As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control txtCodigoPostalFiscal.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents txtCodigoPostalFiscal As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Control PnlAsignarSIM.

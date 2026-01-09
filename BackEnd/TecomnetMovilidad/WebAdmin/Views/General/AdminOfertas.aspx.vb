@@ -199,4 +199,13 @@ Public Class AdminOfertas
         Dim texto As String = txtBuscarOfertas.Text.Trim()
         CargarOfertas(texto)
     End Sub
+
+    Protected Sub gvOfertas_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        Dim controller As New ControllerOferta
+        Dim listaOferta As List(Of Oferta) = controller.ObtenerOfertas()
+
+        gvOfertas.PageIndex = e.NewPageIndex
+        gvOfertas.DataSource = listaOferta
+        gvOfertas.DataBind()
+    End Sub
 End Class

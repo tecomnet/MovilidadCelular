@@ -17,23 +17,16 @@ Public Class Controller
         parametros.Add(ConnectionDB.ArmaParametro("@FechaAlta", SqlDbType.DateTime, objCliente.FechaAlta))
         parametros.Add(ConnectionDB.ArmaParametro("@Estatus", SqlDbType.Int, objCliente.Estatus))
         parametros.Add(ConnectionDB.ArmaParametro("@ContrasenaHash", SqlDbType.NVarChar, objCliente.ContrasenaHash))
-        parametros.Add(ConnectionDB.ArmaParametro("@Estado", SqlDbType.NVarChar, objCliente.Estado))
+        parametros.Add(ConnectionDB.ArmaParametro("@RFC", SqlDbType.NVarChar, objCliente.RFC))
+        parametros.Add(ConnectionDB.ArmaParametro("@NombreRazonSocial", SqlDbType.NVarChar, objCliente.NombreRazonSocial))
+        parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objCliente.FechaBaja), DBNull.Value, objCliente.FechaBaja)))
         parametros.Add(ConnectionDB.ArmaParametro("@Colonia", SqlDbType.NVarChar, objCliente.Colonia))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estado", SqlDbType.NVarChar, objCliente.Estado))
         parametros.Add(ConnectionDB.ArmaParametro("@Direccion", SqlDbType.NVarChar, objCliente.Direccion))
         parametros.Add(ConnectionDB.ArmaParametro("@CP", SqlDbType.NVarChar, objCliente.CP))
-        parametros.Add(ConnectionDB.ArmaParametro("@RFC", SqlDbType.NVarChar, objCliente.RFC))
-        parametros.Add(ConnectionDB.ArmaParametro("@RFCFacturacion", SqlDbType.NVarChar, objCliente.RFCFacturacion))
-        parametros.Add(ConnectionDB.ArmaParametro("@NombreRazonSocial", SqlDbType.NVarChar, objCliente.NombreRazonSocial))
         parametros.Add(ConnectionDB.ArmaParametro("@CPFacturacion", SqlDbType.NVarChar, objCliente.CPFacturacion))
+        parametros.Add(ConnectionDB.ArmaParametro("@RFCFacturacion", SqlDbType.NVarChar, objCliente.RFCFacturacion))
         parametros.Add(ConnectionDB.ArmaParametro("@RegimenFiscal", SqlDbType.NVarChar, objCliente.RegimenFiscal))
-        parametros.Add(ConnectionDB.ArmaParametro("@UsoDeComprobante", SqlDbType.NVarChar, objCliente.UsoDeComprobante))
-        parametros.Add(ConnectionDB.ArmaParametro("@FechaBaja", SqlDbType.DateTime, IIf(IsNothing(objCliente.FechaBaja), DBNull.Value, objCliente.FechaBaja)))
-        parametros.Add(ConnectionDB.ArmaParametro("@Calle", SqlDbType.NVarChar, objCliente.Calle))
-        parametros.Add(ConnectionDB.ArmaParametro("@NumeroInterior", SqlDbType.NVarChar, objCliente.NumeroInterior))
-        parametros.Add(ConnectionDB.ArmaParametro("@NumeroExterior", SqlDbType.NVarChar, objCliente.NumeroExterior))
-        parametros.Add(ConnectionDB.ArmaParametro("@Localidad", SqlDbType.NVarChar, objCliente.Localidad))
-        parametros.Add(ConnectionDB.ArmaParametro("@CodigoPais", SqlDbType.NVarChar, objCliente.CodigoPais))
-        parametros.Add(ConnectionDB.ArmaParametro("@CodigoEstado", SqlDbType.NVarChar, objCliente.CodigoEstado))
         parametros.Add(ConnectionDB.ArmaParametro("@SiigoID", SqlDbType.NVarChar, objCliente.SiigoID))
         parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
 
@@ -46,6 +39,48 @@ Public Class Controller
             result = cnx.ejecutasp_consulta("[sp_Cliente]", parametros)
         ElseIf GetType(ReturnType) Is GetType(Boolean) Then
             result = cnx.ejecutasp("[sp_Cliente]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsDatosFiscales(Of ReturnType)(opcion As Integer, ByVal objDatosFiscales As DatosFiscales) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@DatosFiscalesID", SqlDbType.Int, objDatosFiscales.DatosFiscalesID))
+        parametros.Add(ConnectionDB.ArmaParametro("@ClienteId", SqlDbType.Int, objDatosFiscales.ClienteId))
+        parametros.Add(ConnectionDB.ArmaParametro("@Nombre", SqlDbType.NVarChar, objDatosFiscales.Nombre))
+        parametros.Add(ConnectionDB.ArmaParametro("@ApellidoPaterno", SqlDbType.NVarChar, objDatosFiscales.ApellidoPaterno))
+        parametros.Add(ConnectionDB.ArmaParametro("@ApellidoMaterno", SqlDbType.NVarChar, objDatosFiscales.ApellidoMaterno))
+        parametros.Add(ConnectionDB.ArmaParametro("@TipoPersona", SqlDbType.NVarChar, objDatosFiscales.TipoPersona))
+        parametros.Add(ConnectionDB.ArmaParametro("@RegimenFiscal", SqlDbType.NVarChar, objDatosFiscales.RegimenFiscal))
+        parametros.Add(ConnectionDB.ArmaParametro("@RazonSocial", SqlDbType.NVarChar, objDatosFiscales.RazonSocial))
+        parametros.Add(ConnectionDB.ArmaParametro("@RFCFacturacion", SqlDbType.NVarChar, objDatosFiscales.RFCFacturacion))
+        parametros.Add(ConnectionDB.ArmaParametro("@UsoDeComprobante", SqlDbType.NVarChar, objDatosFiscales.UsoDeComprobante))
+        parametros.Add(ConnectionDB.ArmaParametro("@CPFacturacion", SqlDbType.NVarChar, objDatosFiscales.CPFacturacion))
+        parametros.Add(ConnectionDB.ArmaParametro("@Calle", SqlDbType.NVarChar, objDatosFiscales.Calle))
+        parametros.Add(ConnectionDB.ArmaParametro("@NumeroInterior", SqlDbType.NVarChar, objDatosFiscales.NumeroInterior))
+        parametros.Add(ConnectionDB.ArmaParametro("@NumeroExterior", SqlDbType.NVarChar, objDatosFiscales.NumeroExterior))
+        parametros.Add(ConnectionDB.ArmaParametro("@Colonia", SqlDbType.NVarChar, objDatosFiscales.Colonia))
+        parametros.Add(ConnectionDB.ArmaParametro("@Localidad", SqlDbType.NVarChar, objDatosFiscales.Localidad))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoPais", SqlDbType.NVarChar, objDatosFiscales.CodigoPais))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoEstado", SqlDbType.NVarChar, objDatosFiscales.CodigoEstado))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoMunicipio", SqlDbType.NVarChar, objDatosFiscales.CodigoMunicipio))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoPostal", SqlDbType.NVarChar, objDatosFiscales.CodigoPostal))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_DatosFiscales]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_DatosFiscales]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_DatosFiscales]", parametros)
         Else
             Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
         End If
@@ -325,6 +360,35 @@ Public Class Controller
             result = cnx.ejecutasp_consulta("[sp_EstatusDeposito]", parametros)
         ElseIf GetType(ReturnType) Is GetType(Boolean) Then
             result = cnx.ejecutasp("[sp_EstatusDeposito]", parametros)
+        Else
+            Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
+        End If
+        cnx.DesactivarConexion()
+        cnx = Nothing
+        Return DirectCast(result, ReturnType)
+    End Function
+    Public Function TransactionsPaisesEstados(Of ReturnType)(opcion As Integer, ByVal objPaisesEstados As PaisesEstados) As ReturnType
+        Dim parametros As New Collection
+
+        parametros.Add(ConnectionDB.ArmaParametro("@opcion", SqlDbType.Int, opcion))
+        parametros.Add(ConnectionDB.ArmaParametro("@PaisID", SqlDbType.Int, objPaisesEstados.PaisID))
+        parametros.Add(ConnectionDB.ArmaParametro("@Estado", SqlDbType.NVarChar, If(String.IsNullOrEmpty(objPaisesEstados.Estado), DBNull.Value, objPaisesEstados.Estado)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Pais", SqlDbType.NVarChar, If(String.IsNullOrEmpty(objPaisesEstados.Pais), DBNull.Value, objPaisesEstados.Pais)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Municipio", SqlDbType.NVarChar, If(String.IsNullOrEmpty(objPaisesEstados.Municipio), DBNull.Value, objPaisesEstados.Municipio)))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoPais", SqlDbType.NVarChar, If(String.IsNullOrEmpty(objPaisesEstados.CodigoPais), DBNull.Value, objPaisesEstados.CodigoPais)))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoEstado", SqlDbType.NVarChar, If(String.IsNullOrEmpty(objPaisesEstados.CodigoEstado), DBNull.Value, objPaisesEstados.CodigoEstado)))
+        parametros.Add(ConnectionDB.ArmaParametro("@CodigoMunicipio", SqlDbType.NVarChar, If(String.IsNullOrEmpty(objPaisesEstados.CodigoMunicipio), DBNull.Value, objPaisesEstados.CodigoMunicipio)))
+        parametros.Add(ConnectionDB.ArmaParametro("@Result", SqlDbType.Int, 0, ParameterDirection.Output))
+
+        Dim cnx As New ConnectionDB
+        cnx.ActivarConexion()
+        Dim result As Object
+        If GetType(ReturnType) Is GetType(Integer) Then
+            result = cnx.ejecutasp_int("[sp_PaisesEstados]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(DataSet) Then
+            result = cnx.ejecutasp_consulta("[sp_PaisesEstados]", parametros)
+        ElseIf GetType(ReturnType) Is GetType(Boolean) Then
+            result = cnx.ejecutasp("[sp_PaisesEstados]", parametros)
         Else
             Throw New NotSupportedException("No se puede convertir de '" & GetType(ReturnType).ToString & "'")
         End If

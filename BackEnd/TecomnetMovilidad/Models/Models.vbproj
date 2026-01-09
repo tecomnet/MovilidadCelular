@@ -124,6 +124,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TECOMNET\Cliente.vb" />
+    <Compile Include="TECOMNET\DatosFiscales.vb" />
     <Compile Include="TECOMNET\Distribuidor.vb" />
     <Compile Include="TECOMNET\Enumeraciones.vb" />
     <Compile Include="TECOMNET\EstatusDeposito.vb" />

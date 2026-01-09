@@ -97,10 +97,12 @@
     <Compile Include="Controller.vb" />
     <Compile Include="ControllerAltanRedes.vb" />
     <Compile Include="ControllerCliente.vb" />
+    <Compile Include="ControllerDatosFiscales.vb" />
     <Compile Include="ControllerDistribuidor.vb" />
     <Compile Include="ControllerEstatusDeposito.vb" />
     <Compile Include="ControllerMetodoPago.vb" />
     <Compile Include="ControllerOferta.vb" />
+    <Compile Include="ControllerPaisesEstados.vb" />
     <Compile Include="ControllerPortabilidad.vb" />
     <Compile Include="ControllerRecarga.vb" />
     <Compile Include="ControllerSIM.vb" />

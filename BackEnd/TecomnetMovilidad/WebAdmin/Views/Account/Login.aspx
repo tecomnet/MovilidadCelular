@@ -35,11 +35,7 @@
                 <label for="txtPassword" class="form-label">Contraseña</label>
                 <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" />
             </div>
-            <asp:Button ID="btnLogin" runat="server" Text="Entrar" CssClass="btn btn-success w-100" OnClick="btnLogin_Click" />
-
-            <div class="mt-3 text-center">
-                <asp:HyperLink ID="lnkRecuperar" runat="server">¿Olvidaste tu contraseña?</asp:HyperLink>
-            </div>
+            <asp:Button ID="btnLogin" runat="server" Text="Entrar" CssClass="btn btn-success w-100" OnClick="btnLogin_Click" />          
         </div>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

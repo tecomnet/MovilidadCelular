@@ -1,153 +1,226 @@
 ﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="Registros.aspx.vb" Inherits="WebClient.Registros" UnobtrusiveValidationMode="None" %>
 
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Registros</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
-        .centered {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-
-        .welcome-text {
-            font-size: 32px;
-            font-weight: bold;
-            color: #3f7dc0;
-            margin-bottom: 20px;
+        .card {
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="centered" style="height: auto; padding-top: 40px;">
-            <div class="welcome-text">
-                INGRESA TUS DATOS
-            </div>
-            <asp:Label ID="LblMensajeN" runat="server" CssClass="show" Visible="false"></asp:Label>
-            <div class="container mt-4">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="txtNombre" class="form-label">Nombre</label>
-                        <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvNombre" runat="server" ControlToValidate="txtNombre" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
+        <asp:HiddenField ID="hdnClienteId" runat="server" />
+
+        <div class="container mt-4">
+            <div class="card p-4">
+                <div class="row mt-4">
+        <asp:Label ID="LblMensajeN" runat="server" CssClass="show" style="display:block; text-align:center;"  Visible="false"></asp:Label>
+                    <div class="col-md-2 offset-md-8 d-grid">
+                        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtApellidoPaterno" class="form-label">Apellido Paterno</label>
-                        <asp:TextBox ID="txtApellidoPaterno" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvApellidoP" runat="server" ControlToValidate="txtApellidoPaterno" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
+                    <div class="col-md-2 d-grid">
+                        <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-danger" OnClick="btnCancelar_Click" />
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtApellidoMaterno" class="form-label">Apellido Materno</label>
-                        <asp:TextBox ID="txtApellidoMaterno" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvApellidoM" runat="server" ControlToValidate="txtApellidoMaterno" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtFechaNacimiento" class="form-label">Fecha Nacimiento</label>
-                        <asp:TextBox ID="txtFechaNacimiento" runat="server" TextMode="Date" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvFechaCumpleanios" runat="server" ControlToValidate="txtFechaNacimiento" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="ddlTipoPersona" class="form-label">Tipo de Persona</label>
-                        <asp:DropDownList ID="ddlTipoPersona" runat="server" CssClass="form-select">
-                            <asp:ListItem Text="-- Selecciona una opción --" Value="" />
-                            <asp:ListItem Text="Física" Value="Física" />
-                            <asp:ListItem Text="Moral" Value="Moral" />
+                </div>
+                <h5 class="card-title border-bottom pb-2">Datos Generales</h5>
+                <div class="row g-3 mt-2">
+                    <div class="col-12">
+                        <label class="form-label">Tipo de Persona</label>
+                        <asp:DropDownList ID="ddlTipoPersona" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlTipoPersona_SelectedIndexChanged">
+                            <asp:ListItem Text="Física" Value="F" />
+                            <asp:ListItem Text="Moral" Value="M" />
                         </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvTipoPersona" runat="server" ControlToValidate="ddlTipoPersona" InitialValue="" ErrorMessage="Selecciona un tipo de persona" CssClass="text-danger" />
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtCurp" class="form-label">CURP</label>
-                        <asp:TextBox ID="txtCurp" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvCurp" runat="server" ControlToValidate="txtCurp" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtTelefono" class="form-label">Télefono</label>
-                        <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvTelefono" runat="server" ControlToValidate="txtTelefono" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtEmail" class="form-label">Correo</label>
-                        <asp:TextBox ID="txtEmail" TextMode="Email" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvCorreo" runat="server" ControlToValidate="txtEmail" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtFechaAlta" class="form-label">Fecha de Alta</label>
-                        <asp:TextBox ID="txtFechaAlta" TextMode="Date" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtContrasena" class="form-label">Contraseña</label>
-                        <asp:TextBox ID="txtContrasena" TextMode="Password" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvContrasena" runat="server" ControlToValidate="txtContrasena" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="txtColonia" class="form-label">Colonia</label>
-                        <asp:TextBox ID="txtColonia" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvColonia" runat="server" ControlToValidate="txtColonia" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtDireccion" class="form-label">Dirección</label>
-                        <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvDireccion" runat="server" ControlToValidate="txtDireccion" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtCP" class="form-label">Código Postal</label>
-                        <asp:TextBox ID="txtCP" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfCP" runat="server" ControlToValidate="txtCP" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
-                    </div>
-                </div>
-                <h5 class="mt-4">Facturación</h5>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="txtRFC" class="form-label">RFC</label>
+                    <asp:Panel ID="pnlDatosFisica" runat="server" Visible="false">
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Nombre</label>
+                                <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Apellido Paterno</label>
+                                <asp:TextBox ID="txtApellidoPaterno" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Apellido Materno</label>
+                                <asp:TextBox ID="txtApellidoMaterno" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Nombre Completo</label>
+                                <asp:TextBox ID="txtNombreCompleto" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">CURP</label>
+                                <asp:TextBox ID="txtCurp" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Fecha de Nacimiento</label>
+                                <asp:TextBox ID="txtFechaNacimiento" runat="server" TextMode="Date" CssClass="form-control" />
+                            </div>
+                        </div>
+                    </asp:Panel>
+                    <div class="col-md-4">
+                        <label class="form-label">RFC</label>
                         <asp:TextBox ID="txtRFC" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvRFC" runat="server" ControlToValidate="txtRFC" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtRFCFacturacion" class="form-label">RFC Facturación</label>
-                        <asp:TextBox ID="txtRFCFacturacion" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvRFCFacturacion" runat="server" ControlToValidate="txtRFCFacturacion" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
+                    <div class="col-md-4">
+                        <label class="form-label">Teléfono</label>
+                        <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" />
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtNombreRazonSocial" class="form-label">Nombre / Razón Social</label>
-                        <asp:TextBox ID="txtNombreRazonSocial" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvNombreRazonSocial" runat="server" ControlToValidate="txtNombreRazonSocial" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
+                    <div class="col-md-4">
+                        <label class="form-label">Correo</label>
+                        <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" CssClass="form-control" />
+                        <span id="spanEmailExistente" class="text-danger"></span>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="txtCPFacturacion" class="form-label">CP Facturación</label>
-                        <asp:TextBox ID="txtCPFacturacion" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvCPFacturacion" runat="server" ControlToValidate="txtCPFacturacion" InitialValue="" ErrorMessage="Este campo es obligatorio" CssClass="text-danger" />
+                    <div class="col-md-4">
+                        <label class="form-label">Contraseña</label>
+                        <asp:TextBox ID="txtContrasena" runat="server" TextMode="Password"
+                            CssClass="form-control" />
                     </div>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-6 mb-3">
-                            <label for="ddlRegimenFiscal" class="form-label">Régimen Fiscal</label>
-                            <asp:DropDownList ID="ddlRegimenFiscal" runat="server" CssClass="form-select">
-                                <asp:ListItem Text="-- Selecciona una opción --" Value="" />
-                                <asp:ListItem Text="General de Ley Personas Morales" Value="601" />
-                                <asp:ListItem Text="Personas Físicas con Actividades Empresariales" Value="612" />
-                                <asp:ListItem Text="Régimen Simplificado de Confianza" Value="626" />
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha de Alta</label>
+                        <asp:TextBox ID="txtFechaAlta" runat="server" TextMode="Date" CssClass="form-control" ReadOnly="true" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Colonia</label>
+                        <asp:TextBox ID="txtColonia" runat="server" CssClass="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Dirección</label>
+                        <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Código Postal</label>
+                        <asp:TextBox ID="txtCP" runat="server" CssClass="form-control" />
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <h5 class="card-title border-bottom pb-2">Datos Fiscales</h5>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4">
+                            <label class="form-label">Tipo de Persona</label>
+                            <asp:DropDownList ID="ddlTipoPersonaRegimen" runat="server" CssClass="form-select" AutoPostBack="true">
+                                <asp:ListItem Text="Física" Value="F"></asp:ListItem>
+                                <asp:ListItem Text="Moral" Value="M"></asp:ListItem>
                             </asp:DropDownList>
-                            <asp:RequiredFieldValidator ID="rfvRegimenFiscal" runat="server" ControlToValidate="ddlRegimenFiscal" InitialValue="" ErrorMessage="Selecciona una opción" CssClass="text-danger" />
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary w-100" OnClick="btnGuardar_Click" />
+
+                        <div class="col-md-4">
+                            <label class="form-label">Regimén Fiscal</label>
+                            <asp:DropDownList ID="ddlRegimenFiscal" runat="server" CssClass="form-select">
+                            </asp:DropDownList>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-danger w-100" OnClick="btnCancelar_Click" />
+                        <div class="col-md-4">
+                            <label class="form-label">Nombre</label>
+                            <asp:TextBox ID="txtNombreFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Apellido Paterno</label>
+                            <asp:TextBox ID="txtApellidoPaternoFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Apellido Materno</label>
+                            <asp:TextBox ID="txtApellidoMaternoFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Razón Social</label>
+                            <asp:TextBox ID="txtRazonSocialFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">RFC</label>
+                            <asp:TextBox ID="txtRFCFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">RFC Facturación</label>
+                            <asp:TextBox ID="txtRFCFacturacion" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">CP Facturación</label>
+                            <asp:TextBox ID="txtCPFacturacion" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Uso De Comprobante</label>
+                            <asp:TextBox ID="txtUsoComprobante" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pais</label>
+                            <asp:DropDownList ID="ddlPaisFiscal" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPaisFiscal_SelectedIndexChanged" ></asp:DropDownList>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Estado</label>
+                            <asp:DropDownList ID="ddlEstadoFiscal" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlEstadoFiscal_SelectedIndexChanged" ></asp:DropDownList>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Ciudad</label>
+                            <asp:DropDownList ID="ddlCiudadFiscal" runat="server" CssClass="form-select" AutoPostBack="true"></asp:DropDownList>                         
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Calle</label>
+                            <asp:TextBox ID="txtCalleFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Colonia</label>
+                            <asp:TextBox ID="txtColoniaFiscal" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Número Interior</label>
+                            <asp:TextBox ID="txtNumeroInterior" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Número Exterior</label>
+                            <asp:TextBox ID="txtNumeroExterior" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Localidad</label>
+                            <asp:TextBox ID="txtLocalidad" runat="server" CssClass="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Codigo Postal</label>
+                            <asp:TextBox ID="txtCodigoPostalFiscal" runat="server" CssClass="form-control" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#<%= txtEmail.ClientID %>").on('blur', function () {
+                    var email = $(this).val();
+                    var clienteId = parseInt($("#<%= hdnClienteId.ClientID %>").val()) || 0;
+
+                    if (email.length > 0) {
+                        $.ajax({
+                            type: "POST",
+                            url: "Registros.aspx/VerificarEmailExistente",
+                            data: JSON.stringify({ email: email, clienteId: clienteId }),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response) {
+                                if (response.d) {
+                                    $("#spanEmailExistente").text("❌ Este correo ya está registrado. Intenta con otro.");
+                                    $("#spanEmailExistente").addClass("text-danger").removeClass("text-success");
+                                } else {
+                                    $("#spanEmailExistente").text("✅ Correo disponible.");
+                                    $("#spanEmailExistente").addClass("text-success").removeClass("text-danger");
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Error al validar el email: " + error);
+                            }
+                        });
+                    } else {
+                        $("#spanEmailExistente").text("");
+                    }
+                });
+            });
+        </script>
     </form>
 </body>
 </html>

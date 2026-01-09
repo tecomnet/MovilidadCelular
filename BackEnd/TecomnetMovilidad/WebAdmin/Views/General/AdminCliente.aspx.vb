@@ -14,6 +14,7 @@ Public Class AdminCliente
             llenaRegimen()
             txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
             pnlFisica.Visible = True
+            CargarPaises()
         End If
     End Sub
 
@@ -25,11 +26,24 @@ Public Class AdminCliente
         PnlBotonDatos.Visible = True
         PnlBotonGuardarCancelar.Visible = True
         LimpiarCampos()
-
+        If ddlTipoPersona.SelectedValue = "F" Then
+            pnlFisica.Visible = True
+            pnlPassword.Visible = True
+            pnlFisicaFecha.Visible = True
+            pnlRFC.Visible = True
+        ElseIf ddlTipoPersona.SelectedValue = "M" Then
+            pnlFisica.Visible = False
+            pnlPassword.Visible = True
+            pnlFisicaFecha.Visible = False
+            pnlRFC.Visible = True
+        End If
+        OcultarMensaje()
     End Sub
 
     Protected Sub btnGuardar_Click(sender As Object, e As EventArgs)
         Dim controllerClientes As New ControllerCliente
+        Dim controllerDatosFiscales As New ControllerDatosFiscales
+        Dim objDatosFiscales As New DatosFiscales
         Dim objClientes As New Cliente
 
         objClientes.ClienteId = If(String.IsNullOrEmpty(hdnClienteId.Value), 0, Convert.ToInt32(hdnClienteId.Value))
@@ -52,24 +66,35 @@ Public Class AdminCliente
         End If
         objClientes.Estatus = CType(Convert.ToInt32(ddlEstatus.SelectedValue), EstatusCliente)
         objClientes.ContrasenaHash = Securyty.Cifrar(tbPassword.Text)
-        objClientes.Estado = ddlEstado.SelectedValue
-        objClientes.Colonia = txtColonia.Text
-        objClientes.Direccion = txtDireccion.Text
-        objClientes.CP = txtCP.Text
-
         objClientes.RFC = txtRFC.Text
-        objClientes.RFCFacturacion = txtRfcFacturacion.Text
         objClientes.NombreRazonSocial = txtNombreRazonSocial.Text
-        objClientes.CPFacturacion = txtCPFacturacion.Text
-        'objClientes.RegimenFiscal = txtRegimenFiscal.Text
-        objClientes.UsoDeComprobante = txtUsoComprobante.Text
-        objClientes.Calle = txtCalle.Text
-        objClientes.Localidad = ddlLocalidad.SelectedValue
+
+        objDatosFiscales.Nombre = txtNombreFiscal.Text
+        objDatosFiscales.ApellidoPaterno = txtApellidoPaternoFiscal.Text
+        objDatosFiscales.ApellidoMaterno = txtApellidoMaternoFiscal.Text
+        objDatosFiscales.RazonSocial = txtRazonSocialFiscal.Text
+        objDatosFiscales.RFCFacturacion = txtRfcFacturacion.Text
+        objDatosFiscales.UsoDeComprobante = txtUsoComprobante.Text
+        objDatosFiscales.CPFacturacion = txtCPFacturacion.Text
+        objDatosFiscales.Calle = txtCalleFiscal.Text
+        objDatosFiscales.Colonia = txtColoniaFiscal.Text
+        objDatosFiscales.NumeroExterior = txtNumeroExterior.Text
+        objDatosFiscales.NumeroInterior = txtNumeroInterior.Text
+        objDatosFiscales.Localidad = txtLocalidad.Text
+        objDatosFiscales.TipoPersona = ddlTipoPersonaRegimen.SelectedValue
+        objDatosFiscales.RegimenFiscal = ddlRegimenFiscal.SelectedValue
+        objDatosFiscales.CodigoPostal = txtCodigoPostalFiscal.Text
+        objDatosFiscales.CodigoPais = ddlPaisFiscal.SelectedValue
+        objDatosFiscales.CodigoEstado = ddlEstadoFiscal.SelectedValue
+        objDatosFiscales.CodigoMunicipio = ddlCiudadFiscal.SelectedValue
 
         If objClientes.ClienteId = 0 Then
             Dim cliente As Integer = controllerClientes.AddCliente(objClientes)
             hdnClienteId.Value = cliente.ToString()
             CargarClientes()
+            objDatosFiscales.ClienteId = cliente
+
+            Dim resultadoFiscal As Integer = controllerDatosFiscales.AddDatosFiscales(objDatosFiscales)
 
             pnlAdminCliente.Visible = True
             pnlAgregar.Visible = False
@@ -77,17 +102,23 @@ Public Class AdminCliente
             PnlBotonDatos.Visible = False
             PnlBotonGuardarCancelar.Visible = False
             LimpiarCampos()
+            MostrarMensaje("✅ Cliente agregado correctamente.", "success")
 
         Else
             Dim actualizado As Integer = controllerClientes.UpdateCliente(objClientes)
+            objDatosFiscales.ClienteId = objClientes.ClienteId
+
+            Dim datosExistentes As DatosFiscales = controllerDatosFiscales.ObtenerDatosFiscalesPorClienteID(objClientes.ClienteId)
+            Dim resultadoFiscal As Integer
+            If datosExistentes IsNot Nothing AndAlso datosExistentes.ClienteId > 0 Then
+                objDatosFiscales.DatosFiscalesID = datosExistentes.DatosFiscalesID
+                resultadoFiscal = controllerDatosFiscales.UpdateDatosFiscales(objDatosFiscales)
+            End If
             If actualizado > 0 Then
-                lblMensaje.Text = "✅ Cliente actualizado correctamente."
-                lblMensaje.CssClass = "alert alert-success"
-                lblMensaje.Visible = True
+                MostrarMensaje("✅ Cliente actualizado correctamente al cliente.", "success")
+
             Else
-                lblMensaje.Text = "❌ Error al actualizar el cliente."
-                lblMensaje.CssClass = "alert alert-danger"
-                lblMensaje.Visible = True
+                MostrarMensaje("❌ Error al actualizar el cliente.", "danger")
             End If
             pnlAgregar.Visible = False
             pnlTabla.Visible = True
@@ -95,6 +126,7 @@ Public Class AdminCliente
             PnlBotonDatos.Visible = False
             PnlBotonSIM.Visible = False
             PnlBotonGuardarCancelar.Visible = False
+            pnlPassword.Visible = True
 
             CargarClientes()
 
@@ -118,6 +150,7 @@ Public Class AdminCliente
     Protected Sub gvClientes_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvClientes.RowCommand
         Try
             If e.CommandName = "EditarCliente" Then
+                OcultarMensaje()
                 Dim clienteId As Integer = Convert.ToInt32(e.CommandArgument)
                 Dim controller As New ControllerCliente()
                 Dim cliente As Cliente = controller.ObtenerClientePorID(clienteId)
@@ -135,6 +168,17 @@ Public Class AdminCliente
                     End If
                     If ddlTipoPersona.Items.FindByValue(cliente.TipoPersona) IsNot Nothing Then
                         ddlTipoPersona.SelectedValue = cliente.TipoPersona
+                        If cliente.TipoPersona = "F" Then
+                            pnlFisica.Visible = True
+                            pnlPassword.Visible = True
+                            pnlFisicaFecha.Visible = True
+                            pnlRFC.Visible = True
+                        ElseIf cliente.TipoPersona = "M" Then
+                            pnlFisica.Visible = False
+                            pnlPassword.Visible = True
+                            pnlFisicaFecha.Visible = False
+                            pnlRFC.Visible = True
+                        End If
                     End If
                     txtCURP.Text = cliente.CURP
                     txtTelefono.Text = cliente.Telefono
@@ -147,26 +191,43 @@ Public Class AdminCliente
                     If ddlEstatus.Items.FindByValue(CInt(cliente.Estatus).ToString()) IsNot Nothing Then
                         ddlEstatus.SelectedValue = CInt(cliente.Estatus).ToString()
                     End If
-                    If Not String.IsNullOrEmpty(cliente.Estado) AndAlso ddlEstado.Items.FindByValue(cliente.Estado) IsNot Nothing Then
-                        ddlEstado.SelectedValue = cliente.Estado
-                    Else
-                        ddlEstado.SelectedIndex = 0
-                    End If
-                    tbPassword.Text = cliente.ContrasenaHash
-                    txtColonia.Text = cliente.Colonia
-                    txtDireccion.Text = cliente.Direccion
-                    txtCP.Text = cliente.CP
+
                     txtRFC.Text = cliente.RFC
-                    txtRfcFacturacion.Text = cliente.RFCFacturacion
                     txtNombreRazonSocial.Text = cliente.NombreRazonSocial
-                    txtCPFacturacion.Text = cliente.CPFacturacion
-                    'txtRegimenFiscal.Text = cliente.RegimenFiscal
-                    txtUsoComprobante.Text = cliente.UsoDeComprobante
-                    txtCalle.Text = cliente.Calle
-                    If Not String.IsNullOrEmpty(cliente.Localidad) AndAlso ddlLocalidad.Items.FindByValue(cliente.Localidad) IsNot Nothing Then
-                        ddlLocalidad.SelectedValue = cliente.Localidad
-                    Else
-                        ddlLocalidad.SelectedIndex = 0
+
+                    Dim controllerFiscal As New ControllerDatosFiscales()
+                    Dim datosFiscales As DatosFiscales = controllerFiscal.ObtenerDatosFiscalesPorClienteID(cliente.ClienteId)
+
+                    If datosFiscales IsNot Nothing AndAlso datosFiscales.ClienteId > 0 Then
+                        txtNombreFiscal.Text = datosFiscales.Nombre
+                        txtApellidoPaternoFiscal.Text = datosFiscales.ApellidoPaterno
+                        txtApellidoMaternoFiscal.Text = datosFiscales.ApellidoMaterno
+                        txtRazonSocialFiscal.Text = datosFiscales.RazonSocial
+                        txtRfcFacturacion.Text = datosFiscales.RFCFacturacion
+                        txtUsoComprobante.Text = datosFiscales.UsoDeComprobante
+                        txtCPFacturacion.Text = datosFiscales.CPFacturacion
+                        txtCalleFiscal.Text = datosFiscales.Calle
+                        txtColoniaFiscal.Text = datosFiscales.Colonia
+                        txtNumeroExterior.Text = datosFiscales.NumeroExterior
+                        txtNumeroInterior.Text = datosFiscales.NumeroInterior
+                        txtLocalidad.Text = datosFiscales.Localidad
+                        txtCodigoPostalFiscal.Text = datosFiscales.CodigoPostal
+
+                        If ddlTipoPersonaRegimen.Items.FindByValue(datosFiscales.TipoPersona) IsNot Nothing Then
+                            ddlTipoPersonaRegimen.SelectedValue = datosFiscales.TipoPersona
+                            If datosFiscales.TipoPersona = "F" Then
+                                pnlFiscaFiscales.Visible = True
+                                pnlDatosMoralFiscales.Visible = True
+                                pnlApellidoPaternoFiscal.Visible = True
+                            ElseIf datosFiscales.TipoPersona = "M" Then
+                                pnlFiscaFiscales.Visible = False
+                                pnlDatosMoralFiscales.Visible = True
+                                pnlApellidoPaternoFiscal.Visible = False
+                            End If
+                        End If
+                        If ddlRegimenFiscal.Items.FindByValue(datosFiscales.RegimenFiscal) IsNot Nothing Then
+                            ddlRegimenFiscal.SelectedValue = datosFiscales.RegimenFiscal
+                        End If
                     End If
 
                     pnlTabla.Visible = False
@@ -188,11 +249,9 @@ Public Class AdminCliente
                 Dim resultado As Integer = controller.BajaCliente(clienteId)
 
                 If resultado > 0 Then
-                    lblMensaje.Text = "✅ Cliente dado de baja correctamente."
-                    lblMensaje.CssClass = "alert alert-success"
+                    MostrarMensaje("✅ Cliente dado de baja correctamente.", "success")
                 Else
-                    lblMensaje.Text = "❌ No se pudo dar de baja el cliente."
-                    lblMensaje.CssClass = "alert alert-danger"
+                    MostrarMensaje("❌ No se pudo dar de baja el cliente.", "danger")
                 End If
                 lblMensaje.Visible = True
                 CargarClientes()
@@ -271,17 +330,14 @@ Public Class AdminCliente
             Dim resultado As Boolean = controllerSim.AsignarSIM(simId, clienteId)
 
             If resultado Then
-                lblMensaje.Text = "✅ SIM asignada correctamente al cliente."
-                lblMensaje.CssClass = "alert alert-success"
-                lblMensaje.Visible = True
+                MostrarMensaje("✅ SIM asignada correctamente.", "success")
+
 
                 CargarSIMAsignadas()
                 CargarSimDisponible()
                 pnlSIMDisponibles.Visible = False
             Else
-                lblMensaje.Text = "❌ Error al asignar la SIM."
-                lblMensaje.CssClass = "alert alert-danger"
-                lblMensaje.Visible = True
+                MostrarMensaje("❌ Error al asignar la SIM.", "danger")
             End If
         ElseIf e.CommandName = "VerDetalle" Then
             Dim simId As Integer = Convert.ToInt32(e.CommandArgument)
@@ -358,6 +414,7 @@ Public Class AdminCliente
         PnlAsignarSIM.Visible = False
         PnlBotonGuardarCancelar.Visible = False
         pnlSIMDisponibles.Visible = False
+        OcultarMensaje()
     End Sub
 
     Private Sub LimpiarCampos()
@@ -373,19 +430,14 @@ Public Class AdminCliente
         txtCURP.Text = ""
         txtTelefono.Text = ""
         txtEmail.Text = ""
-        tbPassword.Text = ""
-        ddlEstado.SelectedIndex = 0
-        txtColonia.Text = ""
-        txtDireccion.Text = ""
-        txtCP.Text = ""
+        tbPassword.Text = ""       
         txtRFC.Text = ""
         txtRfcFacturacion.Text = ""
         txtNombreRazonSocial.Text = ""
         txtCPFacturacion.Text = ""
-        'txtRegimenFiscal.Text = ""
         txtUsoComprobante.Text = ""
 
-        lblMensaje.Visible = False
+        OcultarMensaje()
     End Sub
 
     <WebMethod()>
@@ -421,11 +473,11 @@ Public Class AdminCliente
             Dim resultado As Boolean = controllerSim.AsignarOferta(simId, ofertaId)
 
             If resultado Then
-                lblMensaje.Text = "✅ Oferta asignada correctamente."
-                lblMensaje.CssClass = "alert alert-success"
+                MostrarMensaje("✅ Oferta asignada correctamente.", "success")
+
             Else
-                lblMensaje.Text = "❌ Error al asignar la oferta."
-                lblMensaje.CssClass = "alert alert-danger"
+                MostrarMensaje("❎ Error al asignar Oferta", "success")
+
             End If
 
             lblMensaje.Visible = True
@@ -471,4 +523,90 @@ Public Class AdminCliente
 
         End If
     End Sub
+
+    Protected Sub ddlTipoPersonaRegimen_SelectedIndexChanged1(sender As Object, e As EventArgs)
+        If ddlTipoPersonaRegimen.SelectedValue = "F" Then
+            pnlFiscaFiscales.Visible = True
+            pnlDatosMoralFiscales.Visible = True
+            pnlApellidoPaternoFiscal.Visible = True
+
+        ElseIf ddlTipoPersonaRegimen.SelectedValue = "M" Then
+            pnlFiscaFiscales.Visible = False
+            pnlDatosMoralFiscales.Visible = True
+            pnlApellidoPaternoFiscal.Visible = False
+
+        End If
+    End Sub
+
+    Protected Sub CargarPaises()
+        Dim controller As New ControllerPaisesEstados
+        Dim listaPaises As List(Of PaisesEstados) = controller.ObtenerPaises
+
+        ddlPaisFiscal.DataSource = listaPaises
+        ddlPaisFiscal.DataTextField = "Pais"
+        ddlPaisFiscal.DataValueField = "CodigoPais"
+        ddlPaisFiscal.DataBind()
+    End Sub
+    Protected Sub ddlPaisFiscal_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim codigoPais As String = ddlPaisFiscal.SelectedValue
+        CargarEstados(codigoPais)
+    End Sub
+
+    Protected Sub CargarEstados(codigoPais As String)
+        Dim controller As New ControllerPaisesEstados()
+        Dim listaEstados As List(Of PaisesEstados) = controller.ObtenerEstadosPorPais(codigoPais)
+
+        ddlEstadoFiscal.DataSource = listaEstados
+        ddlEstadoFiscal.DataTextField = "Estado"
+        ddlEstadoFiscal.DataValueField = "CodigoEstado"
+        ddlEstadoFiscal.DataBind()
+
+    End Sub
+
+    Protected Sub ddlEstadoFiscal_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim codigoPais As String = ddlPaisFiscal.SelectedValue
+        Dim codigoEstado As String = ddlEstadoFiscal.SelectedValue
+        CargarMunicipios(codigoPais, codigoEstado)
+    End Sub
+
+    Protected Sub CargarMunicipios(codigoPais As String, codigoEstado As String)
+        Dim controller As New ControllerPaisesEstados()
+        Dim listaMunicipios As List(Of PaisesEstados) = controller.ObtenerMunicipiosPorEstado(codigoPais, codigoEstado)
+
+        ddlCiudadFiscal.DataSource = listaMunicipios
+        ddlCiudadFiscal.DataTextField = "Municipio"
+        ddlCiudadFiscal.DataValueField = "CodigoMunicipio"
+        ddlCiudadFiscal.DataBind()
+
+    End Sub
+
+    Protected Function ObtenerNombreCompleto(tipo As Object, nombre As Object, apePat As Object, apeMat As Object, razon As Object) As String
+        If tipo.ToString() = "F" Then
+            Return String.Format("{0} {1} {2}", nombre, apePat, apeMat)
+        Else
+            Return razon.ToString()
+        End If
+    End Function
+
+    Private Sub MostrarMensaje(texto As String, tipo As String)
+        ' tipo = "success", "danger", "warning", "info"
+        lblMensaje.Text = texto
+        lblMensaje.CssClass = "alert alert-" & tipo & " w-100 d-block mb-3"
+        lblMensaje.Visible = True
+    End Sub
+
+    Private Sub OcultarMensaje()
+        lblMensaje.Visible = False
+        lblMensaje.Text = ""
+    End Sub
+
+    Protected Sub gvClientes_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        Dim controller As New ControllerCliente
+        Dim listaClientes As List(Of Cliente) = controller.GetClientes()
+
+        gvClientes.PageIndex = e.NewPageIndex
+        gvClientes.DataSource = listaClientes
+        gvClientes.DataBind()
+    End Sub
+
 End Class

@@ -199,4 +199,13 @@ Public Class AdminDistribuidores
         Dim texto As String = txtBuscarDistribuidores.Text.Trim()
         CargarDistribuidores(texto)
     End Sub
+
+    Protected Sub gvDistribuidores_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvDistribuidores.PageIndex = e.NewPageIndex
+
+        Dim filtro As String = txtBuscarDistribuidores.Text.Trim()
+        CargarDistribuidores(filtro)
+    End Sub
+
+
 End Class

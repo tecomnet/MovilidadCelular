@@ -62,6 +62,19 @@
         a.text-primary, a.text-danger {
             text-decoration: none !important;
         }
+
+        .gvPager a {
+            padding: .375rem .75rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+            .gvPager a:hover {
+                background-color: #e9ecef;
+            }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -89,7 +102,11 @@
                     CssClass="table table-hover align-middle"
                     AutoGenerateColumns="False"
                     HeaderStyle-CssClass="table-dark"
-                    ShowHeaderWhenEmpty="True" DataKeyNames="DistribuidorID">
+                    ShowHeaderWhenEmpty="True" DataKeyNames="DistribuidorID"
+                    AllowPaging="True"
+                    PageSize="1"
+                    OnPageIndexChanging="gvDistribuidores_PageIndexChanging">
+                    <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
                     <Columns>
                         <asp:BoundField DataField="Region" HeaderText="Región" />
                         <asp:BoundField DataField="Nombre" HeaderText="Nombre" />

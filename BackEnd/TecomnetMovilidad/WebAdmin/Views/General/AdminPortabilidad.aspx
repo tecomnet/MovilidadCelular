@@ -80,6 +80,19 @@
         .table td {
             white-space: nowrap;
         }
+
+        .gvPager a {
+            padding: .375rem .75rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+            .gvPager a:hover {
+                background-color: #e9ecef;
+            }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -153,7 +166,10 @@
     <asp:Panel ID="PnlTabla" runat="server" Visible="true">
         <div style="overflow-x: auto; width: 100%;">
             <asp:GridView ID="gvDatosPortabilidad" runat="server" CssClass="table table-hover align-middle"
-                AutoGenerateColumns="False" ShowHeader="True" HeaderStyle-CssClass="table-dark">
+                AutoGenerateColumns="False" ShowHeader="True" HeaderStyle-CssClass="table-dark" AllowPaging="True"
+                PageSize="10"
+                OnPageIndexChanging="gvDatosPortabilidad_PageIndexChanging">
+                <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
                 <Columns>
                     <asp:BoundField DataField="MSISDN_Transitorio" HeaderText="MSISDN Transitorio" />
                     <asp:BoundField DataField="MSISDN" HeaderText="MSISDN" />
@@ -173,15 +189,22 @@
                                     CommandArgument='<%# Eval("PortabilidadID") %>'
                                     ToolTip="Aceptar"
                                     OnClientClick="return confirm('¿Seguro que deseas aceptar esta solicitud?');" />
-                                <a href="#" class="text-danger me-2 action-icon" title="Rechazar">
+                                <asp:LinkButton ID="lnkRechazar" runat="server" CssClass="text-danger me-2 action-icon"
+                                    CommandName="Rechazar" CommandArgument='<%# Eval("PortabilidadId") %>' OnClientClick="return confirm('¿Deseas marcar como rechazado?');"
+                                    ToolTip="Rechazar">
                                     <i class="bi bi-x-lg"></i>
-                                </a>
-                                <a href="#" class="text-danger me-2 action-icon" title="Cancelado">
+                                </asp:LinkButton>
+                                <asp:LinkButton ID="lnkCancelar" runat="server" CssClass="text-danger me-2 action-icon"
+                                    CommandName="Cancelar" CommandArgument='<%# Eval("PortabilidadId") %>' OnClientClick="return confirm('¿Está seguro de cancelar?');"
+                                    ToolTip="Cancelar">
                                     <i class="bi bi-slash-circle"></i>
-                                </a>
-                                <a href="#" class="text-primary action-icon" title="Descargar">
+                                </asp:LinkButton>
+                                <asp:LinkButton ID="lnkDescargar" runat="server" CssClass="text-primary action-icon"
+                                    CommandName="Descargar" CommandArgument='<%# Eval("PortabilidadID") %>' OnClientClick="return confirm('¿Está seguro que deseas descargar un registro?');"
+                                    ToolTip="Descargar">
                                     <i class="bi bi-download"></i>
-                                </a>
+                                </asp:LinkButton>
+
                             </div>
                             <asp:Panel ID="pnlOrderId" runat="server" Visible="false" CssClass="mt-2">
 
@@ -204,7 +227,7 @@
                                 <asp:Button ID="btnCancelar" runat="server"
                                     Text="Cancelar"
                                     CssClass="btn btn-danger btn-sm mt-1"
-                                    OnClick="btnCancelar_Click"  CausesValidation="false" />
+                                    OnClick="btnCancelar_Click" CausesValidation="false" />
                             </asp:Panel>
                         </ItemTemplate>
                     </asp:TemplateField>
