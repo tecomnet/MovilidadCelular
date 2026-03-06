@@ -16,7 +16,7 @@ Namespace Controllers.Recarga
         <Route("api/Recargas/Cliente/{ClienteID}")>
         Public Function ObtenerOferta(ClienteID As Integer) As HttpResponseMessage
             Try
-                Dim listVisRecarga As New List(Of ModelState.VisRecarga)
+                Dim listVisRecarga As New List(Of VisRecarga)
                 Dim objControlller As New ControllerRecarga
 
                 listVisRecarga = objControlller.ObtenRecargasPorCliente(ClienteID)

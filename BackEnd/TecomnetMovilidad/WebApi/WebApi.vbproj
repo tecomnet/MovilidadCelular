@@ -251,6 +251,7 @@
     <Compile Include="Controllers\Compra\CompraController.vb" />
     <Compile Include="Controllers\Oferta\OfertaController.vb" />
     <Compile Include="Controllers\Recargas\RecargasController.vb" />
+    <Compile Include="Controllers\SIM\SIMController.vb" />
     <Compile Include="Controllers\SolicitudPago\SolicitudPagoController.vb" />
     <Compile Include="Controllers\TokenGenerator.vb" />
     <Compile Include="Controllers\TokenValidationHandler.vb" />
@@ -389,7 +390,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\SIM\" />
     <Folder Include="Properties\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
