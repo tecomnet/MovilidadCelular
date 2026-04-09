@@ -15,6 +15,7 @@ Public Class AdminCliente
             txtFechaAlta.Text = DateTime.Now.ToString("yyyy-MM-dd")
             pnlFisica.Visible = True
             CargarPaises()
+            pnlPassword.Visible = True
         End If
     End Sub
 
@@ -609,4 +610,12 @@ Public Class AdminCliente
         gvClientes.DataBind()
     End Sub
 
+    Protected Sub gvOfertas_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvOfertas.PageIndex = e.NewPageIndex
+
+        Dim controllerOferta As New ControllerOferta
+        Dim listaOfertas = controllerOferta.ObtenerOfertas()
+        gvOfertas.DataSource = listaOfertas
+        gvOfertas.DataBind()
+    End Sub
 End Class
