@@ -265,8 +265,8 @@
                         <asp:TextBox ID="tbPassword" runat="server" Width="100%" TextMode="Password" CssClass="form-control"></asp:TextBox>
                         <asp:RegularExpressionValidator ID="revPassword" runat="server"
                             ControlToValidate="tbPassword"
-                            ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"
-                            ErrorMessage="* Mínimo 8 caracteres (letras y números)" CssClass="text-danger" Display="Dynamic" />
+                            ValidationExpression="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
+                            ErrorMessage="* Mínimo 8 caracteres, al menos una letra y un número" CssClass="text-danger" Display="Dynamic" />
 
                     </asp:Panel>
                     <div class="col-lg-6 mb-3">
@@ -494,7 +494,6 @@
             </div>
         </div>
     </div>
-
     <!-- Modal Seleccionar Oferta -->
     <div class="modal fade" id="modalOfertas" tabindex="-1" aria-labelledby="modalOfertasLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -505,14 +504,17 @@
                 </div>
                 <div class="modal-body">
 
-                    <asp:HiddenField ID="hdnSIMId" runat="server" />
-
+                    <asp:HiddenField ID="hdnSIMId" runat="server" />  
                     <asp:GridView ID="gvOfertas" runat="server"
                         CssClass="table table-hover align-middle"
                         AutoGenerateColumns="False"
                         HeaderStyle-CssClass="table-dark"
                         ShowHeaderWhenEmpty="True"
-                        OnRowCommand="gvOfertas_RowCommand">
+                        OnRowCommand="gvOfertas_RowCommand"
+                        AllowPaging="true"
+                        PageSize="10"
+                        OnPageIndexChanging="gvOfertas_PageIndexChanging">
+                        <PagerStyle CssClass="gvPager" HorizontalAlign="Center" />
                         <Columns>
                             <asp:BoundField DataField="OfferIDAltan" HeaderText="ID" />
                             <asp:BoundField DataField="HomologacionID" HeaderText="Homologación" />
@@ -549,7 +551,6 @@
 
                         </Columns>
                     </asp:GridView>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
