@@ -5,4 +5,7 @@
 
     End Sub
 
+    Protected Sub btnRegistrar_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/Views/Vinculacion/RegistrarLinea.aspx")
+    End Sub
 End Class
