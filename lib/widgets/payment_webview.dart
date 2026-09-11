@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:movilidad_celulares/screens/success_screen.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
@@ -15,6 +14,23 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   late final WebViewController _controller;
   bool isLoading = true;
+
+  /// ¿Esta navegación es el regreso del pago?
+  ///
+  /// Se ignoran los parámetros de consulta y se compara `origen + ruta`, porque
+  /// la pasarela añade los suyos al devolver al usuario. Antes se exigía
+  /// igualdad exacta de toda la cadena y bastaba un parámetro extra para que el
+  /// regreso pasara desapercibido.
+  bool _esUrlDeRetorno(String url) {
+    final esperada = widget.redirectUrl;
+    if (esperada == null || esperada.isEmpty) return false;
+
+    final actual = Uri.tryParse(url);
+    final objetivo = Uri.tryParse(esperada);
+    if (actual == null || objetivo == null) return false;
+
+    return actual.origin == objetivo.origin && actual.path == objetivo.path;
+  }
 
   @override
   void initState() {
@@ -35,12 +51,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
             });
           },
           onNavigationRequest: (request) {
-             if (widget.redirectUrl != null && request.url == widget.redirectUrl) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const SuccessScreen()),
-    );
-    return NavigationDecision.prevent;
-  }
+            // Se compara por prefijo, no por igualdad exacta: la pasarela añade
+            // sus propios parámetros al devolver al usuario, y con `==` el
+            // regreso no se detectaba nunca.
+            if (_esUrlDeRetorno(request.url)) {
+              // Se cierra el diálogo del pago sin llegar a cargar la página de
+              // retorno: la app vuelve a donde estaba el usuario.
+              Navigator.of(context).pop();
+              return NavigationDecision.prevent;
+            }
             return NavigationDecision.navigate;
           },
         ),

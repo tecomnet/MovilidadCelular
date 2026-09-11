@@ -1,6 +1,6 @@
 package com.tecomnet.movilidad
+
 import android.app.Application
-import android.os.Build
 import com.octolytics.octopulse.Octopulse
 
 class OctolyticsApp : Application() {
@@ -12,8 +12,10 @@ class OctolyticsApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Octopulse.initialize(this)
-        }
+        // Único punto de inicialización del SDK. Antes se llamaba también desde
+        // MainActivity.onCreate, lo que inicializaba dos veces en Android 10+.
+        // La guarda SDK_INT >= Q que había aquí dejaba fuera Android 9 (API 28),
+        // que el AAR sí soporta; con minSdk = 28 ya no hace falta.
+        Octopulse.initialize(this)
     }
 }

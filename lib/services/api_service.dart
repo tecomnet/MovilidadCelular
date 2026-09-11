@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:movilidad_celulares/services/idempotency.dart';
 
 class AuthService {
   static String? _token;
@@ -7,31 +11,36 @@ class AuthService {
   static String? _password;
 
   static Future<bool> obtenerToken(String usuario, String clave) async {
-    final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/Account');
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Account',
+    );
 
     try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "UserName": "Mobile.TECOMNET.USER_Admin", 
-          "Password": "VnhmJUD4ZW4564NHAyYD53FSH",
-        }),
-      );
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              "UserName": "Mobile.TECOMNET.USER_Admin",
+              "Password":
+                  "zE8D4nlrLpgpeG3qjiFwlFkUBNfun1LSwMqvZBLhnzXVyCy7VsFaVFDUiwpMHrlO",
+            }),
+          )
+          .timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200) {
         _token = response.body.replaceAll('"', '');
         _email = usuario;
         _password = clave;
-        print('✅ Token recibido: $_token');
+        if (kDebugMode) debugPrint('✅ Token recibido: $_token');
         return true;
       } else {
-        print(' ${response.statusCode}');
-        print('Respuesta: ${response.body}');
+        if (kDebugMode) debugPrint(' ${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
         return false;
       }
     } catch (e) {
-      print('Error de conexión: $e');
+      if (kDebugMode) debugPrint('Error de conexión: $e');
       return false;
     }
   }
@@ -41,433 +50,557 @@ class AuthService {
   static String? get email => _email;
   static String? get password => _password;
   static int? _clienteId;
-static int? get clienteId => _clienteId;
-static set clienteId(int? value) {
-  _clienteId = value;
-}
+  static int? get clienteId => _clienteId;
+  static set clienteId(int? value) {
+    _clienteId = value;
+  }
 
-  static Future<Map<String, dynamic>?> obtenerPerfil() async {
+  // Se dispara cuando el servidor rechaza el token. Lo engancha main.dart para
+  // cerrar la sesión y volver al login; aquí no se navega, porque este archivo
+  // no sabe nada de pantallas.
+  static void Function()? alCaducarSesion;
+
+  // ¿El servidor dijo que el token ya no vale?
+  //
+  // El token dura 60 minutos y no se renueva. Antes un 401 se trataba como un
+  // rechazo cualquiera: el usuario veía «no se pudo…» o una pantalla vacía y no
+  // había forma de saber que lo que había caducado era su sesión.
+  static bool _sesionCaduco(int statusCode) {
+    if (statusCode != 401) return false;
+
+    // Varias peticiones pueden ir en vuelo a la vez y recibir el 401 casi
+    // juntas. Solo avisa la primera: cerrarSesion() deja el token en null, así
+    // que las siguientes ya no encuentran sesión que cerrar.
+    final habiaSesion = _token != null;
+    if (kDebugMode) {
+      debugPrint('🔒 Sesión caducada (401): se cierra y se vuelve al login');
+    }
+    cerrarSesion();
+    if (habiaSesion) alCaducarSesion?.call();
+    return true;
+  }
+
+  // Olvida todo lo de la sesión en curso. Se llama al salir: hasta ahora el
+  // token, el correo y la contraseña se quedaban vivos en memoria después de
+  // cerrar sesión, y la siguiente pantalla los seguía viendo.
+  static void cerrarSesion() {
+    _token = null;
+    _email = null;
+    _password = null;
+    _clienteId = null;
+  }
+
+  // `validandoLogin` distingue los dos usos de este método, porque el API
+  // responde 401 tanto si el token caducó como si la contraseña está mal, y por
+  // el código no hay forma de saber cuál es. Al validar un login, un 401
+  // significa credenciales incorrectas y no debe cerrar sesión; en cualquier
+  // otra pantalla significa que el token murió.
+  static Future<Map<String, dynamic>?> obtenerPerfil({
+    bool validandoLogin = false,
+  }) async {
     if (_token == null || _email == null || _password == null) {
-      print('Token o credenciales no disponibles');
+      if (kDebugMode) debugPrint('Token o credenciales no disponibles');
       return null;
     }
 
-    final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/Cliente/Login');
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/Login',
+    );
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Bearer $_token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'UserName': _email,
-          'Password': _password,
-        }),
-      );
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({'UserName': _email, 'Password': _password}),
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (!validandoLogin && _sesionCaduco(response.statusCode)) return null;
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Perfil recibido: $data');
+        if (kDebugMode) debugPrint('Perfil recibido: $data');
         return data;
       } else {
-        print(' ${response.statusCode} - ${response.body}');
+        if (kDebugMode) {
+          debugPrint(' ${response.statusCode} - ${response.body}');
+        }
         return null;
       }
     } catch (e) {
-      print('Excepción al obtener perfil: $e');
+      if (kDebugMode) debugPrint('Excepción al obtener perfil: $e');
       return null;
     }
   }
-  static Future<List<Map<String, dynamic>>?> obtenerTablero(int clienteId) async {
-  if (_token == null) {
-    print('⚠️ Token no disponible, no se puede obtener tablero');
-    return null;
-  }
 
-  final url = Uri.parse(
-    'https://tecomnet.net/movilidad/WebApi/api/Cliente/Tablero/$clienteId',
-  );
+  static Future<List<Map<String, dynamic>>?> obtenerTablero(
+    int clienteId,
+  ) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Token no disponible, no se puede obtener tablero');
+      }
+      return null;
+    }
 
-  try {
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $_token',
-        'Content-Type': 'application/json',
-      },
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/Tablero/$clienteId',
     );
 
-    if (response.statusCode == 200) {
-      final ofertas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
-      print('✅ Tablero recibido: $ofertas');
-      return ofertas;
-    } else {
-      print(' ${response.statusCode}');
-      print('Respuesta: ${response.body}');
-      return null;
-    }
-  } catch (e) {
-    print('Excepción al obtener tablero: $e');
-    return null;
-  }
-}
- static Future<List<Map<String, dynamic>>?> obtenerOfertasPorTipo(int tipo) async {
-  if (_token == null) {
-    print('⚠️ Token no disponible, no se puede obtener ofertas');
-    return null;
-  }
-
-  final url = Uri.parse(
-    'https://tecomnet.net/movilidad/WebApi/api/Ofertas/Activa/Tipo/$tipo',
-  );
-
-  try {
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $_token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final ofertas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
-      print('✅ Ofertas recibidas para tipo $tipo: $ofertas');
-      return ofertas;
-    } else {
-      print(' ${response.statusCode}');
-      print('Respuesta: ${response.body}');
-      return null;
-    }
-  } catch (e) {
-    print(' Excepción al obtener ofertas: $e');
-    return null;
-  }
-}
-static Future<Map<String, dynamic>?> obtenerOfertaPorId(int ofertaId) async {
-  if (_token == null) {
-    print('⚠️ Token no disponible, no se puede obtener oferta');
-    return null;
-  }
-
-  final url = Uri.parse(
-    'https://tecomnet.net/movilidad/WebApi/api/Ofertas/$ofertaId',
-  );
-
-  try {
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $_token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final oferta = jsonDecode(response.body) as Map<String, dynamic>;
-      print('✅ Oferta recibida con ID $ofertaId: $oferta');
-      return oferta;
-    } else {
-      print('${response.statusCode}');
-      print('Respuesta: ${response.body}');
-      return null;
-    }
-  } catch (e) {
-    print('❌ Excepción al obtener oferta: $e');
-    return null;
-  }
-}
-
-
-static Future<String?> generarOrderID({
-  required String iccid,
-  required String ofertaActualId,
-  required String ofertaNuevaId,
-  required String monto,
-  required String msisdn,
-  required int tipoOperacion,
-  required int canalVenta,
-}) async {
-  if (_token == null) {
-    print('⚠️ Token no disponible, no se puede registrar la solicitud');
-    return null;
-  }
-
-  final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/RegistrarSolicitudDePago');
-
-  final Map<String, dynamic> body = {
-    "SolicitudID": "",
-    "OrderID": "",
-    "MetodoPagoID": "1",
-    "OfertaIDActual": ofertaActualId,
-    "OfertaIDNueva": ofertaNuevaId,
-    "Monto": monto,
-    "ICCID": iccid,
-    "MSISDN": msisdn,
-    "Estatus": "",
-    "FechaCreacion": "",
-    "EstatusDepositoID": "",
-    "IdTransaction": "",
-    "AuthNumber": "",
-    "AuthCode": "",
-    "Reason": "",
-    "PagoDepositoID": "",
-    "CanalDeVenta": canalVenta,
-    "TipoOperacion": tipoOperacion,
-    "UltimaActualizacion": "",
-    "NumeroReintentos": "",
-    "DistribuidorID" : "1"
-  };
-
-  try {
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $_token',
-      },
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      print('✅ OrderID generado: ${data['OrderID']}');
-      return data['OrderID'];
-    }
-     else {
-      print('❌ Error al generar OrderID: ${response.statusCode} -> ${response.body}');
-      return null;
-    }
-  } catch (e) {
-    print('💥 Excepción al generar OrderID: $e');
-    return null;
-  }
-}
-
-  static Future<String?> obtenerTokenRecargas(String email, String apiKey) async {
-    final url = Uri.parse('https://lklapi.lklpay.com.mx/pef1d7972c8ro/auth/ecommerce/login');
     try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-  "email": email,
-  "apiKey": apiKey,
-        }),
-      );
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
 
       if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        final token = decoded['response']['token'];
-        print('✅ Token recibido: $token');
-        return token;
+        final ofertas = List<Map<String, dynamic>>.from(
+          jsonDecode(response.body),
+        );
+        if (kDebugMode) debugPrint('✅ Tablero recibido: $ofertas');
+        return ofertas;
       } else {
-        print(' ${response.statusCode} - ${response.body}');
+        if (kDebugMode) debugPrint(' ${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
         return null;
       }
     } catch (e) {
-      print('⚠️ Error de conexión al obtener token: $e');
+      if (kDebugMode) debugPrint('Excepción al obtener tablero: $e');
       return null;
     }
   }
 
-  static Future<String?> obtenerLinkDePago({
-    required String token,
-    required int amount,
-    required String description,
-    required String orderId,
-     required String redirectUrl, 
-  }) async {
+  static Future<List<Map<String, dynamic>>?> obtenerOfertasPorTipo(
+    int tipo,
+  ) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Token no disponible, no se puede obtener ofertas');
+      }
+      return null;
+    }
 
-    final url = Uri.parse('https://lklapi.lklpay.com.mx/f2c65bd1289pm/link/ecommerce');
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Ofertas/Activa/Tipo/$tipo',
+    );
+
+    try {
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      if (response.statusCode == 200) {
+        final ofertas = List<Map<String, dynamic>>.from(
+          jsonDecode(response.body),
+        );
+        if (kDebugMode) {
+          debugPrint('✅ Ofertas recibidas para tipo $tipo: $ofertas');
+        }
+        return ofertas;
+      } else {
+        if (kDebugMode) debugPrint(' ${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint(' Excepción al obtener ofertas: $e');
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> obtenerOfertaPorId(int ofertaId) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Token no disponible, no se puede obtener oferta');
+      }
+      return null;
+    }
+
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Ofertas/$ofertaId',
+    );
+
+    try {
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      if (response.statusCode == 200) {
+        final oferta = jsonDecode(response.body) as Map<String, dynamic>;
+        if (kDebugMode) {
+          debugPrint('✅ Oferta recibida con ID $ofertaId: $oferta');
+        }
+        return oferta;
+      } else {
+        if (kDebugMode) debugPrint('${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('❌ Excepción al obtener oferta: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> obtenerMetodosPago() async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint(
+          '⚠️ Token no disponible, no se pueden obtener métodos de pago',
+        );
+      }
+      return null;
+    }
+
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/MetodoPago',
+    );
+
+    try {
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      if (response.statusCode == 200) {
+        final metodos = List<Map<String, dynamic>>.from(
+          jsonDecode(response.body),
+        );
+        if (kDebugMode) debugPrint('✅ Métodos de pago recibidos: $metodos');
+        return metodos;
+      } else {
+        if (kDebugMode) debugPrint(' ${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('Excepción al obtener métodos de pago: $e');
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> registrarSolicitudDePago({
+    required String iccid,
+    required String msisdn,
+    required int ofertaActualId,
+    required int ofertaNuevaId,
+    required double monto,
+    required int tipoOperacion,
+    required int canalVenta,
+    int metodoPagoId = 1,
+    int distribuidorId = 1,
+  }) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint(
+          '⚠️ Token no disponible, no se puede registrar la solicitud',
+        );
+      }
+      return null;
+    }
+
+    final idempotencyKey = await Idempotency.obtener(
+      iccid: iccid,
+      ofertaNuevaId: ofertaNuevaId.toString(),
+      tipoOperacion: tipoOperacion,
+    );
+
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/RegistrarSolicitudDePago',
+    );
+
+    final Map<String, dynamic> body = {
+      "ICCID": iccid,
+      "MSISDN": msisdn,
+      "MetodoPagoID": metodoPagoId,
+      "OfertaIDActual": ofertaActualId,
+      "OfertaIDNueva": ofertaNuevaId,
+      "Monto": monto,
+      "CanalDeVenta": canalVenta,
+      "TipoOperacion": tipoOperacion,
+      "DistribuidorID": distribuidorId,
+      "IdempotencyKey": idempotencyKey,
+    };
+
+    for (var intento = 1; intento <= 3; intento++) {
+      try {
+        final response = await http
+            .post(
+              url,
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $_token',
+              },
+              body: jsonEncode(body),
+            )
+            .timeout(const Duration(seconds: 20));
+
+        if (_sesionCaduco(response.statusCode)) return null;
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body) as Map<String, dynamic>;
+          if (kDebugMode) debugPrint('✅ OrderID generado: ${data['OrderID']}');
+          return data;
+        }
+
+        if (response.statusCode >= 400 && response.statusCode < 500) {
+          if (kDebugMode) {
+            debugPrint(
+              '❌ Solicitud rechazada: ${response.statusCode} -> ${response.body}',
+            );
+          }
+          return null;
+        }
+
+        if (kDebugMode) {
+          debugPrint(
+            '⚠️ Error del servidor (${response.statusCode}), intento $intento',
+          );
+        }
+      } on TimeoutException {
+        if (kDebugMode) debugPrint('⏱️ Timeout en el intento $intento de 3');
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint('💥 Error de red en el intento $intento: $e');
+        }
+      }
+
+      if (intento < 3) {
+        await Future.delayed(Duration(seconds: intento * 2));
+      }
+    }
+
+    if (kDebugMode) {
+      debugPrint('❌ No se pudo registrar la solicitud tras 3 intentos');
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>?> obtenerSolicitudDePago(
+    String orderId,
+  ) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint(
+          '⚠️ Token no disponible, no se puede consultar la solicitud',
+        );
+      }
+      return null;
+    }
+
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/ObtenerSolicitudDePago/${Uri.encodeComponent(orderId)}',
+    );
+
+    try {
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      if (response.statusCode == 200) {
+        final cuerpo = response.body.trim();
+        if (cuerpo.isEmpty) {
+          if (kDebugMode) {
+            debugPrint('No existe solicitud con OrderID $orderId');
+          }
+          return null;
+        }
+        final data = jsonDecode(cuerpo) as Map<String, dynamic>;
+        // La respuesta viene envuelta: {"objSolicitudDePago": { ... }}
+        final interior = data['objSolicitudDePago'];
+        if (interior is Map<String, dynamic>) return interior;
+        return data;
+      } else {
+        if (kDebugMode) debugPrint(' ${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('Excepción al consultar la solicitud: $e');
+      return null;
+    }
+  }
+
+  static Future<void> liberarIntento({
+    required String iccid,
+    required int ofertaNuevaId,
+    required int tipoOperacion,
+  }) {
+    return Idempotency.liberar(
+      iccid: iccid,
+      ofertaNuevaId: ofertaNuevaId.toString(),
+      tipoOperacion: tipoOperacion,
+    );
+  }
+
+  static Future<bool> cambiarPassword({
+    required String passwordActual,
+    required String passwordNueva,
+  }) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint('Token no disponible, no se puede cambiar la contraseña');
+      }
+      return false;
+    }
+
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/CambiaPassword',
+    );
 
     final body = {
-      "amount": amount,
-      "displayAmount": amount,
-      "displayCurrency": "MXN",
-      "language": "es",
-      "email": "h.martinez@tecomnet.mx",
-      "commerceName": "TECOMNET",
-      "supportEmail": "recargas@tecomnet.mx",
-      "description": description,
-      "response_url": "https://tecomnet.net/movilidad/webhook/ValidatePay/CompraRecarga/",
-      "redirectUrl": redirectUrl,
-      "order_id": orderId,
-      "origin": "ecommerce",
-      "imageUrl": "https://www.tecomnet.mx/wp-content/uploads/2024/11/888-removebg-preview.png",
-      "userData": {
-        "firstName": "",
-        "lastName": "",
-        "phone": "",
-        "email": "",
-        "country": "",
-        "state": "",
-        "locality": "",
-        "address": "",
-        "zipCode": ""
-      }
+      "UserName": AuthService.email,
+      "Password": passwordActual,
+      "NewPassword": passwordNueva,
     };
 
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(body),
-      );
-
-      print('📝 Respuesta de obtenerLinkDePago: ${response.body}');
-      
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        final paymentUrl = decoded['response']?['url'];
-
-        if (paymentUrl != null) {
-          print('✅ Link de pago: $paymentUrl');
-          return paymentUrl;
-        } else {
-          print('❌ No se encontró el link de pago en la respuesta.');
-          return null;
+        if (kDebugMode) debugPrint('Se cambió la contraseña con éxito');
+        return true;
+      } else {
+        if (kDebugMode) {
+          debugPrint(
+            'Error al cambiar contraseña: ${response.statusCode} - ${response.body}',
+          );
         }
-      } else {
-        print(' ${response.statusCode} - ${response.body}');
-        return null;
+        return false;
       }
     } catch (e) {
-      print('⚠️ Error de conexión al obtener link de pago: $e');
-      return null;
-    }
-  }
-
-  static Future<String?> getPaymentStatus(String guid) async {
-    final url = 'https://tecomnet.net/TECOMNET/Gateway/api/Altan/GetPaymentRequest/$guid';
-
-    try {
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final status = data['State'];
-        return status?.toString().toLowerCase();
-      } else {
-        print('❌ Error al consultar estado de pago: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('⚠️ Excepción al consultar estatus: $e');
-      return null;
-    }
-  }
-
- static Future<bool> cambiarPassword({
-  required String passwordActual,
-  required String passwordNueva,
-}) async {
-  if (_token == null) {
-    print('Token no disponible, no se puede cambiar la contraseña');
-    return false;
-  }
-
-  final url = Uri.parse(
-      'https://tecomnet.net/movilidad/WebApi/api/Cliente/CambiaPassword');
-
-  final body = {
-    "UserName": AuthService.email,  
-    "Password": passwordActual,
-    "NewPassword": passwordNueva,
-  };
-
-  try {
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $_token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 200) {
-      print('Se cambió la contraseña con éxito');
-      return true;
-    } else {
-      print(
-          'Error al cambiar contraseña: ${response.statusCode} - ${response.body}');
+      if (kDebugMode) debugPrint('Excepción al cambiar contraseña: $e');
       return false;
     }
-  } catch (e) {
-    print('Excepción al cambiar contraseña: $e');
-    return false;
-  }
-}
-
-  static Future<List<Map<String, dynamic>>?> obtenerRecargas(int clienteId) async {
-  if (_token == null) {
-    print('⚠️ Token no disponible, no se puede obtener tablero');
-    return null;
   }
 
-  final url = Uri.parse(
-    'https://tecomnet.net/movilidad/WebApi/api/Recargas/Cliente/$clienteId',
-  );
+  static Future<List<Map<String, dynamic>>?> obtenerRecargas(
+    int clienteId,
+  ) async {
+    if (_token == null) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Token no disponible, no se puede obtener tablero');
+      }
+      return null;
+    }
 
-  try {
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $_token',
-        'Content-Type': 'application/json',
-      },
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Recargas/Cliente/$clienteId',
     );
 
-    if (response.statusCode == 200) {
-      final recargas = List<Map<String, dynamic>>.from(jsonDecode(response.body));
-      print('✅ Recargas recibidas: $recargas');
-      return recargas;
-    } else {
-      print(' ${response.statusCode}');
-      print('Respuesta: ${response.body}');
-      return null;
-    }
-  } catch (e) {
-    print('Excepción al obtener recargas: $e');
-    return null;
-  }
-}
-  
-  static Future<Map<String, dynamic>?> recuperarContrasena(String email) async {
-    if (_token == null ) {
-      print('Token no disponible');
-      return null;
-    }
-
-    final url = Uri.parse('https://tecomnet.net/movilidad/WebApi/api/Cliente/SolicitudCambioPassword');
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Bearer $_token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email,
-        }),
-      );
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print('Respuesta: $data');
-        return data;
+        final recargas = List<Map<String, dynamic>>.from(
+          jsonDecode(response.body),
+        );
+        if (kDebugMode) debugPrint('✅ Recargas recibidas: $recargas');
+        return recargas;
       } else {
-        print('Error: ${response.statusCode} - ${response.body}');
+        if (kDebugMode) debugPrint(' ${response.statusCode}');
+        if (kDebugMode) debugPrint('Respuesta: ${response.body}');
         return null;
       }
     } catch (e) {
-      print('Excepción: $e');
+      if (kDebugMode) debugPrint('Excepción al obtener recargas: $e');
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> recuperarContrasena(String email) async {
+    if (_token == null) {
+      if (kDebugMode) debugPrint('Token no disponible');
+      return null;
+    }
+
+    final url = Uri.parse(
+      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/SolicitudCambioPassword',
+    );
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({'email': email}),
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (kDebugMode) debugPrint('Respuesta: $data');
+        return data;
+      } else {
+        if (kDebugMode) {
+          debugPrint('Error: ${response.statusCode} - ${response.body}');
+        }
+        return null;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('Excepción: $e');
       return null;
     }
   }

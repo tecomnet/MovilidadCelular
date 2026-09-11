@@ -1,36 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:movilidad_celulares/utils/session_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
+import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Armazón del panel: barra superior clara y cajón lateral oscuro.
+///
+/// El cajón es la versión móvil del sidebar del portal web: mismo orden de
+/// secciones, mismo bloque de usuario al pie.
 class BaseScaffold extends StatelessWidget {
   final String title;
   final Widget body;
   final bool centerTitle;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
+  /// Ruta activa, para resaltarla en el cajón (p. ej. '/home').
+  final String? rutaActual;
+
   const BaseScaffold({
-    Key? key,
+    super.key,
     required this.title,
     required this.body,
-    this.centerTitle = true,
+    this.centerTitle = false,
     this.scaffoldKey,
-  }) : super(key: key);
+    this.rutaActual,
+  });
 
-  void _navigate(
-    BuildContext context,
-    String routeName, {
-    bool clearStack = false,
-  }) {
-    Navigator.pop(context);
+  static const String _telefono = 'tel:5597297420';
+  static const String _whatsapp = '+525524941739';
 
-    if (clearStack) {
-      Navigator.pushNamedAndRemoveUntil(context, routeName, (route) => false);
+  Future<void> _abrir(Uri uri, {LaunchMode? modo}) async {
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: modo ?? LaunchMode.platformDefault);
+    } else {
+      debugPrint('No se pudo abrir $uri');
+    }
+  }
+
+  void _navegar(BuildContext context, String ruta) {
+    Navigator.pop(context); // cierra el cajón
+    if (ruta == rutaActual) return;
+
+    if (ruta == '/home') {
+      Navigator.pushNamedAndRemoveUntil(context, ruta, (r) => false);
     } else {
       Navigator.pushNamedAndRemoveUntil(
         context,
-        routeName,
-        (route) => route.settings.name == '/home',
+        ruta,
+        (r) => r.settings.name == '/home',
       );
     }
   }
@@ -39,186 +58,312 @@ class BaseScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      backgroundColor: TecomnetTheme.panelFondo,
       appBar: AppBar(
-        title: Text(title),
+        backgroundColor: TecomnetTheme.panelBarra,
+        surfaceTintColor: TecomnetTheme.panelBarra,
+        elevation: 0,
+        scrolledUnderElevation: 1,
         centerTitle: centerTitle,
+        iconTheme: const IconThemeData(color: TecomnetTheme.tintaFuerte),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: TecomnetTheme.tintaFuerte,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         actions: [
-          Transform.translate(
-            offset: const Offset(0, 4),
-            child: IconButton(
-              icon: const Icon(Icons.phone),
-              tooltip: 'Llamar',
-              onPressed: () async {
-                const phoneNumber = 'tel:5597297420';
-                if (await canLaunchUrl(Uri.parse(phoneNumber))) {
-                  await launchUrl(Uri.parse(phoneNumber));
-                } else {
-                  print('No se pudo abrir el marcador');
-                }
-              },
+          IconButton(
+            icon: const Icon(Icons.phone_outlined),
+            tooltip: 'Llamar a soporte',
+            color: TecomnetTheme.tintaMedia,
+            onPressed: () => _abrir(Uri.parse(_telefono)),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12, left: 2),
+            child: _botonWhatsapp(),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: TecomnetTheme.panelBorde),
+        ),
+      ),
+      drawer: _cajon(context),
+      body: body,
+    );
+  }
+
+  Widget _botonWhatsapp() {
+    return Material(
+      color: TecomnetTheme.whatsapp,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: () => _abrir(
+          Uri.parse('https://wa.me/$_whatsapp?text=Hola%20quiero%20informes'),
+          modo: LaunchMode.externalApplication,
+        ),
+        child: const SizedBox(
+          width: 40,
+          height: 40,
+          child: Center(
+            child: FaIcon(
+              FontAwesomeIcons.whatsapp,
+              color: Colors.white,
+              size: 20,
             ),
           ),
-          Transform.translate(
-            offset: const Offset(0, 4),
-            child: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.whatsapp),
-              tooltip: 'WhatsApp',
-              onPressed: () async {
-                final whatsappNumber = '+525524941739';
-                final whatsappUrl = Uri.parse(
-                  'https://wa.me/$whatsappNumber?text=Hola%20quiero%20informes',
-                );
-                if (await canLaunchUrl(whatsappUrl)) {
-                  await launchUrl(
-                    whatsappUrl,
-                    mode: LaunchMode.externalApplication,
-                  );
-                } else {
-                  print('No se pudo abrir WhatsApp');
-                }
-              },
+        ),
+      ),
+    );
+  }
+
+  Widget _cajon(BuildContext context) {
+    return Drawer(
+      backgroundColor: TecomnetTheme.cajonFondo,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+              child: Image.asset(
+                'assets/Imagenes/Logo.png',
+                height: 76,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const SizedBox(height: 8),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                children: [
+                  _item(context, Icons.home_outlined, 'Inicio', '/home'),
+                  _item(context, Icons.bolt_outlined, 'Recargar', '/recargar'),
+                  _item(
+                    context,
+                    Icons.autorenew_rounded,
+                    'Actualizar plan',
+                    '/actualizarPlan',
+                  ),
+                  const _Seccion('MI CUENTA'),
+                  _item(
+                    context,
+                    Icons.receipt_long_outlined,
+                    'Mis recargas',
+                    '/refills',
+                  ),
+                  _item(
+                    context,
+                    Icons.person_outline_rounded,
+                    'Mi perfil',
+                    '/profile',
+                  ),
+                  _item(
+                    context,
+                    Icons.key_outlined,
+                    'Cambiar contraseña',
+                    '/changePassword',
+                  ),
+                  const _Seccion('SOPORTE'),
+                  _item(
+                    context,
+                    Icons.speed_rounded,
+                    'Diagnóstico de red',
+                    null,
+                    alTocar: () {
+                      Navigator.pop(context);
+                      CallNativeCode.openHelp();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            _bloqueUsuario(),
+            _salir(context),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _item(
+    BuildContext context,
+    IconData icono,
+    String texto,
+    String? ruta, {
+    VoidCallback? alTocar,
+  }) {
+    final activo = ruta != null && ruta == rutaActual;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Material(
+        color: activo ? TecomnetTheme.cajonActivo : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap:
+              alTocar ?? (ruta == null ? null : () => _navegar(context, ruta)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            child: Row(
+              children: [
+                Icon(
+                  icono,
+                  size: 21,
+                  color: activo ? Colors.white : TecomnetTheme.cajonTexto,
+                ),
+                const SizedBox(width: 14),
+                Text(
+                  texto,
+                  style: TextStyle(
+                    color: activo ? Colors.white : TecomnetTheme.cajonTexto,
+                    fontSize: 15,
+                    fontWeight: activo ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _bloqueUsuario() {
+    final correo = AuthService.email ?? '';
+    final inicial = correo.isNotEmpty ? correo[0].toUpperCase() : '?';
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
+        color: TecomnetTheme.cajonActivo,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: TecomnetTheme.azulClaro,
+            child: Text(
+              inicial,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              correo.isEmpty ? 'Sesión activa' : correo,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: TecomnetTheme.cajonTexto,
+                fontSize: 13,
+              ),
             ),
           ),
         ],
       ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/Imagenes/Logo.png',
-                    height: 80,
-                    fit: BoxFit.contain,
+    );
+  }
+
+  Widget _salir(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () async {
+            final salir = await showDialog<bool>(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                backgroundColor: TecomnetTheme.tarjeta,
+                title: const Text(
+                  '¿Deseas cerrar sesión y salir?',
+                  style: TextStyle(
+                    color: TecomnetTheme.textoPrincipal,
+                    fontSize: 18,
                   ),
-                  const SizedBox(height: 8),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, false),
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(color: TecomnetTheme.textoSecundario),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, true),
+                    child: const Text(
+                      'Salir',
+                      style: TextStyle(color: TecomnetTheme.cian),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home, color: Colors.black),
-              title: const Text(
-                'Inicio',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/home',
-                  (route) => false,
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.autorenew, color: Colors.black),
-              title: const Text(
-                'Actualizar plan',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () => _navigate(context, '/redirect'),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.people_alt_rounded,
-                color: Colors.black,
-              ),
-              title: const Text(
-                'Mi perfil',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 40.0),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.phone_android,
-                  size: 20,
-                  color: Colors.black,
-                ),
-                title: const Text(
-                  'Ver recargas',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                onTap: () => _navigate(context, '/refills'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 40.0),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.people_outline_sharp,
-                  size: 20,
-                  color: Colors.black,
-                ),
-                title: const Text(
-                  'Mi perfil',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                onTap: () => _navigate(context, '/profile'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 40.0),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.lock_reset,
-                  size: 20,
-                  color: Colors.black,
-                ),
-                title: const Text(
-                  'Cambiar Contraseña',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                onTap: () => _navigate(context, '/changePassword'),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.info_outline, color: Colors.black),
-              title: const Text(
-                'Abrir Diagnóstico',
-                style: TextStyle(color: Colors.black, fontSize: 14),
-              ),
-              onTap: () => CallNativeCode.openHelp(),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.black),
-              title: const Text('Salir', style: TextStyle(color: Colors.black)),
-              onTap: () async {
-                final shouldExit = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("¿Deseas cerrar sesión y salir?"),                    
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text("Cancelar"),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: const Text("Salir"),
-                      ),
-                    ],
-                  ),
-                );
+            );
 
-                if (shouldExit ?? false) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/login',
-                    (route) => false,
-                  );
-                }
-              },
+            if (salir != true) return;
+            await SessionManager.logout();
+            AuthService.cerrarSesion();
+            if (!context.mounted) return;
+            Navigator.pushNamedAndRemoveUntil(context, '/login', (r) => false);
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.logout_rounded,
+                  size: 21,
+                  color: TecomnetTheme.cajonTexto,
+                ),
+                SizedBox(width: 14),
+                Text(
+                  'Salir',
+                  style: TextStyle(
+                    color: TecomnetTheme.cajonTexto,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      body: body,
+    );
+  }
+}
+
+class _Seccion extends StatelessWidget {
+  final String texto;
+  const _Seccion(this.texto);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 22, 14, 8),
+      child: Text(
+        texto,
+        style: const TextStyle(
+          color: TecomnetTheme.cajonTextoTenue,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.8,
+        ),
+      ),
     );
   }
 }

@@ -1,299 +1,248 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
-import 'package:movilidad_celulares/utils/succes.dart';
-import 'package:movilidad_celulares/widgets/base_scaffold.dart';
-import 'package:movilidad_celulares/widgets/payment_webview.dart';
+import 'package:movilidad_celulares/services/payment_flow.dart';
 import 'package:movilidad_celulares/utils/enums.dart';
+import 'package:movilidad_celulares/widgets/base_scaffold.dart';
+import 'package:movilidad_celulares/widgets/line_selector.dart';
+import 'package:movilidad_celulares/widgets/offer_card.dart';
+import 'package:movilidad_celulares/widgets/tecomnet_widgets.dart';
 
+/// Cambio de plan en tres pasos: línea → tipo de plan → oferta.
 class UpdatePlanScreen extends StatefulWidget {
-  final String iccidSeleccionado;
-  final String ofertaActualId;
-  final int tipoPlan;
-  const UpdatePlanScreen({
-    super.key,
-    required this.iccidSeleccionado,
-    required this.ofertaActualId,
-    required this.tipoPlan,
-  });
+  const UpdatePlanScreen({super.key});
 
   @override
   State<UpdatePlanScreen> createState() => _UpdatePlanScreenState();
 }
 
 class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
-  String tipoPlanActual = 'prepago';
-  bool cargando = true;
-  List<Map<String, dynamic>> planesDisponibles = [];
-  String iccid = '';
-  String ofertaActualId = '';
-  String msisdn = '';
+  bool _cargando = true;
+  bool _cargandoOfertas = false;
+  bool _procesandoPago = false;
 
-  final Map<String, String> nombresTipos = {
-    'prepago': 'Recarga',
-    'pago_recurrente': 'Plan Mensual',
-    'pago_anticipado': 'Plan Anual',
-  };
-
-  final Map<int, String> tipoNumeroATipo = {
-    1: 'prepago',
-    3: 'pago_recurrente',
-    2: 'pago_anticipado',
-  };
-
-  int get tipoPlanActualNumero {
-    return tipoNumeroATipo.entries
-        .firstWhere((e) => e.value == tipoPlanActual)
-        .key;
-  }
+  List<ClientLine> _lineas = [];
+  ClientLine? _linea;
+  TipoOferta? _tipo;
+  List<Map<String, dynamic>> _ofertas = [];
 
   @override
   void initState() {
     super.initState();
-    cargarPlanes();
+    _cargarLineas();
   }
 
-  Future<void> cargarPlanes() async {
-    setState(() => cargando = true);
+  Future<void> _cargarLineas() async {
+    if (mounted) setState(() => _cargando = true);
 
     final perfil = await AuthService.obtenerPerfil();
-    final tablero = await AuthService.obtenerTablero(perfil?['ClienteId'] ?? 0);
+    if (!mounted) return;
 
-    Map<String, dynamic>? planActual;
+    final tablero = perfil == null
+        ? null
+        : await AuthService.obtenerTablero(perfil['ClienteId']);
+    if (!mounted) return;
 
-    if (tablero != null && tablero.isNotEmpty) {
-      planActual = tablero.firstWhere(
-        (p) => p['ICCID'] == widget.iccidSeleccionado,
-        orElse: () => tablero[0],
-      );
-
-      tipoPlanActual = tipoNumeroATipo[planActual['Tipo']] ?? 'prepago';
-      iccid = planActual['ICCID'] ?? '';
-      ofertaActualId = planActual['OfertaID']?.toString() ?? '';
-      msisdn = planActual['MSISDN'] ?? '';
-    }
-
-    List<Map<String, dynamic>> todasOfertas = [];
-
-    final ofertas = await AuthService.obtenerOfertasPorTipo(widget.tipoPlan);
-    if (ofertas != null) {
-      todasOfertas.addAll(ofertas);
-    }
-
+    final lineas = (tablero ?? []).map(ClientLine.desde).toList();
     setState(() {
-      planesDisponibles = todasOfertas;
-      cargando = false;
+      _lineas = lineas;
+      // Con una sola línea no hay nada que elegir en el primer paso.
+      _linea = lineas.length == 1 ? lineas.first : null;
+      _cargando = false;
     });
   }
 
-  double obtenerPrecioDelPlan(Map<String, dynamic> plan) {
-    switch (plan['Tipo']) {
-      case 3:
-        return plan['PrecioMensual'] ?? 0;
-      case 1:
-        return plan['PrecioRecurrente'] ?? 0;
-      case 2:
-        return plan['PrecioAnual'] ?? 0;
-      default:
-        return 0;
-    }
+  Future<void> _cargarOfertas(TipoOferta tipo) async {
+    setState(() {
+      _tipo = tipo;
+      _cargandoOfertas = true;
+      _ofertas = [];
+    });
+
+    final ofertas = await AuthService.obtenerOfertasPorTipo(
+      tipoOfertaValor(tipo),
+    );
+    if (!mounted) return;
+
+    setState(() {
+      _ofertas = ofertas ?? [];
+      _cargandoOfertas = false;
+    });
   }
 
-  List<Map<String, dynamic>> get planesFiltrados {
-    return planesDisponibles
-        .where((p) => p['Tipo'] == widget.tipoPlan)
-        .toList();
+  bool get _puedeCambiarLinea => _lineas.length > 1;
+
+  /// Cada tipo se cobra por un campo distinto del catálogo.
+  double _precioDe(Map<String, dynamic> oferta, TipoOferta tipo) {
+    final campo = switch (tipo) {
+      TipoOferta.mensual => oferta['PrecioMensual'],
+      TipoOferta.anual => oferta['PrecioAnual'],
+      TipoOferta.recarga => oferta['PrecioRecurrente'],
+    };
+    return (campo as num?)?.toDouble() ?? 0;
+  }
+
+  String _periodoDe(TipoOferta tipo) => switch (tipo) {
+    TipoOferta.mensual => 'MES',
+    TipoOferta.anual => 'AÑO',
+    TipoOferta.recarga => 'RECARGA',
+  };
+
+  String _tituloCatalogo(TipoOferta tipo) => switch (tipo) {
+    TipoOferta.mensual => 'Planes mensuales',
+    TipoOferta.anual => 'Planes anuales',
+    TipoOferta.recarga => 'Recargas disponibles',
+  };
+
+  Future<void> _contratar(Map<String, dynamic> oferta) async {
+    final linea = _linea;
+    final tipo = _tipo;
+    if (linea == null || tipo == null || _procesandoPago) return;
+
+    final precio = _precioDe(oferta, tipo);
+    if (precio <= 0) {
+      showNotice(context, 'Esta oferta no tiene precio configurado');
+      return;
+    }
+
+    // La rueda la pone PaymentFlow con su propio diálogo; esta bandera solo
+    // evita que un doble toque lance dos cobros antes de que aparezca.
+    setState(() => _procesandoPago = true);
+    await PaymentFlow.iniciar(
+      context,
+      iccid: linea.iccid,
+      msisdn: linea.msisdn,
+      ofertaActualId: int.tryParse(linea.ofertaId) ?? 0,
+      ofertaNuevaId: (oferta['OfertaID'] as num?)?.toInt() ?? 0,
+      monto: precio,
+      operacion: TipoOperacion.Cambio,
+    );
+    if (!mounted) return;
+    setState(() => _procesandoPago = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: '',
-      body: Container(
-        color: const Color.fromARGB(255, 10, 52, 114),
-        padding: const EdgeInsets.all(24),
-        child: cargando
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Tu plan actual: ${nombresTipos[tipoPlanActual]}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Opciones disponibles:',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: planesFiltrados.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No hay planes disponibles.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: planesFiltrados.length,
-                            itemBuilder: (context, index) {
-                              final plan = planesFiltrados[index];
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: Card(
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          plan['Oferta'] ?? 'Plan sin nombre',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          plan['Descripcion'] ??
-                                              'Sin descripción',
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Precio: \$${obtenerPrecioDelPlan(plan).toStringAsFixed(2)} MXN',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Center(
-                                          child: ElevatedButton(
-                                            onPressed: () async {
-                                              final precio =
-                                                  obtenerPrecioDelPlan(plan);
-                                              final tipoOp =
-                                                  TipoOperacion.Cambio;
-                                              final canal = CanalDeVenta.App;
-                                              final orderIdTec =
-                                                  await AuthService.generarOrderID(
-                                                    iccid: iccid,
-                                                    ofertaActualId:
-                                                        ofertaActualId,
-                                                    ofertaNuevaId:
-                                                        plan['OfertaID']
-                                                            .toString(),
-                                                    monto: precio
-                                                        .toStringAsFixed(2),
-                                                    msisdn: msisdn,
-                                                    tipoOperacion:
-                                                        tipoOperacionValue(
-                                                          tipoOp,
-                                                        ),
-                                                    canalVenta:
-                                                        canalDeVentaValue(
-                                                          canal,
-                                                        ),
-                                                  );
+      title: 'Actualizar plan',
+      rutaActual: '/actualizarPlan',
+      body: _cargando
+          ? const Center(child: CircularProgressIndicator())
+          : _cuerpo(),
+    );
+  }
 
-                                              if (orderIdTec == null) return;
+  Widget _cuerpo() {
+    if (_lineas.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: EmptyPanel(
+          mensaje: 'No encontramos líneas asociadas a tu cuenta',
+        ),
+      );
+    }
+    if (_linea == null) {
+      return LineSelector(
+        titulo: 'Elige la línea a actualizar',
+        lineas: _lineas,
+        onSeleccionar: (l) => setState(() {
+          _linea = l;
+          _tipo = null;
+        }),
+      );
+    }
+    if (_tipo == null) return _pasoTipo();
+    return _pasoCatalogo();
+  }
 
-                                              final token =
-                                                  await AuthService.obtenerTokenRecargas(
-                                                    "h.martinez@tecomnet.mx",
-                                                    "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
-                                                  );
+  // ---------- paso 2: tipo de plan ----------
 
-                                              if (token == null) return;
-                                              final precioDouble =
-                                                  obtenerPrecioDelPlan(plan);
-                                              final precioInt =
-                                                  (precioDouble).toInt();
-                                              final urlExito =
-                                                  generarUrlExito();
-                                              final link =
-                                                  await AuthService.obtenerLinkDePago(
-                                                    token: token,
-                                                    amount: precioInt,
-                                                    description:
-                                                        plan['Oferta'] ??
-                                                        'Renovación del plan',
-                                                    orderId: orderIdTec,
-                                                    redirectUrl: urlExito,
-                                                  );
+  Widget _pasoTipo() {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
+      children: [
+        if (_puedeCambiarLinea) ...[
+          StepBackButton(
+            texto: 'Cambiar de línea',
+            onTap: () => setState(() => _linea = null),
+          ),
+          const SizedBox(height: 20),
+        ],
+        StepHeader(
+          titulo: '¿Qué tipo de plan quieres?',
+          msisdn: _linea!.msisdn,
+        ),
+        const SizedBox(height: 20),
+        PlanTypeCard(
+          icono: Icons.event_available_outlined,
+          titulo: 'Mensual',
+          descripcion: 'Renovación automática cada mes.',
+          onTap: () => _cargarOfertas(TipoOferta.mensual),
+        ),
+        PlanTypeCard(
+          icono: Icons.account_balance_wallet_outlined,
+          titulo: 'Prepago (Recargas)',
+          descripcion: 'Sin mensualidad; pagas solo cuando recargas.',
+          onTap: () => _cargarOfertas(TipoOferta.recarga),
+        ),
+        PlanTypeCard(
+          icono: Icons.workspace_premium_outlined,
+          titulo: 'Anual',
+          descripcion: 'Paga por adelantado todo el año.',
+          onTap: () => _cargarOfertas(TipoOferta.anual),
+        ),
+      ],
+    );
+  }
 
-                                              if (link == null) return;
+  // ---------- paso 3: catálogo ----------
 
-                                              if (context.mounted) {
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible: true,
-                                                  builder: (context) {
-                                                    final screenSize =
-                                                        MediaQuery.of(
-                                                          context,
-                                                        ).size;
-                                                    return Dialog(
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              16,
-                                                            ),
-                                                      ),
-                                                      insetPadding:
-                                                          const EdgeInsets.all(
-                                                            10,
-                                                          ),
-                                                      child: SizedBox(
-                                                        width:
-                                                            screenSize.width *
-                                                            0.9,
-                                                        height:
-                                                            screenSize.height *
-                                                            0.8,
-                                                        child: WebViewScreen(
-                                                          url: link,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue,
-                                              foregroundColor: Colors.white,
-                                            ),
-                                            child: const Text('Lo quiero'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
-      ),
+  Widget _pasoCatalogo() {
+    final tipo = _tipo!;
+
+    return Stack(
+      children: [
+        ListView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
+          children: [
+            StepBackButton(
+              texto: 'Otro tipo de plan',
+              onTap: () => setState(() {
+                _tipo = null;
+                _ofertas = [];
+              }),
+            ),
+            const SizedBox(height: 20),
+            StepHeader(titulo: _tituloCatalogo(tipo)),
+            const SizedBox(height: 20),
+            if (_cargandoOfertas)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 40),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (_ofertas.isEmpty)
+              const EmptyPanel(
+                mensaje: 'No hay planes disponibles de este tipo',
+                icono: Icons.inbox_outlined,
+              )
+            else
+              ..._ofertas.map((o) => _tarjeta(o, tipo)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _tarjeta(Map<String, dynamic> oferta, TipoOferta tipo) {
+    return OfferCard(
+      nombre: (oferta['Oferta'] ?? 'Plan').toString(),
+      precio: _precioDe(oferta, tipo),
+      datosGb: (oferta['DatosMB'] as num?) ?? 0,
+      validezDias: (oferta['ValidezDias'] as num?)?.toInt() ?? 0,
+      minutos: (oferta['Minutos'] as num?)?.toInt() ?? 0,
+      sms: (oferta['Sms'] as num?)?.toInt() ?? 0,
+      periodo: _periodoDe(tipo),
+      textoBoton: 'Lo quiero',
+      onSeleccionar: () => _contratar(oferta),
     );
   }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Splash en Android 12 y posteriores.
+
+        Desde API 31 el sistema dibuja el arranque y descarta el windowBackground
+        del tema, así que launch_background.xml no se aplica aquí. La API admite
+        solo un color de fondo y un icono centrado, y eso es justo lo que se fija:
+        el globo de la marca sobre el mismo fondo del inicio de sesión.
+
+        Sin windowSplashScreenIconBackgroundColor a propósito: en cuanto se le da
+        un color, Android dibuja el cuadro redondeado detrás del icono.
+    -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@color/splash_fondo</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_fondo</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_globo</item>
+    </style>
+    <!--
+        Tema en cuanto el proceso arrancó, y fondo detrás de la interfaz de
+        Flutter. Se fija al color de marca en vez de ?android:colorBackground
+        para que no haya un parpadeo negro entre el splash y la primera
+        pantalla.
+    -->
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@color/splash_fondo</item>
+    </style>
+</resources>

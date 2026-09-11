@@ -1,226 +1,180 @@
 import 'package:flutter/material.dart';
-import 'package:movilidad_celulares/utils/succes.dart';
-import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
-import 'package:movilidad_celulares/widgets/payment_webview.dart';
+import 'package:movilidad_celulares/services/payment_flow.dart';
 import 'package:movilidad_celulares/utils/enums.dart';
+import 'package:movilidad_celulares/widgets/base_scaffold.dart';
+import 'package:movilidad_celulares/widgets/line_selector.dart';
+import 'package:movilidad_celulares/widgets/offer_card.dart';
+import 'package:movilidad_celulares/widgets/tecomnet_widgets.dart';
 
-class MenuScreen extends StatelessWidget {
-  final String ofertaActualId;
-  final String iccid;
-  final String msisdn;
+/// Flujo de recarga en dos pasos: elegir línea y elegir paquete.
+///
+/// Con una sola línea se salta el primer paso, porque no hay nada que elegir.
+class MenuScreen extends StatefulWidget {
+  /// Si viene informada, se entra directo al catálogo de esa línea.
+  final String? msisdnInicial;
 
-  const MenuScreen({
-    super.key,
-    required this.ofertaActualId,
-    required this.iccid,
-    required this.msisdn,
-  });
+  const MenuScreen({super.key, this.msisdnInicial});
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  bool _cargando = true;
+  bool _procesandoPago = false;
+
+  /// La carga falló, que no es lo mismo que no tener líneas.
+  bool _falloCarga = false;
+
+  List<ClientLine> _lineas = [];
+  List<Map<String, dynamic>> _ofertas = [];
+  ClientLine? _seleccionada;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargar();
+  }
+
+  Future<void> _cargar() async {
+    if (mounted) setState(() => _cargando = true);
+
+    final perfil = await AuthService.obtenerPerfil();
+    if (!mounted) return;
+
+    final tablero = perfil == null
+        ? null
+        : await AuthService.obtenerTablero(perfil['ClienteId']);
+    if (!mounted) return;
+
+    final lineas = (tablero ?? []).map(ClientLine.desde).toList();
+    final fallo = perfil == null || tablero == null;
+
+    // Las recargas son ofertas de tipo 1.
+    final ofertas = await AuthService.obtenerOfertasPorTipo(
+      tipoOfertaValor(TipoOferta.recarga),
+    );
+    if (!mounted) return;
+
+    setState(() {
+      _falloCarga = fallo;
+      _lineas = lineas;
+      _ofertas = ofertas ?? [];
+      // Con una sola línea no tiene sentido preguntar cuál.
+      _seleccionada = _resolverSeleccion(lineas);
+      _cargando = false;
+    });
+  }
+
+  ClientLine? _resolverSeleccion(List<ClientLine> lineas) {
+    if (lineas.isEmpty) return null;
+    if (widget.msisdnInicial != null) {
+      for (final l in lineas) {
+        if (l.msisdn == widget.msisdnInicial) return l;
+      }
+    }
+    return lineas.length == 1 ? lineas.first : null;
+  }
+
+  /// Solo se puede cambiar de línea si de verdad hay más de una.
+  bool get _puedeCambiarLinea => _lineas.length > 1;
+
+  Future<void> _recargar(Map<String, dynamic> oferta) async {
+    final linea = _seleccionada;
+    if (linea == null || _procesandoPago) return;
+
+    final precio = (oferta['PrecioRecurrente'] as num?)?.toDouble();
+    if (precio == null) {
+      showNotice(context, 'Esta oferta no tiene precio configurado');
+      return;
+    }
+
+    // La rueda la pone PaymentFlow con su propio diálogo; esta bandera solo
+    // evita que un doble toque lance dos cobros antes de que aparezca.
+    setState(() => _procesandoPago = true);
+    await PaymentFlow.iniciar(
+      context,
+      iccid: linea.iccid,
+      msisdn: linea.msisdn,
+      ofertaActualId: int.tryParse(linea.ofertaId) ?? 0,
+      ofertaNuevaId: (oferta['OfertaID'] as num?)?.toInt() ?? 0,
+      monto: precio,
+      operacion: TipoOperacion.Recarga,
+    );
+    if (!mounted) return;
+    setState(() => _procesandoPago = false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: '',
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 20, 89, 145),
-              Color.fromARGB(255, 10, 52, 114),
-            ],
-          ),
-        ),
-        child: FutureBuilder<List<Map<String, dynamic>>?>(
-          future: AuthService.obtenerOfertasPorTipo(1),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError || !snapshot.hasData) {
-              return const Center(
-                child: Text(
-                  "Error al cargar ofertas",
-                  style: TextStyle(color: Colors.white),
-                ),
-              );
-            }
-
-            final ofertas = snapshot.data!;
-            return ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              itemCount: ofertas.length,
-              itemBuilder: (context, index) {
-                final oferta = ofertas[index];
-
-                return _buildDataCard(
-                  context,
-                  title: oferta['Oferta'] ?? 'Sin título',
-                  cost:
-                      '\$${(oferta['PrecioRecurrente'] ?? 0).toStringAsFixed(2)} MXN',
-                  ofertaData: oferta,
-                  ofertaId: ofertaActualId, // tu oferta actual
-                  iccid: iccid, // tu ICCID
-                  ofertaNuevaId: oferta['OfertaID']
-                      .toString(), // la nueva oferta
-                  msisdn: msisdn,
-                );
-              },
-            );
-          },
-        ),
-      ),
+      title: 'Recargar',
+      rutaActual: '/recargar',
+      body: _cargando
+          ? const Center(child: CircularProgressIndicator())
+          : _lineas.isEmpty
+          ? Padding(
+              padding: const EdgeInsets.all(16),
+              child: EmptyPanel(
+                mensaje: _falloCarga
+                    ? 'No pudimos cargar tus líneas. Revisa tu conexión '
+                          'o vuelve a iniciar sesión.'
+                    : 'No encontramos líneas asociadas a tu cuenta',
+                icono: _falloCarga
+                    ? Icons.cloud_off_rounded
+                    : Icons.sim_card_outlined,
+              ),
+            )
+          : _seleccionada == null
+          ? LineSelector(
+              titulo: 'Elige la línea a recargar',
+              lineas: _lineas,
+              onSeleccionar: (l) => setState(() => _seleccionada = l),
+            )
+          : _pasoElegirRecarga(),
     );
   }
 
-  Widget _buildDataCard(
-    BuildContext context, {
-    required String title,
-    required String cost,
-    Map<String, dynamic>? ofertaData,
-    required String ofertaId,
-    required String iccid,
-    required String ofertaNuevaId,
-    required String msisdn,
-  }) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        children: [
-          Container(
-            height: 40,
-            width: double.infinity,
-            color: const Color.fromARGB(255, 29, 111, 75),
-            alignment: Alignment.center,
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+  Widget _pasoElegirRecarga() {
+    final linea = _seleccionada!;
+
+    return Stack(
+      children: [
+        ListView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
+          children: [
+            if (_puedeCambiarLinea) ...[
+              StepBackButton(
+                texto: 'Cambiar de línea',
+                onTap: () => setState(() => _seleccionada = null),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 8),
-                const SizedBox(height: 16),
-                if (ofertaData != null) ...[
-                  Text('Descripción: ${ofertaData["Descripcion"] ?? "-"}'),
-                  Text('Minutos: ${ofertaData["Minutos"] ?? "-"}'),
-                  Text('SMS: ${ofertaData["Sms"] ?? "-"}'),
-                  Text(
-                    'Precio recarga: \$${(ofertaData["PrecioRecurrente"] as num).toStringAsFixed(2)} MXN',
-                  ),
-                  Text('Datos MB: ${ofertaData["DatosMB"] ?? "-"}'),
-                  Text('Validez en días: ${ofertaData["ValidezDias"] ?? "-"}'),
-                ],
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-              ),
-              onPressed: () async {
-                final precio = ofertaData?["PrecioRecurrente"];
-                final descripcion = ofertaData?["Descripcion"] ?? "Recarga";
+              const SizedBox(height: 20),
+            ],
+            StepHeader(titulo: 'Elige tu recarga', msisdn: linea.msisdn),
+            const SizedBox(height: 20),
+            if (_ofertas.isEmpty)
+              const EmptyPanel(
+                mensaje: 'No hay recargas disponibles en este momento',
+                icono: Icons.inbox_outlined,
+              )
+            else
+              ..._ofertas.map(_tarjetaOferta),
+          ],
+        ),
+      ],
+    );
+  }
 
-                if (precio == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Precio no válido")),
-                  );
-                  return;
-                }
-                final tipoOp = TipoOperacion.Recarga;
-                final canal = CanalDeVenta.App;
-                final orderIdTec = await AuthService.generarOrderID(
-                  iccid: iccid,
-                  ofertaActualId: ofertaId,
-                  ofertaNuevaId: ofertaNuevaId,
-                  monto: precio.toString(),
-                  msisdn: msisdn,
-                  tipoOperacion: tipoOperacionValue(tipoOp),
-                  canalVenta: canalDeVentaValue(canal),
-                );
-                print('✅✅✅ MSISDN obtenido: $msisdn');
-
-                if (orderIdTec == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Error al generar OrderID")),
-                  );
-                  return;
-                }
-
-                final token = await AuthService.obtenerTokenRecargas(
-                  "h.martinez@tecomnet.mx",
-                  "api-113f2717-c412-48d1-8da3-d3df93b2954c-29vpbp",
-                );
-
-                if (token == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Error al obtener token")),
-                  );
-                  return;
-                }
-                final urlExito = generarUrlExito();
-
-                final link = await AuthService.obtenerLinkDePago(
-                  token: token,
-                  amount: (precio).toInt(),
-                  description: descripcion,
-                  orderId: orderIdTec,
-                  redirectUrl: urlExito,
-                );
-                // print('🔹 Token: $token');
-                // print('🔹 OrderID: $orderIdTec');
-                // print('🔹 URL de pago: $link');
-                // print('🔹 URL de éxito: $urlExito');
-                if (link == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Error al generar link de pago"),
-                    ),
-                  );
-                  return;
-                }
-
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    final screenSize = MediaQuery.of(context).size;
-                    return Dialog(
-                      insetPadding: const EdgeInsets.all(10),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: SizedBox(
-                        width: screenSize.width * 0.9,
-                        height: screenSize.height * 0.8,
-                        child: WebViewScreen(url: link),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: const Text(
-                'Lo quiero',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
+  Widget _tarjetaOferta(Map<String, dynamic> oferta) {
+    return OfferCard(
+      nombre: (oferta['Oferta'] ?? 'Plan').toString(),
+      precio: (oferta['PrecioRecurrente'] as num?)?.toDouble() ?? 0,
+      datosGb: (oferta['DatosMB'] as num?) ?? 0,
+      validezDias: (oferta['ValidezDias'] as num?)?.toInt() ?? 0,
+      minutos: (oferta['Minutos'] as num?)?.toInt() ?? 0,
+      sms: (oferta['Sms'] as num?)?.toInt() ?? 0,
+      onSeleccionar: () => _recargar(oferta),
     );
   }
 }
