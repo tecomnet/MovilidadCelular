@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 import 'package:movilidad_celulares/utils/enums.dart';
-import 'package:movilidad_celulares/utils/succes.dart';
+import 'package:movilidad_celulares/utils/retorno_pago.dart';
 import 'package:movilidad_celulares/widgets/payment_webview.dart';
 import 'package:movilidad_celulares/widgets/tecomnet_widgets.dart';
 
