@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Se conserva por compatibilidad: el icono adaptativo ya usa el degradado
+         de @drawable/ic_launcher_background, no este color plano. -->
+    <color name="ic_launcher_background">#ffffff</color>
+
+    <!--
+        Fondo del splash. Es el mismo TecomnetTheme.fondoAlto que pinta el
+        inicio de sesión: si cambia allí, cambia aquí, para que no se vea el
+        salto de color cuando Flutter dibuja su primer fotograma.
+    -->
+    <color name="splash_fondo">#070A14</color>
+</resources>

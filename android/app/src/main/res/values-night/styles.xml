@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Tema mientras arranca el proceso, en Android 11 y anteriores. Android lo
+        retira solo cuando Flutter dibuja su primer fotograma.
+    -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+    <!--
+        Tema en cuanto el proceso arrancó, y fondo detrás de la interfaz de
+        Flutter. Se fija al color de marca en vez de ?android:colorBackground
+        para que no haya un parpadeo negro entre el splash y la primera
+        pantalla.
+    -->
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@color/splash_fondo</item>
+    </style>
+</resources>
