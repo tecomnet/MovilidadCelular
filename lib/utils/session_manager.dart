@@ -17,10 +17,10 @@ class SessionManager {
 
   // Cerrar sesión
   static Future<void> logout() async {
-  final prefs = await SharedPreferences.getInstance();
-  // Borra solo la sesión, pero conserva el usuario guardado si existía
-  await prefs.remove(_keyLoggedIn);
-}
+    final prefs = await SharedPreferences.getInstance();
+    // Borra solo la sesión, pero conserva el usuario guardado si existía
+    await prefs.remove(_keyLoggedIn);
+  }
 
   // Validar si hay sesión activa
   static Future<bool> isLoggedIn() async {

@@ -15,9 +15,17 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
 
+    <!--
+        allowBackup="false": sin esto Android copia las preferencias de la app a
+        Google Drive y las restaura en otro teléfono. Ahí viajaban el estado de
+        sesión y las claves de idempotencia, cuyo nombre lleva el ICCID de la
+        SIM. A cambio, quien cambie de equipo tendrá que volver a escribir su
+        correo en el login: el «recordar usuario» ya no se restaura.
+    -->
     <application
         android:label="TECOMNET MOVILIDAD"
         android:name=".OctolyticsApp"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

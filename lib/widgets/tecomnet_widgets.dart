@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 import 'package:movilidad_celulares/widgets/constellation_background.dart';
 
@@ -64,6 +65,26 @@ class _TecomnetScreenState extends State<TecomnetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Estas pantallas no tienen AppBar que elija el color de la barra de estado,
+    // y sobre el fondo oscuro los iconos salían oscuros: la hora y la batería
+    // casi no se leían. Con borde a borde el fondo ocupa también esa franja.
+    //
+    // La barra de navegación se pide transparente de forma explícita: si no, en
+    // Android 14 y anteriores queda con fondo negro opaco pintado encima del
+    // contenido (se comprobó tiñéndola de rojo). En Android 15 el sistema ya la
+    // hace transparente por su cuenta e ignora este valor.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light, // Android
+        statusBarBrightness: Brightness.dark, // iOS
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: _armazon(),
+    );
+  }
+
+  Widget _armazon() {
     return Scaffold(
       backgroundColor: TecomnetTheme.fondoAlto,
       body: PopScope(

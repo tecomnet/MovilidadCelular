@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart'
-    show kIsWeb, defaultTargetPlatform, TargetPlatform, debugPrint;
+    show kIsWeb, kDebugMode, defaultTargetPlatform, TargetPlatform, debugPrint;
 import 'package:flutter/services.dart';
 
 /// Estado que devuelve el lado nativo al intentar arrancar el monitoreo.
@@ -32,11 +32,15 @@ class CallNativeCode {
     if (!isAndroid) return "";
 
     try {
-      final data = await platform.invokeMethod('initializeOctolytics', {"arg": ""});
-      debugPrint("[Flutter] Canal del SDK listo: $data");
+      final data = await platform.invokeMethod('initializeOctolytics', {
+        "arg": "",
+      });
+      if (kDebugMode) debugPrint("[Flutter] Canal del SDK listo: $data");
       return data ?? "";
     } catch (e) {
-      debugPrint("[Flutter] Error al inicializar el canal del SDK: $e");
+      if (kDebugMode) {
+        debugPrint("[Flutter] Error al inicializar el canal del SDK: $e");
+      }
       return "Failed";
     }
   }
@@ -54,7 +58,7 @@ class CallNativeCode {
         'startServiceOctolytics',
         {"arg": msisdn},
       );
-      debugPrint("[Flutter] Estado del monitoreo: $estado");
+      if (kDebugMode) debugPrint("[Flutter] Estado del monitoreo: $estado");
       switch (estado) {
         case 'REGISTERING':
           return EstadoMonitoreo.registrando;
@@ -68,7 +72,7 @@ class CallNativeCode {
           return EstadoMonitoreo.noDisponible;
       }
     } catch (e) {
-      debugPrint("[Flutter] Error al iniciar el monitoreo: $e");
+      if (kDebugMode) debugPrint("[Flutter] Error al iniciar el monitoreo: $e");
       return EstadoMonitoreo.noDisponible;
     }
   }
@@ -79,7 +83,9 @@ class CallNativeCode {
     try {
       return await platform.invokeMethod<bool>('hasCarrierPrivileges') ?? false;
     } catch (e) {
-      debugPrint("[Flutter] Error al consultar privilegios de operador: $e");
+      if (kDebugMode) {
+        debugPrint("[Flutter] Error al consultar privilegios de operador: $e");
+      }
       return false;
     }
   }
@@ -90,7 +96,7 @@ class CallNativeCode {
     try {
       await platform.invokeMethod('launchHelpActivity');
     } catch (e) {
-      debugPrint("[Flutter] No se pudo abrir HelpActivity: $e");
+      if (kDebugMode) debugPrint("[Flutter] No se pudo abrir HelpActivity: $e");
     }
   }
 
@@ -100,7 +106,9 @@ class CallNativeCode {
     try {
       await platform.invokeMethod('launchAddMsisdnActivity');
     } catch (e) {
-      debugPrint("[Flutter] No se pudo abrir AddMsisdnActivity: $e");
+      if (kDebugMode) {
+        debugPrint("[Flutter] No se pudo abrir AddMsisdnActivity: $e");
+      }
     }
   }
 }

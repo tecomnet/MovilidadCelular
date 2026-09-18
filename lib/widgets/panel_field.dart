@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 
 /// Campo de formulario del panel claro.
@@ -23,6 +24,18 @@ class PanelField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
+  /// Texto de ejemplo dentro del campo, p. ej. «0000 0000 0000 0000».
+  final String? hint;
+
+  /// Restricciones al escribir: solo dígitos, espacios cada 4, «MM/AA»…
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// En los campos de tarjeta van en `false`, para que el teclado no aprenda
+  /// ni sugiera el número. Por omisión quedan como en cualquier TextField.
+  final bool enableSuggestions;
+  final bool autocorrect;
+  final TextCapitalization textCapitalization;
+
   const PanelField({
     super.key,
     required this.etiqueta,
@@ -36,6 +49,11 @@ class PanelField extends StatelessWidget {
     this.textInputAction,
     this.onChanged,
     this.onSubmitted,
+    this.hint,
+    this.inputFormatters,
+    this.enableSuggestions = true,
+    this.autocorrect = true,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   @override
@@ -75,15 +93,24 @@ class PanelField extends StatelessWidget {
                   textInputAction: textInputAction,
                   onChanged: onChanged,
                   onSubmitted: onSubmitted,
+                  inputFormatters: inputFormatters,
+                  enableSuggestions: enableSuggestions,
+                  autocorrect: autocorrect,
+                  textCapitalization: textCapitalization,
                   style: const TextStyle(
                     color: TecomnetTheme.tintaFuerte,
                     fontSize: 15.5,
                   ),
                   cursorColor: TecomnetTheme.azulMarca,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: const TextStyle(
+                      color: TecomnetTheme.tintaSuave,
+                      fontSize: 15.5,
+                    ),
                     border: InputBorder.none,
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 16,
                     ),

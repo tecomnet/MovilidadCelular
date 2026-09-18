@@ -23,10 +23,15 @@ class ConstellationBackground extends StatefulWidget {
   /// fotograma; el coste de los enlaces crece al cuadrado.
   final int nodos;
 
-  const ConstellationBackground({super.key, required this.child, this.nodos = 40});
+  const ConstellationBackground({
+    super.key,
+    required this.child,
+    this.nodos = 40,
+  });
 
   @override
-  State<ConstellationBackground> createState() => _ConstellationBackgroundState();
+  State<ConstellationBackground> createState() =>
+      _ConstellationBackgroundState();
 }
 
 class _ConstellationBackgroundState extends State<ConstellationBackground>

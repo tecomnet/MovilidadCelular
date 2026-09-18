@@ -3,17 +3,19 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:movilidad_celulares/config/ambiente.dart';
 import 'package:movilidad_celulares/services/idempotency.dart';
+import 'package:movilidad_celulares/services/tarjeta.dart';
 
 class AuthService {
+  static String get _base => Ambiente.api;
+
   static String? _token;
   static String? _email;
   static String? _password;
 
   static Future<bool> obtenerToken(String usuario, String clave) async {
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Account',
-    );
+    final url = Uri.parse('$_base/api/Account');
 
     try {
       final response = await http
@@ -55,22 +57,11 @@ class AuthService {
     _clienteId = value;
   }
 
-  // Se dispara cuando el servidor rechaza el token. Lo engancha main.dart para
-  // cerrar la sesión y volver al login; aquí no se navega, porque este archivo
-  // no sabe nada de pantallas.
   static void Function()? alCaducarSesion;
 
-  // ¿El servidor dijo que el token ya no vale?
-  //
-  // El token dura 60 minutos y no se renueva. Antes un 401 se trataba como un
-  // rechazo cualquiera: el usuario veía «no se pudo…» o una pantalla vacía y no
-  // había forma de saber que lo que había caducado era su sesión.
   static bool _sesionCaduco(int statusCode) {
     if (statusCode != 401) return false;
 
-    // Varias peticiones pueden ir en vuelo a la vez y recibir el 401 casi
-    // juntas. Solo avisa la primera: cerrarSesion() deja el token en null, así
-    // que las siguientes ya no encuentran sesión que cerrar.
     final habiaSesion = _token != null;
     if (kDebugMode) {
       debugPrint('🔒 Sesión caducada (401): se cierra y se vuelve al login');
@@ -80,9 +71,6 @@ class AuthService {
     return true;
   }
 
-  // Olvida todo lo de la sesión en curso. Se llama al salir: hasta ahora el
-  // token, el correo y la contraseña se quedaban vivos en memoria después de
-  // cerrar sesión, y la siguiente pantalla los seguía viendo.
   static void cerrarSesion() {
     _token = null;
     _email = null;
@@ -90,11 +78,6 @@ class AuthService {
     _clienteId = null;
   }
 
-  // `validandoLogin` distingue los dos usos de este método, porque el API
-  // responde 401 tanto si el token caducó como si la contraseña está mal, y por
-  // el código no hay forma de saber cuál es. Al validar un login, un 401
-  // significa credenciales incorrectas y no debe cerrar sesión; en cualquier
-  // otra pantalla significa que el token murió.
   static Future<Map<String, dynamic>?> obtenerPerfil({
     bool validandoLogin = false,
   }) async {
@@ -103,9 +86,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/Login',
-    );
+    final url = Uri.parse('$_base/api/Cliente/Login');
     try {
       final response = await http
           .post(
@@ -135,6 +116,11 @@ class AuthService {
       return null;
     }
   }
+  static int? clienteIdDe(Map<String, dynamic> perfil) {
+    final valor = perfil['ClienteId'];
+    if (valor is num) return valor.toInt();
+    return int.tryParse('$valor');
+  }
 
   static Future<List<Map<String, dynamic>>?> obtenerTablero(
     int clienteId,
@@ -146,9 +132,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/Tablero/$clienteId',
-    );
+    final url = Uri.parse('$_base/api/Cliente/Tablero/$clienteId');
 
     try {
       final response = await http
@@ -190,9 +174,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Ofertas/Activa/Tipo/$tipo',
-    );
+    final url = Uri.parse('$_base/api/Ofertas/Activa/Tipo/$tipo');
 
     try {
       final response = await http
@@ -234,9 +216,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Ofertas/$ofertaId',
-    );
+    final url = Uri.parse('$_base/api/Ofertas/$ofertaId');
 
     try {
       final response = await http
@@ -278,9 +258,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/MetodoPago',
-    );
+    final url = Uri.parse('$_base/api/MetodoPago');
 
     try {
       final response = await http
@@ -338,9 +316,7 @@ class AuthService {
       tipoOperacion: tipoOperacion,
     );
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/RegistrarSolicitudDePago',
-    );
+    final url = Uri.parse('$_base/api/RegistrarSolicitudDePago');
 
     final Map<String, dynamic> body = {
       "ICCID": iccid,
@@ -422,7 +398,7 @@ class AuthService {
     }
 
     final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/ObtenerSolicitudDePago/${Uri.encodeComponent(orderId)}',
+      '$_base/api/ObtenerSolicitudDePago/${Uri.encodeComponent(orderId)}',
     );
 
     try {
@@ -485,9 +461,7 @@ class AuthService {
       return false;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/CambiaPassword',
-    );
+    final url = Uri.parse('$_base/api/Cliente/CambiaPassword');
 
     final body = {
       "UserName": AuthService.email,
@@ -534,9 +508,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Recargas/Cliente/$clienteId',
-    );
+    final url = Uri.parse('$_base/api/Recargas/Cliente/$clienteId');
 
     try {
       final response = await http
@@ -574,9 +546,7 @@ class AuthService {
       return null;
     }
 
-    final url = Uri.parse(
-      'https://ca-movilidad-dev-api.wonderfulground-31c63143.centralus.azurecontainerapps.io/api/Cliente/SolicitudCambioPassword',
-    );
+    final url = Uri.parse('$_base/api/Cliente/SolicitudCambioPassword');
     try {
       final response = await http
           .post(
@@ -601,6 +571,199 @@ class AuthService {
       }
     } catch (e) {
       if (kDebugMode) debugPrint('Excepción: $e');
+      return null;
+    }
+  }
+  static Future<int?> clienteIdActual() async {
+    if (_clienteId != null) return _clienteId;
+    final perfil = await obtenerPerfil();
+    if (perfil == null) return null;
+    return _clienteId = clienteIdDe(perfil);
+  }
+
+  static String? _mensajeDe(String cuerpo) {
+    try {
+      final json = jsonDecode(cuerpo);
+      if (json is String) return json.trim().isEmpty ? null : json.trim();
+      if (json is! Map) return null;
+      for (final nombre in [
+        'mensaje',
+        'detalle',
+        'detail',
+        'message',
+        'title',
+      ]) {
+        final valor = campo(json, nombre)?.toString().trim() ?? '';
+        if (valor.isNotEmpty) return valor;
+      }
+    } catch (_) {
+    }
+    return null;
+  }
+  static Future<ResultadoTokenizar?> tokenizarTarjeta({
+    required int clienteId,
+    required String numero,
+    required String titular,
+    required String cvv,
+    required int mesVencimiento,
+    required int anioVencimiento,
+    required String correo,
+    required String telefono,
+  }) async {
+    if (_token == null) return null;
+
+    final url = Uri.parse('$_base/api/cobros/tokenizar');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({            
+              'ClienteID': clienteId,
+              'CardNumber': numero,
+              'Cardholder': titular,
+              'Cvv': cvv,
+              'ExpMonth': mesVencimiento,
+              'ExpYear': anioVencimiento,
+              'Email': correo,
+              'PhoneNumber': telefono,
+            }),
+          )
+          .timeout(const Duration(seconds: 30));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        Map json = const {};
+        try {
+          final cuerpo = jsonDecode(response.body);
+          if (cuerpo is Map) json = cuerpo;
+        } catch (_) {}        
+        return ResultadoTokenizar(
+          ok: true,
+          cardId: campo(json, 'cardId')?.toString(),
+          yaEstaba: campo(json, 'yaEstaba') == true,
+        );
+      }
+
+      final detalle = _mensajeDe(response.body);
+      return ResultadoTokenizar(
+        ok: false,
+        mensaje: switch (response.statusCode) {
+          400 =>
+            detalle ??
+                'Faltan datos de la tarjeta. Revísalos e intenta de nuevo.',         
+          502 =>
+            detalle == null
+                ? 'El banco no aceptó la tarjeta. Revisa los datos o usa otra.'
+                : 'El banco no aceptó la tarjeta: $detalle',
+          _ => 'No se pudo agregar la tarjeta. Intenta de nuevo más tarde.',
+        },
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+  static Future<List<Tarjeta>?> obtenerTarjetas(int clienteId) async {
+    if (_token == null) return null;
+
+    final url = Uri.parse('$_base/api/cobros/tarjetas/$clienteId');
+
+    try {
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      if (response.statusCode != 200) {
+        if (kDebugMode) debugPrint('Tarjetas: ${response.statusCode}');
+        return null;
+      }
+
+      final cuerpo = response.body.trim();
+      if (cuerpo.isEmpty) return const [];
+      final json = jsonDecode(cuerpo);
+      if (json is! List) return null;
+
+      final tarjetas = json
+          .whereType<Map>()
+          .map(Tarjeta.desde)
+          .whereType<Tarjeta>()
+          .toList();
+      if (kDebugMode) debugPrint('✅ Tarjetas recibidas: ${tarjetas.length}');
+      return tarjetas;
+    } catch (e) {
+      if (kDebugMode) debugPrint('Excepción al obtener tarjetas: $e');
+      return null;
+    }
+  }
+  static Future<ResultadoQuitarTarjeta?> quitarTarjeta({
+    required int clienteId,
+    required int clienteTarjetaId,
+    bool forzar = false,
+  }) async {
+    if (_token == null) return null;
+
+    final url = Uri.parse(
+      '$_base/api/cobros/tarjetas/$clienteId/$clienteTarjetaId?forzar=$forzar',
+    );
+
+    try {
+      final response = await http
+          .delete(
+            url,
+            headers: {
+              'Authorization': 'Bearer $_token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 30));
+
+      if (_sesionCaduco(response.statusCode)) return null;
+
+      Map json = const {};
+      try {
+        final cuerpo = jsonDecode(response.body);
+        if (cuerpo is Map) json = cuerpo;
+      } catch (_) {}
+      final lineas = lineasDe(campo(json, 'lineasQueCobra'));
+      final mensaje = _mensajeDe(response.body);
+
+      if (kDebugMode) debugPrint('Quitar tarjeta: ${response.statusCode}');
+
+      return switch (response.statusCode) {
+        200 => ResultadoQuitarTarjeta(
+          EstadoQuitarTarjeta.quitada,
+          lineasQueCobra: lineas,
+        ),
+        409 => ResultadoQuitarTarjeta(
+          EstadoQuitarTarjeta.requiereConfirmacion,
+          lineasQueCobra: lineas,
+          mensaje: mensaje,
+        ),
+        404 => const ResultadoQuitarTarjeta(EstadoQuitarTarjeta.noEncontrada),
+        502 => ResultadoQuitarTarjeta(
+          EstadoQuitarTarjeta.pasarelaNoConfirmo,
+          mensaje: mensaje,
+        ),
+        _ => ResultadoQuitarTarjeta(
+          EstadoQuitarTarjeta.error,
+          mensaje: mensaje,
+        ),
+      };
+    } catch (e) {
+      if (kDebugMode) debugPrint('Excepción al quitar tarjeta: $e');
       return null;
     }
   }

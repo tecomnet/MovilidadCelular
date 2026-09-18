@@ -20,6 +20,11 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
   bool _cargandoOfertas = false;
   bool _procesandoPago = false;
 
+  /// La carga falló, que no es lo mismo que no tener líneas. Inicio y Recargar
+  /// ya distinguían los dos casos; aquí un corte de red seguía diciéndole al
+  /// cliente que no encontramos líneas asociadas a su cuenta.
+  bool _falloCarga = false;
+
   List<ClientLine> _lineas = [];
   ClientLine? _linea;
   TipoOferta? _tipo;
@@ -37,13 +42,15 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
     final perfil = await AuthService.obtenerPerfil();
     if (!mounted) return;
 
-    final tablero = perfil == null
+    final clienteId = perfil == null ? null : AuthService.clienteIdDe(perfil);
+    final tablero = clienteId == null
         ? null
-        : await AuthService.obtenerTablero(perfil['ClienteId']);
+        : await AuthService.obtenerTablero(clienteId);
     if (!mounted) return;
 
     final lineas = (tablero ?? []).map(ClientLine.desde).toList();
     setState(() {
+      _falloCarga = perfil == null || clienteId == null || tablero == null;
       _lineas = lineas;
       // Con una sola línea no hay nada que elegir en el primer paso.
       _linea = lineas.length == 1 ? lineas.first : null;
@@ -133,10 +140,12 @@ class _UpdatePlanScreenState extends State<UpdatePlanScreen> {
 
   Widget _cuerpo() {
     if (_lineas.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.all(16),
+      return Padding(
+        padding: const EdgeInsets.all(16),
         child: EmptyPanel(
-          mensaje: 'No encontramos líneas asociadas a tu cuenta',
+          mensaje: _falloCarga
+              ? 'No pudimos cargar tus líneas. Revisa tu conexión e intenta de nuevo.'
+              : 'No encontramos líneas asociadas a tu cuenta',
         ),
       );
     }

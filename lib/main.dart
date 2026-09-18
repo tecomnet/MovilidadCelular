@@ -1,17 +1,21 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:url_strategy/url_strategy.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
+import 'package:movilidad_celulares/services/payment_flow.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
 import 'package:movilidad_celulares/utils/session_manager.dart';
 
+import 'package:movilidad_celulares/screens/add_card_screen.dart';
 import 'package:movilidad_celulares/screens/change_password.dart';
 import 'package:movilidad_celulares/screens/forgot_password.dart';
 import 'package:movilidad_celulares/screens/profile_screen.dart';
 import 'package:movilidad_celulares/screens/update_plan_screen.dart';
 import 'package:movilidad_celulares/screens/menu_screen.dart';
+import 'package:movilidad_celulares/screens/my_cards_screen.dart';
 import 'package:movilidad_celulares/screens/refills_screen.dart';
 import 'package:movilidad_celulares/widgets/tecomnet_widgets.dart';
 import 'screens/login_screen.dart';
@@ -25,6 +29,13 @@ void main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      // Borde a borde también desde Flutter. enableEdgeToEdge() en MainActivity
+      // lo activa al crear la ventana, pero Flutter vuelve a aplicar su modo de
+      // pantalla por defecto cada vez que la app se reanuda, y ese modo no dibuja
+      // detrás de la barra de navegación: quedaba una franja negra abajo. Pedirlo
+      // aquí evita que un lado deshaga lo que hace el otro.
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
       if (kIsWeb) {
         setPathUrlStrategy();
@@ -40,7 +51,7 @@ void main() async {
       runApp(const SessionWatcher(child: MyApp()));
     },
     (error, stackTrace) {
-      debugPrint("❌ Error en la app: $error");
+      if (kDebugMode) debugPrint("❌ Error en la app: $error");
     },
   );
 }
@@ -94,6 +105,13 @@ class _SessionWatcherState extends State<SessionWatcher>
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
+      // Durante un cobro no se cuenta la inactividad. Pagar obliga a salir de
+      // la app —leer el SMS con el código, abrir la del banco— y al volver el
+      // cierre por inactividad había borrado el checkout y mandado al cliente
+      // al login: se quedaba sin saber si el cargo se hizo, y al reintentar se
+      // topaba con la solicitud anterior todavía retenida.
+      if (PaymentFlow.enCurso) return;
+
       _timer?.cancel();
       _timer = Timer(const Duration(minutes: 5), _handleTimeout);
     } else if (state == AppLifecycleState.resumed) {
@@ -102,7 +120,15 @@ class _SessionWatcherState extends State<SessionWatcher>
   }
 
   Future<void> _handleTimeout() async {
+    // Por si el cobro arrancó con el temporizador ya corriendo.
+    if (PaymentFlow.enCurso) return;
+
     await SessionManager.logout();
+
+    // El cierre manual de base_scaffold ya lo hacía; este no, así que tras
+    // cerrar por inactividad el token, el correo y la contraseña seguían vivos
+    // en memoria.
+    AuthService.cerrarSesion();
 
     navigatorKey.currentState?.pushNamedAndRemoveUntil(
       '/login',
@@ -143,6 +169,8 @@ class MyApp extends StatelessWidget {
         '/refills': (context) => const RefillsScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/changePassword': (context) => const ChangePasswordScreen(),
+        '/cards': (context) => const MyCardsScreen(),
+        '/addCard': (context) => const AddCardScreen(),
         '/recuperarPassword': (context) => const RecuperarPasswordScreen(),
       },
     );

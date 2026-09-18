@@ -16,11 +16,11 @@ class ClientLine {
   });
 
   factory ClientLine.desde(Map<String, dynamic> fila) => ClientLine(
-        plan: (fila['Oferta'] ?? 'Plan').toString().toUpperCase(),
-        msisdn: fila['MSISDN']?.toString() ?? '',
-        iccid: fila['ICCID']?.toString() ?? '',
-        ofertaId: fila['OfertaID']?.toString() ?? '',
-      );
+    plan: (fila['Oferta'] ?? 'Plan').toString().toUpperCase(),
+    msisdn: fila['MSISDN']?.toString() ?? '',
+    iccid: fila['ICCID']?.toString() ?? '',
+    ofertaId: fila['OfertaID']?.toString() ?? '',
+  );
 }
 
 /// Primer paso de recargar y de actualizar plan: elegir sobre qué línea.
@@ -148,10 +148,7 @@ class StepBackButton extends StatelessWidget {
           foregroundColor: TecomnetTheme.azulMarca,
           side: const BorderSide(color: TecomnetTheme.azulMarca, width: 1.3),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-          textStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

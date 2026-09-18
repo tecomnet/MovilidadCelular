@@ -7,8 +7,10 @@ import 'package:movilidad_celulares/services/payment_flow.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 import 'package:movilidad_celulares/utils/enums.dart';
 import 'package:movilidad_celulares/utils/session_manager.dart';
+import 'package:movilidad_celulares/utils/succes.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/widgets/line_card.dart';
+import 'package:movilidad_celulares/widgets/tecomnet_widgets.dart';
 
 /// Una línea del tablero, ya resuelta con el detalle de su oferta.
 class _Linea {
@@ -73,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<_Linea> _lineas = [];
   bool _cargando = true;
+  bool _procesandoPago = false;
   String _nombre = '';
 
   /// La carga falló (red caída o sesión caducada), que no es lo mismo que no
@@ -102,8 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final nombre = '${perfil['Nombre'] ?? ''}'.trim();
-    final clienteId = perfil['ClienteId'];
-    final tablero = await AuthService.obtenerTablero(clienteId);
+    final clienteId = AuthService.clienteIdDe(perfil);
+    final tablero = clienteId == null
+        ? null
+        : await AuthService.obtenerTablero(clienteId);
     if (!mounted) return;
 
     if (tablero == null) {
@@ -166,8 +171,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _pagar(_Linea linea, TipoOperacion operacion) async {
+    if (_procesandoPago) return;
+
+    // El precio sale del detalle de la oferta, que se pide en una llamada
+    // aparte y puede fallar aunque el tablero cargue: entonces vale 0 y la
+    // tarjeta se ve completa. Sin esta comprobación, «Renovar» registraba en el
+    // servidor una solicitud de pago por $0. Recargar y Actualizar plan ya lo
+    // comprobaban; esta pantalla se había quedado sin la guarda.
+    if (linea.precio <= 0) {
+      showNotice(context, 'No pudimos obtener el precio. Intenta de nuevo.');
+      return;
+    }
+
+    // La rueda la pone PaymentFlow con su propio diálogo; esta bandera solo
+    // evita que un doble toque lance dos cobros antes de que aparezca.
+    setState(() => _procesandoPago = true);
+
     final ofertaId = int.tryParse(linea.ofertaId) ?? 0;
-    await PaymentFlow.iniciar(
+    final resultado = await PaymentFlow.iniciar(
       context,
       iccid: linea.iccid,
       msisdn: linea.msisdn,
@@ -176,6 +197,13 @@ class _HomeScreenState extends State<HomeScreen> {
       monto: linea.precio,
       operacion: operacion,
     );
+
+    if (!mounted) return;
+    setState(() => _procesandoPago = false);
+
+    // Tras renovar se vuelve a pedir el tablero, para que la vigencia y los
+    // datos de la línea reflejen el pago sin que el cliente tenga que refrescar.
+    if (resultado == ResultadoPago.exitoso) await _cargar();
   }
 
   void _irAOfertas(_Linea linea) {

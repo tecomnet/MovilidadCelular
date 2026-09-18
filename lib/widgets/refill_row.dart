@@ -180,8 +180,9 @@ class DateField extends StatelessWidget {
                           ? TecomnetTheme.tintaSuave
                           : TecomnetTheme.tintaFuerte,
                       fontSize: 14.5,
-                      fontWeight:
-                          valor == null ? FontWeight.w400 : FontWeight.w600,
+                      fontWeight: valor == null
+                          ? FontWeight.w400
+                          : FontWeight.w600,
                     ),
                   ),
                 ),

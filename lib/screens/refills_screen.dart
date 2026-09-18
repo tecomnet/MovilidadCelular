@@ -50,7 +50,10 @@ class _RefillsScreenState extends State<RefillsScreen> {
     final recargas = await AuthService.obtenerRecargas(clienteId);
     if (!mounted) return;
     setState(() {
-      _recargas = recargas ?? [];
+      // El API las devuelve de la más vieja a la más nueva; en un historial se
+      // espera lo contrario, y con decenas de recargas la última quedaba al
+      // fondo de la lista.
+      _recargas = [...?recargas]..sort(_masNuevaPrimero);
       _cargando = false;
       _falloCarga = recargas == null;
     });
@@ -67,6 +70,17 @@ class _RefillsScreenState extends State<RefillsScreen> {
       if (m.isNotEmpty) vistas.add(m);
     }
     return vistas.toList();
+  }
+
+  /// Orden del historial: la más reciente arriba. Las que traen una fecha que
+  /// no se puede leer van al final, para no desplazar a las que sí la tienen.
+  int _masNuevaPrimero(Map<String, dynamic> a, Map<String, dynamic> b) {
+    final fa = _fechaDe(a);
+    final fb = _fechaDe(b);
+    if (fa == null && fb == null) return 0;
+    if (fa == null) return 1;
+    if (fb == null) return -1;
+    return fb.compareTo(fa);
   }
 
   /// Fecha de la recarga, o null si no se puede interpretar.

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+29
+version: 1.0.0+30
 
 environment:
   sdk: ^3.8.1
@@ -63,7 +63,10 @@ flutter:
 
   assets:
     - assets/Imagenes/Logo.png
-    - assets/Imagenes/ic_launcher.png
+    # ic_launcher.png (510 KB) no se declara: ninguna pantalla lo carga, así que
+    # solo hacía más pesada la app. El archivo sigue en assets/Imagenes porque de
+    # ahí lo toma flutter_launcher_icons al generar los iconos, y para eso no
+    # necesita estar declarado como asset.
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:movilidad_celulares/utils/session_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movilidad_celulares/call_native_code.dart';
@@ -35,7 +37,7 @@ class BaseScaffold extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: modo ?? LaunchMode.platformDefault);
     } else {
-      debugPrint('No se pudo abrir $uri');
+      if (kDebugMode) debugPrint('No se pudo abrir $uri');
     }
   }
 
@@ -56,6 +58,19 @@ class BaseScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Barra de navegación transparente e iconos oscuros, porque el fondo de
+    // estas pantallas es claro. La barra de estado la sigue decidiendo el
+    // AppBar: Flutter toma el estilo de arriba del AppBar y el de abajo de aquí.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+      child: _armazon(context),
+    );
+  }
+
+  Widget _armazon(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: TecomnetTheme.panelFondo,
@@ -92,7 +107,11 @@ class BaseScaffold extends StatelessWidget {
         ),
       ),
       drawer: _cajon(context),
-      body: body,
+      // De borde a borde, el contenido llega hasta debajo de la barra de
+      // navegación. Arriba ya protege el AppBar; esto cubre abajo y los lados.
+      // Hace falta porque las listas de las pantallas llevan un padding fijo,
+      // que anula el relleno que Flutter añadiría solo para el sistema.
+      body: SafeArea(top: false, child: body),
     );
   }
 
@@ -154,6 +173,14 @@ class BaseScaffold extends StatelessWidget {
                     Icons.receipt_long_outlined,
                     'Mis recargas',
                     '/refills',
+                  ),
+                  // Agregar tarjeta se abre desde aquí: la lista es la que
+                  // hace falta para poder quitarlas.
+                  _item(
+                    context,
+                    Icons.credit_card_outlined,
+                    'Mis tarjetas',
+                    '/cards',
                   ),
                   _item(
                     context,

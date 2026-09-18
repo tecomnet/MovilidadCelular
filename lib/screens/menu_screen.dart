@@ -43,9 +43,10 @@ class _MenuScreenState extends State<MenuScreen> {
     final perfil = await AuthService.obtenerPerfil();
     if (!mounted) return;
 
-    final tablero = perfil == null
+    final clienteId = perfil == null ? null : AuthService.clienteIdDe(perfil);
+    final tablero = clienteId == null
         ? null
-        : await AuthService.obtenerTablero(perfil['ClienteId']);
+        : await AuthService.obtenerTablero(clienteId);
     if (!mounted) return;
 
     final lineas = (tablero ?? []).map(ClientLine.desde).toList();

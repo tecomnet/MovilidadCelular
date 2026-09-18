@@ -42,18 +42,9 @@ int tipoOfertaValor(TipoOferta tipo) {
   }
 }
 
-enum CanalDeVenta {
-  App,         
-  PaginaWeb,   
-  PortalCautivo 
-}
+enum CanalDeVenta { App, PaginaWeb, PortalCautivo }
 
-enum TipoOperacion {
-  Compra,      
-  Recarga,     
-  Cambio,      
-  Renovacion   
-}
+enum TipoOperacion { Compra, Recarga, Cambio, Renovacion }
 
 int canalDeVentaValue(CanalDeVenta canal) {
   switch (canal) {

@@ -22,7 +22,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _cargando = false;
 
   bool esCorreoValido(String correo) {
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    // El {2,4} de antes rechazaba dominios válidos (.online, .store, .com.mx) y
+    // la parte local no admitía el «+» de correos como juan+algo@gmail.com: ese
+    // cliente no podía ni entrar ni pedir su contraseña. Misma expresión que ya
+    // usa la pantalla de tarjetas.
+    final regex = RegExp(r'^[\w.+-]+@([\w-]+\.)+[\w-]{2,}$');
     return regex.hasMatch(correo);
   }
 
@@ -64,8 +68,16 @@ class _LoginScreenState extends State<LoginScreen> {
     final tokenObtenido = await AuthService.obtenerToken(email, password);
     if (!mounted) return;
     if (!tokenObtenido) {
+      // Este paso no valida al cliente: obtenerToken() manda siempre las
+      // credenciales de servicio, así que solo puede fallar por red o porque el
+      // servidor no responde. Decir aquí «contraseña incorrecta» mandaba al
+      // cliente sin cobertura a cambiar una contraseña que estaba bien. Quien
+      // sí lo valida es obtenerPerfil, unas líneas más abajo.
       setState(() => _cargando = false);
-      showNotice(context, 'Usuario o contraseña incorrectos');
+      showNotice(
+        context,
+        'No pudimos conectar. Revisa tu conexión e intenta de nuevo.',
+      );
       return;
     }
 
@@ -76,7 +88,17 @@ class _LoginScreenState extends State<LoginScreen> {
       showNotice(context, 'Usuario no existe o contraseña incorrecta');
       return;
     }
-    AuthService.clienteId = perfil['ClienteId'];
+    final clienteId = AuthService.clienteIdDe(perfil);
+    if (clienteId == null) {
+      // Sin ClienteId no hay tablero ni pagos posibles, así que no se deja
+      // entrar a medias. Antes esta línea asignaba el campo sin comprobarlo: si
+      // llegaba nulo o como texto, reventaba aquí mismo y dejaba el velo de
+      // «INICIANDO SESIÓN» puesto, con el botón atrás bloqueado.
+      setState(() => _cargando = false);
+      showNotice(context, 'No pudimos cargar tu cuenta. Intenta de nuevo.');
+      return;
+    }
+    AuthService.clienteId = clienteId;
 
     // pedirPermisos() devuelve la decisión real del usuario. No se bloquea el
     // acceso: los permisos son para el diagnóstico de red, no para la cuenta,

@@ -16,7 +16,8 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
   String emailError = '';
 
   bool esCorreoValido(String correo) {
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    // Ver login_screen: el {2,4} dejaba fuera dominios válidos y el «+».
+    final regex = RegExp(r'^[\w.+-]+@([\w-]+\.)+[\w-]{2,}$');
     return regex.hasMatch(correo);
   }
 
@@ -40,13 +41,12 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
 
     setState(() => _isEnviando = true);
 
-    // NOTA: esta llamada usa las credenciales de servicio y sobrescribe el
-    // correo/contraseña guardados en AuthService. Es parte de los pendientes
-    // de lógica, no del rediseño.
-    await AuthService.obtenerToken(
-      "Mobile.TECOMNET.USER_Admin",
-      "VnhmJUD4ZW4564NHAyYD53FSH",
-    );
+    // Aquí solo hace falta un token para poder llamar a recuperarContrasena, y
+    // obtenerToken() ignora el usuario y la contraseña que recibe: siempre manda
+    // las de la cuenta de servicio que tiene escritas. Por eso no se le pasa
+    // ninguna credencial; la contraseña que estaba escrita en esta llamada nunca
+    // llegaba a enviarse y solo sumaba una credencial más dentro del APK.
+    await AuthService.obtenerToken('', '');
 
     try {
       final resultado = await AuthService.recuperarContrasena(email);

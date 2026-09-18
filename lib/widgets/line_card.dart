@@ -336,10 +336,6 @@ class _SeparadorVertical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 34,
-      color: TecomnetTheme.panelBorde,
-    );
+    return Container(width: 1, height: 34, color: TecomnetTheme.panelBorde);
   }
 }

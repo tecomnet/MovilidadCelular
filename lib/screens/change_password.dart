@@ -61,8 +61,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   bool _validar() {
     setState(() {
-      _errorActual =
-          _actual.text.isEmpty ? 'Ingresa tu contraseña actual' : '';
+      _errorActual = _actual.text.isEmpty ? 'Ingresa tu contraseña actual' : '';
       _errorNueva = _motivoInvalida(_nueva.text);
       _errorConfirmar = _confirmar.text != _nueva.text
           ? 'No coincide con la nueva contraseña'
@@ -266,8 +265,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: TecomnetTheme.azulProfundo,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: TecomnetTheme.azulProfundo
-                    .withValues(alpha: 0.5),
+                disabledBackgroundColor: TecomnetTheme.azulProfundo.withValues(
+                  alpha: 0.5,
+                ),
                 disabledForegroundColor: Colors.white70,
                 elevation: 0,
                 textStyle: const TextStyle(

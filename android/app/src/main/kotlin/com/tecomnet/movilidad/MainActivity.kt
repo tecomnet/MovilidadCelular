@@ -3,7 +3,9 @@ package com.tecomnet.movilidad
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import android.util.Log
+import android.view.WindowManager
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -14,6 +16,12 @@ class MainActivity : FlutterFragmentActivity() {
     private companion object {
         const val TAG = "Octopulse"
         const val CHANNEL = "channelUpdateKPI"
+
+        /**
+         * Canal para ocultar pantallas con datos sensibles. Va aparte de
+         * [CHANNEL] a propósito: no tiene nada que ver con el SDK de Octopulse.
+         */
+        const val CANAL_PANTALLA_SEGURA = "tecomnet/pantalla_segura"
 
         /**
          * Business Entity ID de TECOMNET. Valor fijo, no cambia.
@@ -43,6 +51,18 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Pantalla de borde a borde en todas las versiones. Desde Android 15 es
+        // obligatoria para apps con targetSdk >= 35; llamarla aquí da el mismo
+        // comportamiento en versiones anteriores y es lo que Play Console pide.
+        //
+        // Va DESPUÉS de super.onCreate a propósito: FlutterFragmentActivity
+        // reconfigura la ventana dentro de su onCreate (color de la barra de
+        // estado y modo de pantalla) y, llamada antes, lo deshacía. Se comprobó
+        // midiendo píxeles: con la llamada antes, la franja de la barra de
+        // navegación seguía en negro.
+        //
+        // No tiene relación con el SDK de Octopulse.
+        enableEdgeToEdge()
         // Octopulse.initialize() vive en OctolyticsApp.onCreate, que siempre
         // corre antes que esto. Aquí solo se activa el monitoreo.
         enableMonitoring()
@@ -57,6 +77,25 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        // FLAG_SECURE mientras hay datos de tarjeta en pantalla: Android no
+        // guarda la miniatura en la vista de apps recientes y bloquea las
+        // capturas y la grabación de pantalla. Lo activa y lo quita Dart al
+        // entrar y salir de la pantalla, así que no afecta al resto de la app.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CANAL_PANTALLA_SEGURA)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "activar" -> {
+                        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                        result.success(null)
+                    }
+                    "desactivar" -> {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
             .setMethodCallHandler { call, result ->

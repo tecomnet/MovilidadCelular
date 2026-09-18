@@ -63,12 +63,7 @@ class OfferCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            _cabecera(),
-            _precio(),
-            _servicios(),
-            _detalle(),
-          ],
+          children: [_cabecera(), _precio(), _servicios(), _detalle()],
         ),
       ),
     );
@@ -222,7 +217,10 @@ class OfferCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _incluido(Icons.phone_outlined, '${thousandsSeparator(minutos)} min'),
+              _incluido(
+                Icons.phone_outlined,
+                '${thousandsSeparator(minutos)} min',
+              ),
               const SizedBox(width: 20),
               _incluido(
                 Icons.chat_bubble_outline_rounded,
@@ -266,10 +264,7 @@ class OfferCard extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           texto,
-          style: const TextStyle(
-            color: TecomnetTheme.tintaMedia,
-            fontSize: 13,
-          ),
+          style: const TextStyle(color: TecomnetTheme.tintaMedia, fontSize: 13),
         ),
       ],
     );

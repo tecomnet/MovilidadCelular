@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart'
-    show kIsWeb, defaultTargetPlatform, TargetPlatform, debugPrint;
+    show kIsWeb, kDebugMode, defaultTargetPlatform, TargetPlatform, debugPrint;
 import 'package:flutter/services.dart';
 
 class Permisos {
@@ -21,7 +21,7 @@ class Permisos {
       final result = await _channel.invokeMethod<bool>('validarPermisos');
       return result ?? false;
     } catch (e) {
-      debugPrint('Error al pedir permisos: $e');
+      if (kDebugMode) debugPrint('Error al pedir permisos: $e');
       return false;
     }
   }
