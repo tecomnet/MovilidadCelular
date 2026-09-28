@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:url_strategy/url_strategy.dart';
+import 'package:movilidad_celulares/config/ambiente.dart';
 import 'package:movilidad_celulares/services/api_service.dart';
 import 'package:movilidad_celulares/services/payment_flow.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
@@ -29,6 +30,25 @@ void main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      // Aviso para quien compila, no para el cliente: solo corre en depuración.
+      // Si se marcó producción sin llenar la URL o las credenciales, la app se
+      // quedaría sin poder iniciar sesión y en el teléfono se vería como un
+      // problema de red, sin pista de la causa.
+      assert(
+        !Ambiente.configuracionIncompleta,
+        'Ambiente.produccion está en true, pero falta la URL o las credenciales '
+        'de producción en lib/config/ambiente.dart',
+      );
+
+      // A qué servidor está hablando esta compilación. Solo en depuración, y
+      // sin credenciales: es la forma de confirmar el ambiente sin adivinar.
+      if (kDebugMode) {
+        debugPrint(
+          '🌐 Ambiente: ${Ambiente.produccion ? "PRODUCCIÓN" : "pruebas"} '
+          '→ ${Ambiente.api}',
+        );
+      }
 
       // Borde a borde también desde Flutter. enableEdgeToEdge() en MainActivity
       // lo activa al crear la ventana, pero Flutter vuelve a aplicar su modo de
