@@ -22,10 +22,11 @@ class AuthService {
           .post(
             url,
             headers: {'Content-Type': 'application/json'},
+            // La cuenta de servicio cambia entre pruebas y producción, así que
+            // sale de Ambiente junto con la URL: un solo lugar que tocar.
             body: jsonEncode({
-              "UserName": "Mobile.TECOMNET.USER_Admin",
-              "Password":
-                  "zE8D4nlrLpgpeG3qjiFwlFkUBNfun1LSwMqvZBLhnzXVyCy7VsFaVFDUiwpMHrlO",
+              "UserName": Ambiente.usuarioServicio,
+              "Password": Ambiente.claveServicio,
             }),
           )
           .timeout(const Duration(seconds: 20));
@@ -116,6 +117,7 @@ class AuthService {
       return null;
     }
   }
+
   static int? clienteIdDe(Map<String, dynamic> perfil) {
     final valor = perfil['ClienteId'];
     if (valor is num) return valor.toInt();
@@ -574,6 +576,7 @@ class AuthService {
       return null;
     }
   }
+
   static Future<int?> clienteIdActual() async {
     if (_clienteId != null) return _clienteId;
     final perfil = await obtenerPerfil();
@@ -596,10 +599,10 @@ class AuthService {
         final valor = campo(json, nombre)?.toString().trim() ?? '';
         if (valor.isNotEmpty) return valor;
       }
-    } catch (_) {
-    }
+    } catch (_) {}
     return null;
   }
+
   static Future<ResultadoTokenizar?> tokenizarTarjeta({
     required int clienteId,
     required String numero,
@@ -622,7 +625,7 @@ class AuthService {
               'Authorization': 'Bearer $_token',
               'Content-Type': 'application/json',
             },
-            body: jsonEncode({            
+            body: jsonEncode({
               'ClienteID': clienteId,
               'CardNumber': numero,
               'Cardholder': titular,
@@ -642,7 +645,7 @@ class AuthService {
         try {
           final cuerpo = jsonDecode(response.body);
           if (cuerpo is Map) json = cuerpo;
-        } catch (_) {}        
+        } catch (_) {}
         return ResultadoTokenizar(
           ok: true,
           cardId: campo(json, 'cardId')?.toString(),
@@ -656,7 +659,7 @@ class AuthService {
         mensaje: switch (response.statusCode) {
           400 =>
             detalle ??
-                'Faltan datos de la tarjeta. Revísalos e intenta de nuevo.',         
+                'Faltan datos de la tarjeta. Revísalos e intenta de nuevo.',
           502 =>
             detalle == null
                 ? 'El banco no aceptó la tarjeta. Revisa los datos o usa otra.'
@@ -668,6 +671,7 @@ class AuthService {
       return null;
     }
   }
+
   static Future<List<Tarjeta>?> obtenerTarjetas(int clienteId) async {
     if (_token == null) return null;
 
@@ -708,6 +712,7 @@ class AuthService {
       return null;
     }
   }
+
   static Future<ResultadoQuitarTarjeta?> quitarTarjeta({
     required int clienteId,
     required int clienteTarjetaId,

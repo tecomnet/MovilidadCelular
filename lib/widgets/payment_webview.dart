@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
-import 'package:movilidad_celulares/utils/succes.dart';
+import 'package:movilidad_celulares/utils/retorno_pago.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// Página de cobro de la pasarela.

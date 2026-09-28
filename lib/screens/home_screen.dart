@@ -7,7 +7,7 @@ import 'package:movilidad_celulares/services/payment_flow.dart';
 import 'package:movilidad_celulares/theme/tecomnet_theme.dart';
 import 'package:movilidad_celulares/utils/enums.dart';
 import 'package:movilidad_celulares/utils/session_manager.dart';
-import 'package:movilidad_celulares/utils/succes.dart';
+import 'package:movilidad_celulares/utils/retorno_pago.dart';
 import 'package:movilidad_celulares/widgets/base_scaffold.dart';
 import 'package:movilidad_celulares/widgets/line_card.dart';
 import 'package:movilidad_celulares/widgets/tecomnet_widgets.dart';
