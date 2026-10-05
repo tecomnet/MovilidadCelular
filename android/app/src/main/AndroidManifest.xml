@@ -23,7 +23,7 @@
         correo en el login: el «recordar usuario» ya no se restaura.
     -->
     <application
-        android:label="TECOMNET MOVILIDAD"
+        android:label="TECOMNET CONECTA"
         android:name=".OctolyticsApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher">

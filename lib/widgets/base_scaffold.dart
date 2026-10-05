@@ -194,17 +194,22 @@ class BaseScaffold extends StatelessWidget {
                     'Cambiar contraseña',
                     '/changePassword',
                   ),
-                  const _Seccion('SOPORTE'),
-                  _item(
-                    context,
-                    Icons.speed_rounded,
-                    'Diagnóstico de red',
-                    null,
-                    alTocar: () {
-                      Navigator.pop(context);
-                      CallNativeCode.openHelp();
-                    },
-                  ),
+                  // El diagnóstico lo abre el SDK de Octopulse, que solo existe
+                  // en Android. En iOS la opción no se muestra: tocarla no
+                  // haría nada y el cliente creería que la app está rota.
+                  if (CallNativeCode.isAndroid) ...[
+                    const _Seccion('SOPORTE'),
+                    _item(
+                      context,
+                      Icons.speed_rounded,
+                      'Diagnóstico de red',
+                      null,
+                      alTocar: () {
+                        Navigator.pop(context);
+                        CallNativeCode.openHelp();
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
