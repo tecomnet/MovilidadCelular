@@ -170,7 +170,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'Movilidad Celulares',
+      title: 'TECOMNET CONECTA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         // Sin esto, los 8 CircularProgressIndicator y los 3 RefreshIndicator

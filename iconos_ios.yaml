@@ -1,0 +1,17 @@
+# Iconos de iPhone. Se corre a mano cuando cambie el logo:
+#
+#   dart run flutter_launcher_icons -f iconos_ios.yaml
+#
+# Va en un archivo aparte, y NO en pubspec.yaml, por una razón: la config que
+# quedó en el pubspec genera también los de Android, y los de Android están
+# hechos a mano (icono adaptativo con degradado de marca). Correr la
+# herramienta con aquella config los sobrescribiría con un fondo blanco plano.
+flutter_launcher_icons:
+  android: false
+  ios: true
+  image_path: "assets/Imagenes/ic_launcher.png"
+
+  # iOS no admite transparencia en el icono: App Store Connect rechaza el
+  # envío. Se aplana contra el azul oscuro de la marca, el mismo del splash.
+  remove_alpha_ios: true
+  background_color_ios: "#070A14"
